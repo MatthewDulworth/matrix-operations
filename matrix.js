@@ -38,6 +38,13 @@ class Matrix {
    }
 
    /**
+    * Outputs the matrix as a table to the console.
+    */
+   log() {
+      console.table(this.matrix);
+   }
+
+   /**
     * Swaps the specified rows of the matrix. 
     * 
     * @param {number} targetRow A row to swap.
@@ -53,13 +60,16 @@ class Matrix {
    }
 
    /**
-    * Outputs the matrix as a table to the console.
+    * Multiplies the specified row by the scalar.
+    * 
+    * @param {number} targetRow The row to multiply.
+    * @param {number} scalar The value to multiply the row by. 
     */
-   log() {
-      console.table(this.matrix);
+   rowMultiplication(targetRow, scalar) { 
+      targetRow -= 1;
+      this.matrix[targetRow] = this.matrix[targetRow].map(entry => entry * scalar);
    }
 
-   rowMultiplication(targetRow, scalar) { }
    rowAddition(targetRow, scalar, actorRow) { }
 
    matrixAddition(matrixB, subtraction) { }

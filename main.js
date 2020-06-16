@@ -8,5 +8,5 @@ let A = [
 let m = new Matrix(3,3, A);
 
 m.log();
-m.rowSwap(1,2);
+m.rowMultiplication(1, 10);
 m.log();
