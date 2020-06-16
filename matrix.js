@@ -70,7 +70,18 @@ class Matrix {
       this.matrix[targetRow] = this.matrix[targetRow].map(entry => entry * scalar);
    }
 
-   rowAddition(targetRow, scalar, actorRow) { }
+   /**
+    * Adds the scalar multiply of the actor row to the target row.
+    * 
+    * @param {number} targetRow The row to change. 
+    * @param {number} actorRow The row to do the changing.
+    * @param {number} scalar The multiple of the actor row.
+    */
+   rowAddition(targetRow, actorRow, scalar) { 
+      targetRow -=1;
+      actorRow -=1;
+      this.matrix[targetRow] = this.matrix[targetRow].map((entry, col) => entry - (scalar * this.matrix[actorRow][col]));
+   }
 
    matrixAddition(matrixB, subtraction) { }
    matrixMultiplication(matrixB) { }
