@@ -11,10 +11,10 @@ class Matrix {
    constructor(rows, columns) {
       this.rows = rows;
       this.columns = columns;
-      this.matrixA;
+      this.matrix;
 
       for (let i = 0; i < rows; i++) {
-         matrixA[i] = [];
+         matrix[i] = [];
          for (let j = 0; j < columns; j++) {
             this.matrix[i][j] = undefined;
          }
@@ -30,18 +30,40 @@ class Matrix {
     * @param {number} column THe column of the entry.
     */
    updateEntry(value, row, column) {
-      this.matrixA[row - 1][column - 1] = value;
+      this.matrix[row - 1][column - 1] = value;
    }
 
-   rowSwitch(targetRow, actorRow) { }
+
+   /**
+    * Swaps the specified rows of the matrix. 
+    * 
+    * @param {number} targetRow A row to swap.
+    * @param {number} actorRow A row to swap.
+    */
+   rowSwap(targetRow, actorRow) {
+      targetRow -= 1;
+      actorRow -= 1;
+
+      let tempRow = this.matrix[targetRow];
+      this.matrix[targetRow] = this.matrix[actorRow];
+      this.matrix[actor] = tempRow;
+   }
+
    rowMultiplication(targetRow, scalar) { }
    rowAddition(targetRow, scalar, actorRow) { }
 
    matrixAddition(matrixB, subtraction) { }
    matrixMultiplication(matrixB) { }
    matrixEquality(matrixB) { }
-   
-   transpose();
-   inverse();
-   determinate();
+
+   transpose(){}
+   inverse(){}
+   determinate(){}
+}
+
+class IllegalArgumentException extends Error {
+   constructor(message) {
+      super(message);
+      this.name = this.constructor.name;
+   }
 }
