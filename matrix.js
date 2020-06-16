@@ -8,15 +8,19 @@ class Matrix {
     * @param {number} rows The number of rows the matrix has.
     * @param {number} columns The number of columns the matrix has.
     */
-   constructor(rows, columns) {
+   constructor(rows, columns, inputMatrix) {
       this.rows = rows;
       this.columns = columns;
-      this.matrix;
+      this.matrix = [];
 
-      for (let i = 0; i < rows; i++) {
-         matrix[i] = [];
-         for (let j = 0; j < columns; j++) {
-            this.matrix[i][j] = undefined;
+      if (inputMatrix !== undefined) {
+         this.matrix = inputMatrix;
+      } else {
+         for (let i = 0; i < rows; i++) {
+            this.matrix[i] = [];
+            for (let j = 0; j < columns; j++) {
+               this.matrix[i][j] = undefined;
+            }
          }
       }
    }
@@ -33,7 +37,6 @@ class Matrix {
       this.matrix[row - 1][column - 1] = value;
    }
 
-
    /**
     * Swaps the specified rows of the matrix. 
     * 
@@ -46,7 +49,14 @@ class Matrix {
 
       let tempRow = this.matrix[targetRow];
       this.matrix[targetRow] = this.matrix[actorRow];
-      this.matrix[actor] = tempRow;
+      this.matrix[actorRow] = tempRow;
+   }
+
+   /**
+    * Outputs the matrix as a table to the console.
+    */
+   log() {
+      console.table(this.matrix);
    }
 
    rowMultiplication(targetRow, scalar) { }
@@ -56,9 +66,9 @@ class Matrix {
    matrixMultiplication(matrixB) { }
    matrixEquality(matrixB) { }
 
-   transpose(){}
-   inverse(){}
-   determinate(){}
+   transpose() { }
+   inverse() { }
+   determinate() { }
 }
 
 class IllegalArgumentException extends Error {
