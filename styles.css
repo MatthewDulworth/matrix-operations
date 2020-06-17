@@ -1,0 +1,39 @@
+body {
+   font-size: 1rem;
+   font-family: 'Open Sans', sans-serif;
+   height: 100vh;
+   margin: 0;
+   display: grid;
+   place-items: center;
+}
+
+button {
+   font-family: 'Open Sans', sans-serif;
+   cursor: pointer;
+}
+
+.in {
+   display: flex;
+   justify-content: space-between;
+}
+
+.in input {
+   margin-left: 10px;
+}
+
+#submit {
+   margin-top: 20px;
+   display: flex;
+   justify-content: center;
+}
+
+#matrix-wrapper {
+   margin-top: 10px;
+   display: grid;
+   row-gap: 10px;
+   column-gap: 10px;
+}
+
+#matrix-wrapper>* {
+   max-width: 50px;
+}

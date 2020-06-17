@@ -98,3 +98,13 @@ class IllegalArgumentException extends Error {
       this.name = this.constructor.name;
    }
 }
+
+
+let a = [
+   [1,2,3],
+   [4,5,6],
+   [7,8,9]
+]
+
+let m = new Matrix(3,3,a);
+m.log();

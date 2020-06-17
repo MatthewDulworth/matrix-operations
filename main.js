@@ -18,7 +18,7 @@ function createMatrix(rows, columns) {
 
    for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
-         matrixWrapper.appendChild(matrixEntrySpace(`${i},${j}`));
+         matrixWrapper.appendChild(matrixEntrySpace(i + 1, j + 1));
       }
    }
 
@@ -26,10 +26,16 @@ function createMatrix(rows, columns) {
    matrixWrapper.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
 }
 
-function matrixEntrySpace(id) {
+/**
+ * Creates a text input for the entry of the matrix at 
+ * 
+ * @param {number} row The row of the entry.
+ * @param {number} columns The column of the entry. 
+ */
+function matrixEntrySpace(row, column) {
    let entrySpace = document.createElement('input');
    entrySpace.type = 'text';
-   entrySpace.name = id;
-   entrySpace.id = id;
+   entrySpace.name = `${row},${column}`;
+   entrySpace.id = `${row},${column}`;
    return entrySpace;
 }
