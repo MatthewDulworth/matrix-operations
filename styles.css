@@ -1,10 +1,9 @@
+/********* general *********/
 body {
    font-size: 1rem;
    font-family: 'Open Sans', sans-serif;
    height: 100vh;
    margin: 0;
-   display: grid;
-   place-items: center;
 }
 
 button {
@@ -12,28 +11,25 @@ button {
    cursor: pointer;
 }
 
-.in {
-   display: flex;
-   justify-content: space-between;
-}
-
-.in input {
-   margin-left: 10px;
-}
-
-#submit {
-   margin-top: 20px;
+/********* settings *********/
+#settings {
    display: flex;
    justify-content: center;
 }
 
-#matrix-wrapper {
-   margin-top: 10px;
-   display: grid;
-   row-gap: 10px;
-   column-gap: 10px;
+#settings h2 {
+   font-size: 1rem;
+   font-weight: normal;
 }
 
-#matrix-wrapper>* {
-   max-width: 50px;
+.matrix-setup {
+   margin: 30px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.dim {
+   max-width: 1.5rem;
+   text-align: right;
 }

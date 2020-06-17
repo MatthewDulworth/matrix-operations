@@ -1,12 +1,5 @@
 'use strict';
 
-let submitBtn = document.querySelector("#submit button");
-let rowInput = document.querySelector("#rows");
-let columnInput = document.querySelector("#columns");
-let matrixWrapper = document.querySelector("#matrix-wrapper");
-
-submitBtn.addEventListener('click', () => createMatrix(rowInput.value, columnInput.value));
-
 /**
  * Creates an empty matrix and displays it on the screen.
  * 
