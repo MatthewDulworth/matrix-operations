@@ -33,7 +33,7 @@ class Matrix {
     * @param {number} row The row of the entry.
     * @param {number} column THe column of the entry.
     */
-   updateEntry(value, row, column) {
+   updateEntry(row, column, value) {
       this.matrix[row - 1][column - 1] = value;
    }
 

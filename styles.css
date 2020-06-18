@@ -29,7 +29,23 @@ button {
    align-items: center;
 }
 
+.dimensions {
+   padding-bottom: 10px;
+   border-bottom: 1px solid black;
+}
+
 .dim {
    max-width: 1.5rem;
    text-align: right;
+}
+
+.matrix-wrapper {
+   margin: 10px;
+   display: grid;
+   row-gap: 10px;
+   column-gap: 10px;
+}
+
+.entry {
+   max-width: 3rem;
 }
