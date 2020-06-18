@@ -108,9 +108,42 @@ class Matrix {
       return new Matrix(this.rows, this.columns, result);
    }
 
-   matrixAddition(matrixB, subtraction) { }
-   matrixMultiplication(matrixB) { }
-   matrixEquality(matrixB) { }
+   // --------------------------------------------------------------------
+   // Row Reduction
+   // --------------------------------------------------------------------
+
+   getColumn(column) {
+      return this.array.map(row => row[column - 1]);
+   }
+
+   getRow(row){
+      return this.array[row - 1];
+   }
+
+   // rref(showSteps) {
+   //    let steps = [];
+   //    steps.push(this);
+
+   //    let column = 1;
+   //    for (let row = 1; row < this.rows; row++) {
+         
+   //    }
+
+   //    if (showSteps) {
+   //       return steps;
+   //    } else {
+   //       return steps[steps.length];
+   //    }
+   // }
+
+
+
+   // --------------------------------------------------------------------
+   // Matrix Operations
+   // --------------------------------------------------------------------
+   sum(matrixB, subtraction) { }
+   product(matrixB) { }
+   equals(matrixB) { }
 
    transpose() { }
    determinate() { }
@@ -119,14 +152,21 @@ class Matrix {
 
 // testing
 
-// let m = [
+// let A = [
 //    [1, 2, 3],
 //    [4, 5, 6],
 //    [7, 8, 9]
 // ];
+// let matrixA = new Matrix(3, 3, A);
 
-// let matrix = new Matrix(3, 3, m);
-// matrix.log();
-// let x = matrix.rowAddition(1,2,-1);
-// x.log();
-// matrix.log();
+let B = [
+   [9, 8, 7],
+   [6, 5, 4],
+   [3, 2, 1]
+]
+
+let matrixB = new Matrix(3, 3, B);
+
+console.table(matrixB.array);
+console.table(matrixB.getColumn(2));
+console.table(matrixB.getRow(2));
