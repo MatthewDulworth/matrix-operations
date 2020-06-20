@@ -6,55 +6,93 @@ class Matrix {
     constructor(rows, columns, inputMatrix) {
         if (rows != inputMatrix.length || columns != inputMatrix[0].length) {
         }
+        else if (rows == 0 || columns == 0) {
+        }
         this.rows = rows;
         this.columns = columns;
         this.array = inputMatrix.slice();
-    }
-    updateEntry(row, column, value) {
-        this.array[row - 1][column - 1] = value;
     }
     log() {
         console.table(this.array);
     }
     rowSwap(targetRow, actorRow) {
-        targetRow -= 1;
-        actorRow -= 1;
         let swapped = this.array.map(row => row.slice());
         swapped[targetRow] = this.array[actorRow].slice();
         swapped[actorRow] = this.array[targetRow].slice();
         return new Matrix(this.rows, this.columns, swapped);
     }
     rowMultiplication(targetRow, scalar) {
-        targetRow -= 1;
         let multiplied = this.array.map(row => row.slice());
         multiplied[targetRow] = this.array[targetRow].map(entry => entry * scalar);
         return new Matrix(this.rows, this.columns, multiplied);
     }
     rowReplacement(targetRow, actorRow, scalar) {
-        targetRow -= 1;
-        actorRow -= 1;
         let result = this.array.map(row => row.slice());
         result[targetRow] = this.array[targetRow].map((entry, col) => entry + (scalar * this.array[actorRow][col]));
         return new Matrix(this.rows, this.columns, result);
     }
     getColumn(column) {
-        return this.array.map(row => row[column - 1]);
+        return this.array.map(row => row[column]);
     }
     getRow(row) {
-        return this.array[row - 1];
+        return this.array[row];
     }
     ref() {
         let steps = [];
         steps.push(this);
-        for (let row = 1; row <= this.rows; row++) {
+        let currentCol = 0;
+        for (let currentRow = 0; currentRow < this.rows; currentRow++) {
+            let column = steps[steps.length - 1].getColumn(currentCol);
+            while (isZero(column)) {
+                if (++currentCol >= this.columns) {
+                    return steps;
+                }
+                column = steps[steps.length - 1].getColumn(currentCol);
+            }
+            let max = indexOfMaxAbs(column.slice(currentRow)) + currentRow;
+            console.log(`swapping row ${currentRow} with row ${max}, on column ${currentCol}`);
+            steps.push(steps[steps.length - 1].rowSwap(max, currentRow));
+            if (++currentCol >= this.columns) {
+                return steps;
+            }
         }
         return steps;
     }
 }
+function indexOfMaxAbs(array) {
+    if (array.length == 0) {
+        return -1;
+    }
+    let max = 0;
+    let maxIndex = 0;
+    for (let i = 0; i < array.length; i++) {
+        if (Math.abs(array[i]) > max) {
+            max = array[i];
+            maxIndex = i;
+        }
+    }
+    return maxIndex;
+}
+function isZero(array) {
+    if (array.length == 0) {
+    }
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+function table(array) {
+    for (let i = 0; i < array.length; i++) {
+        console.table(array[i].array);
+    }
+}
 let B = [
-    [9, 8, 7],
-    [6, 5, 4],
-    [3, 2, 1]
+    [0, 2, 3],
+    [0, 5, 1],
+    [0, 8, 7]
 ];
 let matrixB = new Matrix(3, 3, B);
-matrixB.log();
+let steps = matrixB.ref();
+table(steps);

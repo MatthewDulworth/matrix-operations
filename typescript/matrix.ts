@@ -1,5 +1,6 @@
 interface Array<T> {
    last(): any;
+   isZero(): boolean;
 }
 
 Array.prototype.last = function (): any {
@@ -13,7 +14,7 @@ class Matrix {
    // --------------------------------------------------------------------
    readonly rows: number;
    readonly columns: number;
-   readonly array: readonly number[][];
+   readonly array: ReadonlyArray<ReadonlyArray<number>>;
 
 
 
@@ -28,24 +29,16 @@ class Matrix {
     */
    constructor(rows: number, columns: number, inputMatrix: number[][]) {
 
-      if(rows != inputMatrix.length || columns != inputMatrix[0].length) {
-         
+      // error handling
+      if (rows != inputMatrix.length || columns != inputMatrix[0].length) {
+
+      } else if (rows == 0 || columns == 0) {
+
       }
 
       this.rows = rows;
       this.columns = columns;
       this.array = inputMatrix.slice();
-   }
-
-   /**
-    * Updates the corresponding entry with the passed value. 
-    * 
-    * @param {number} value The value of the entry.
-    * @param {number} row The row of the entry.
-    * @param {number} column THe column of the entry.
-    */
-   updateEntry(row: number, column: number, value: number) {
-      this.array[row - 1][column - 1] = value;
    }
 
    /**
@@ -68,11 +61,6 @@ class Matrix {
     * @return {Matrix} The matrix with it's rows swapped.
     */
    rowSwap(targetRow: number, actorRow: number): Matrix {
-
-      // matrices count from 1, arrays count from 0
-      targetRow -= 1;
-      actorRow -= 1;
-
       // return a new matrix with the rows swapped.
       let swapped = this.array.map(row => row.slice());
       swapped[targetRow] = this.array[actorRow].slice();
@@ -88,10 +76,6 @@ class Matrix {
     * @return {Matrix} Matrix with the row multiplied.
     */
    rowMultiplication(targetRow: number, scalar: number): Matrix {
-
-      // matrices count from 1, arrays count from 0
-      targetRow -= 1;
-
       // return a new matrix with the specified row multiplied.
       let multiplied = this.array.map(row => row.slice());
       multiplied[targetRow] = this.array[targetRow].map(entry => entry * scalar);
@@ -107,11 +91,6 @@ class Matrix {
     * @return {Matrix} The resulting matrix. 
     */
    rowReplacement(targetRow: number, actorRow: number, scalar: number): Matrix {
-
-      // matrices count from 1, arrays count from 0
-      targetRow -= 1;
-      actorRow -= 1;
-
       // return the resulting matrix from the row addition. 
       let result = this.array.map(row => row.slice());
       result[targetRow] = this.array[targetRow].map((entry, col) => entry + (scalar * this.array[actorRow][col]));
@@ -129,8 +108,8 @@ class Matrix {
     * 
     * @param {number} column the column 
     */
-   getColumn(column: number): number[] {
-      return this.array.map(row => row[column - 1]);
+   getColumn(column: number): readonly number[] {
+      return this.array.map(row => row[column]);
    }
 
    /**
@@ -138,18 +117,34 @@ class Matrix {
     * 
     * @param {number} row the row
     */
-   getRow(row: number): number[] {
-      return this.array[row - 1];
+   getRow(row: number): readonly number[] {
+      return this.array[row];
    }
 
    ref() {
-      let steps = [];
+      let steps: Matrix[] = [];
       steps.push(this);
 
-      //let column = 1;
-      for (let row = 1; row <= this.rows; row++) {
+      let currentCol = 0;
+      for (let currentRow = 0; currentRow < this.rows; currentRow++) {
 
-         // swap to largest, if row,col is 0, j++
+         // check if the current column is a zero vector,
+         let column = steps[steps.length - 1].getColumn(currentCol);
+         while (isZero(column)) {
+            if (++currentCol >= this.columns) {
+               return steps;
+            }
+            column = steps[steps.length - 1].getColumn(currentCol);
+         }
+         // partial pivot: swap largest below to current row
+         let max = indexOfMaxAbs(column.slice(currentRow)) + currentRow;
+         console.log(`swapping row ${currentRow} with row ${max}, on column ${currentCol}`);
+         steps.push(steps[steps.length - 1].rowSwap(max, currentRow));
+
+         // increase the current column
+         if (++currentCol >= this.columns) {
+            return steps;
+         }
       }
 
       return steps;
@@ -170,7 +165,44 @@ class Matrix {
    // inverse() { }
 }
 
+function indexOfMaxAbs(array: readonly number[]) {
+   if (array.length == 0) {
+      return -1;
+   }
+
+   let max = 0;
+   let maxIndex = 0;
+
+   for (let i = 0; i < array.length; i++) {
+      if (Math.abs(array[i]) > max) {
+         max = array[i];
+         maxIndex = i;
+      }
+   }
+
+   return maxIndex;
+}
+
+function isZero(array: readonly number[]) {
+   if (array.length == 0) {
+      // throw error
+   }
+
+   for (let i = 0; i < array.length; i++) {
+      if (array[i] != 0) {
+         return false;
+      }
+   }
+   return true;
+}
+
 // testing
+function table(array: readonly Matrix[]) {
+   for (let i = 0; i < array.length; i++) {
+      console.table(array[i].array);
+   }
+}
+
 
 // let A = [
 //    [1, 2, 3],
@@ -180,12 +212,13 @@ class Matrix {
 // let matrixA = new Matrix(3, 3, A);
 
 // let B = [
-//    [9, 8, 7],
-//    [6, 5, 4],
-//    [3, 2, 1]
+//    [0, 2, 3],
+//    [0, 5, 1],
+//    [0, 8, 7]
 // ]
 // let matrixB = new Matrix(3, 3, B);
-// matrixB.log();
+// let steps = matrixB.ref();
+// table(steps);
 
 // let C = [
 //    [0, 0, 2, 0],
