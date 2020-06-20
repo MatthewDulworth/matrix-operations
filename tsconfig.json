@@ -60,6 +60,6 @@
       "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
    },
    "include": [
-      "./typescript/**/*"
+      "./typescript/**/*", "./node_modules/fraction.js/fraction.d.ts"
    ]
 }

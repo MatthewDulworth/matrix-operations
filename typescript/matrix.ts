@@ -7,8 +7,6 @@ class Matrix {
    readonly columns: number;
    readonly array: ReadonlyArray<ReadonlyArray<number>>;
 
-
-
    // --------------------------------------------------------------------
    // Instance Methods
    // --------------------------------------------------------------------
