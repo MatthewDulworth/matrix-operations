@@ -1,33 +1,3 @@
-class StepList {
-   private matrices: Matrix[];
-   private instructions: string[];
-   private length: number;
-
-   constructor(matrix: Matrix) {
-      this.matrices = [];
-      this.instructions = [];
-      this.length = 0;
-      this.addStep(matrix, "Original matrix.");
-   }
-
-   public addStep(matrix: Matrix, instruction: string) {
-      this.matrices.push(matrix);
-      this.instructions.push(instruction);
-      this.length++;
-   }
-
-   public last() {
-      return this.matrices[this.length - 1];
-   }
-
-   public log() {
-      for (let i = 0; i < this.length; i++) {
-         console.log(this.instructions[i]);
-         console.table(this.matrices[i].array);
-      }
-   }
-}
-
 class Matrix {
 
    // --------------------------------------------------------------------
@@ -65,7 +35,7 @@ class Matrix {
    /**
     * Outputs the matrix as a table to the console.
     */
-   log() {
+   public log() {
       console.table(this.array);
    }
 
@@ -74,7 +44,7 @@ class Matrix {
     * 
     * @param {number} column the column 
     */
-   getColumn(column: number): readonly number[] {
+   public getColumn(column: number): readonly number[] {
       return this.array.map(row => row[column]);
    }
 
@@ -83,11 +53,11 @@ class Matrix {
     * 
     * @param {number} row the row
     */
-   getRow(row: number): readonly number[] {
+   public getRow(row: number): readonly number[] {
       return this.array[row];
    }
 
-   at(row: number, column: number) {
+   public at(row: number, column: number) {
       return this.array[row][column];
    }
 
@@ -99,9 +69,9 @@ class Matrix {
     * 
     * @param {number} targetRow A row to swap.
     * @param {number} actorRow A row to swap.
-    * @return {Matrix} The matrix with it's rows swapped.
+    * @returns {Matrix} The matrix with it's rows swapped.
     */
-   rowSwap(targetRow: number, actorRow: number): Matrix {
+   public rowSwap(targetRow: number, actorRow: number): Matrix {
       // return a new matrix with the rows swapped.
       let swapped = this.array.map(row => row.slice());
       swapped[targetRow] = this.array[actorRow].slice();
@@ -114,9 +84,9 @@ class Matrix {
     * 
     * @param {number} targetRow The row to multiply.
     * @param {number} scalar The value to multiply the row by. 
-    * @return {Matrix} Matrix with the row multiplied.
+    * @returns {Matrix} Matrix with the row multiplied.
     */
-   rowMultiplication(targetRow: number, scalar: number): Matrix {
+   public rowMultiplication(targetRow: number, scalar: number): Matrix {
       // return a new matrix with the specified row multiplied.
       let multiplied = this.array.map(row => row.slice());
       multiplied[targetRow] = this.array[targetRow].map(entry => entry * scalar);
@@ -129,9 +99,9 @@ class Matrix {
     * @param {number} targetRow The row to change. 
     * @param {number} actorRow The row to do the changing.
     * @param {number} scalar The multiple of the actor row.
-    * @return {Matrix} The resulting matrix. 
+    * @returns {Matrix} The resulting matrix. 
     */
-   rowReplacement(targetRow: number, actorRow: number, scalar: number): Matrix {
+   public rowReplacement(targetRow: number, actorRow: number, scalar: number): Matrix {
       // return the resulting matrix from the row addition. 
       let result = this.array.map(row => row.slice());
       result[targetRow] = this.array[targetRow].map((entry, col) => entry + (scalar * this.array[actorRow][col]));
@@ -144,9 +114,12 @@ class Matrix {
    // Row Reduction
    // --------------------------------------------------------------------
 
-
-
-   ref() {
+   /**
+    * Returns a list of the steps to reduce the current matrix to row echelon form. 
+    * 
+    * @returns {StepList} 
+    */
+   public ref() {
       let steps = new StepList(this);
 
       let currentCol = 0;
@@ -205,6 +178,10 @@ class Matrix {
    // inverse() { }
 }
 
+/**
+ * @param array The array to check.
+ * @returns The index of the entry with the largest maximum absolute value. 
+ */
 function indexOfMaxAbs(array: readonly number[]) {
    if (array.length == 0) {
       return -1;
@@ -223,38 +200,24 @@ function indexOfMaxAbs(array: readonly number[]) {
    return maxIndex;
 }
 
-function isZero(array: readonly number[]) {
-   if (array.length == 0) {
-      // throw error
-   }
-
-   for (let i = 0; i < array.length; i++) {
-      if (array[i] != 0) {
-         return false;
-      }
-   }
-   return true;
-}
-
 // testing
-
-
-let A = [
-   [1, 2, 3],
-   [4, 5, 6],
-   [7, 8, 9]
-];
+// let A = [
+//    [1, 2, 3],
+//    [4, 5, 6],
+//    [7, 8, 9]
+// ];
 // let matrixA = new Matrix(3, 3, A);
+// let steps = matrixA.ref();
+// steps.log();
 
-// let B = [
-//    [0, 2, 3],
-//    [0, 5, 1],
-//    [0, 8, 7]
-// ]
-let matrixA = new Matrix(3, 3, A);
-let steps = matrixA.ref();
+let B = [
+   [3, -6, -3],
+   [2, -4, 1],
+   [1, -2, 2]
+]
+let matrixB = new Matrix(3, 3, B);
+let steps = matrixB.ref();
 steps.log();
-
 
 // let C = [
 //    [0, 0, 2, 0],

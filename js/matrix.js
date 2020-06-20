@@ -1,26 +1,4 @@
 "use strict";
-class StepList {
-    constructor(matrix) {
-        this.matrices = [];
-        this.instructions = [];
-        this.length = 0;
-        this.addStep(matrix, "Original matrix.");
-    }
-    addStep(matrix, instruction) {
-        this.matrices.push(matrix);
-        this.instructions.push(instruction);
-        this.length++;
-    }
-    last() {
-        return this.matrices[this.length - 1];
-    }
-    log() {
-        for (let i = 0; i < this.length; i++) {
-            console.log(this.instructions[i]);
-            console.table(this.matrices[i].array);
-        }
-    }
-}
 class Matrix {
     constructor(rows, columns, inputMatrix) {
         if (rows != inputMatrix.length || columns != inputMatrix[0].length) {
@@ -107,21 +85,11 @@ function indexOfMaxAbs(array) {
     }
     return maxIndex;
 }
-function isZero(array) {
-    if (array.length == 0) {
-    }
-    for (let i = 0; i < array.length; i++) {
-        if (array[i] != 0) {
-            return false;
-        }
-    }
-    return true;
-}
-let A = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
+let B = [
+    [3, -6, -3],
+    [2, -4, 1],
+    [1, -2, 2]
 ];
-let matrixA = new Matrix(3, 3, A);
-let steps = matrixA.ref();
+let matrixB = new Matrix(3, 3, B);
+let steps = matrixB.ref();
 steps.log();
