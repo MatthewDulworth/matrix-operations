@@ -1,10 +1,31 @@
-interface Array<T> {
-   last(): any;
-   isZero(): boolean;
-}
+class StepList {
+   private matrices: Matrix[];
+   private instructions: string[];
+   private length: number;
 
-Array.prototype.last = function (): any {
-   return this.last();
+   constructor(matrix: Matrix) {
+      this.matrices = [];
+      this.instructions = [];
+      this.length = 0;
+      this.addStep(matrix, "Original matrix.");
+   }
+
+   public addStep(matrix: Matrix, instruction: string) {
+      this.matrices.push(matrix);
+      this.instructions.push(instruction);
+      this.length++;
+   }
+
+   public last() {
+      return this.matrices[this.length - 1];
+   }
+
+   public log() {
+      for (let i = 0; i < this.length; i++) {
+         console.log(this.instructions[i]);
+         console.table(this.matrices[i].array);
+      }
+   }
 }
 
 class Matrix {
@@ -48,7 +69,27 @@ class Matrix {
       console.table(this.array);
    }
 
+   /**
+    * Returns the specified column of the matrix as an array. 
+    * 
+    * @param {number} column the column 
+    */
+   getColumn(column: number): readonly number[] {
+      return this.array.map(row => row[column]);
+   }
 
+   /**
+    * Returns the specified row of the matrix as an array.
+    * 
+    * @param {number} row the row
+    */
+   getRow(row: number): readonly number[] {
+      return this.array[row];
+   }
+
+   at(row: number, column: number) {
+      return this.array[row][column];
+   }
 
    // --------------------------------------------------------------------
    // Row Operations
@@ -103,50 +144,49 @@ class Matrix {
    // Row Reduction
    // --------------------------------------------------------------------
 
-   /**
-    * Returns the specified column of the matrix as an array. 
-    * 
-    * @param {number} column the column 
-    */
-   getColumn(column: number): readonly number[] {
-      return this.array.map(row => row[column]);
-   }
 
-   /**
-    * Returns the specified row of the matrix as an array.
-    * 
-    * @param {number} row the row
-    */
-   getRow(row: number): readonly number[] {
-      return this.array[row];
-   }
 
    ref() {
-      let steps: Matrix[] = [];
-      steps.push(this);
+      let steps = new StepList(this);
 
       let currentCol = 0;
       for (let currentRow = 0; currentRow < this.rows; currentRow++) {
 
          // check if the current column is a zero vector,
-         let column = steps[steps.length - 1].getColumn(currentCol);
-         while (isZero(column)) {
+         let column = steps.last().getColumn(currentCol);
+         while (column[currentRow] == 0) {
             if (++currentCol >= this.columns) {
                return steps;
             }
-            column = steps[steps.length - 1].getColumn(currentCol);
+            column = steps.last().getColumn(currentCol);
          }
          // partial pivot: swap largest below to current row
          let max = indexOfMaxAbs(column.slice(currentRow)) + currentRow;
-         console.log(`swapping row ${currentRow} with row ${max}, on column ${currentCol}`);
-         steps.push(steps[steps.length - 1].rowSwap(max, currentRow));
+         let swapResult = steps.last().rowSwap(max, currentRow);
+         let swapInstruct = `swapping row ${currentRow} with row ${max}`;
+         steps.addStep(swapResult, swapInstruct);
 
-         // increase the current column
+         // make current row one
+         let scalar = 1 / steps.last().at(currentRow, currentCol);
+         let multiplyResult = steps.last().rowMultiplication(currentRow, scalar);
+         let multiplyInstruct = `multiplying row ${currentRow} by ${scalar}`;
+         steps.addStep(multiplyResult, multiplyInstruct);
+
+         // make zeroes below.
+         for (let i = currentRow + 1; i < this.rows; i++) {
+            let entry = steps.last().at(i, currentCol)
+            if (entry != 0) {
+               let replaceResult = steps.last().rowReplacement(i, currentRow, -entry);
+               let replaceInstruct = `Add ${-entry} times row ${currentRow} to row ${i}`;
+               steps.addStep(replaceResult, replaceInstruct);
+            }
+         }
+
+         // increase the current column index
          if (++currentCol >= this.columns) {
             return steps;
          }
       }
-
       return steps;
    }
 
@@ -197,18 +237,13 @@ function isZero(array: readonly number[]) {
 }
 
 // testing
-function table(array: readonly Matrix[]) {
-   for (let i = 0; i < array.length; i++) {
-      console.table(array[i].array);
-   }
-}
 
 
-// let A = [
-//    [1, 2, 3],
-//    [4, 5, 6],
-//    [7, 8, 9]
-// ];
+let A = [
+   [1, 2, 3],
+   [4, 5, 6],
+   [7, 8, 9]
+];
 // let matrixA = new Matrix(3, 3, A);
 
 // let B = [
@@ -216,9 +251,10 @@ function table(array: readonly Matrix[]) {
 //    [0, 5, 1],
 //    [0, 8, 7]
 // ]
-// let matrixB = new Matrix(3, 3, B);
-// let steps = matrixB.ref();
-// table(steps);
+let matrixA = new Matrix(3, 3, A);
+let steps = matrixA.ref();
+steps.log();
+
 
 // let C = [
 //    [0, 0, 2, 0],

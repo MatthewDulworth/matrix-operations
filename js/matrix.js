@@ -1,7 +1,26 @@
 "use strict";
-Array.prototype.last = function () {
-    return this.last();
-};
+class StepList {
+    constructor(matrix) {
+        this.matrices = [];
+        this.instructions = [];
+        this.length = 0;
+        this.addStep(matrix, "Original matrix.");
+    }
+    addStep(matrix, instruction) {
+        this.matrices.push(matrix);
+        this.instructions.push(instruction);
+        this.length++;
+    }
+    last() {
+        return this.matrices[this.length - 1];
+    }
+    log() {
+        for (let i = 0; i < this.length; i++) {
+            console.log(this.instructions[i]);
+            console.table(this.matrices[i].array);
+        }
+    }
+}
 class Matrix {
     constructor(rows, columns, inputMatrix) {
         if (rows != inputMatrix.length || columns != inputMatrix[0].length) {
@@ -14,6 +33,15 @@ class Matrix {
     }
     log() {
         console.table(this.array);
+    }
+    getColumn(column) {
+        return this.array.map(row => row[column]);
+    }
+    getRow(row) {
+        return this.array[row];
+    }
+    at(row, column) {
+        return this.array[row][column];
     }
     rowSwap(targetRow, actorRow) {
         let swapped = this.array.map(row => row.slice());
@@ -31,27 +59,33 @@ class Matrix {
         result[targetRow] = this.array[targetRow].map((entry, col) => entry + (scalar * this.array[actorRow][col]));
         return new Matrix(this.rows, this.columns, result);
     }
-    getColumn(column) {
-        return this.array.map(row => row[column]);
-    }
-    getRow(row) {
-        return this.array[row];
-    }
     ref() {
-        let steps = [];
-        steps.push(this);
+        let steps = new StepList(this);
         let currentCol = 0;
         for (let currentRow = 0; currentRow < this.rows; currentRow++) {
-            let column = steps[steps.length - 1].getColumn(currentCol);
-            while (isZero(column)) {
+            let column = steps.last().getColumn(currentCol);
+            while (column[currentRow] == 0) {
                 if (++currentCol >= this.columns) {
                     return steps;
                 }
-                column = steps[steps.length - 1].getColumn(currentCol);
+                column = steps.last().getColumn(currentCol);
             }
             let max = indexOfMaxAbs(column.slice(currentRow)) + currentRow;
-            console.log(`swapping row ${currentRow} with row ${max}, on column ${currentCol}`);
-            steps.push(steps[steps.length - 1].rowSwap(max, currentRow));
+            let swapResult = steps.last().rowSwap(max, currentRow);
+            let swapInstruct = `swapping row ${currentRow} with row ${max}`;
+            steps.addStep(swapResult, swapInstruct);
+            let scalar = 1 / steps.last().at(currentRow, currentCol);
+            let multiplyResult = steps.last().rowMultiplication(currentRow, scalar);
+            let multiplyInstruct = `multiplying row ${currentRow} by ${scalar}`;
+            steps.addStep(multiplyResult, multiplyInstruct);
+            for (let i = currentRow + 1; i < this.rows; i++) {
+                let entry = steps.last().at(i, currentCol);
+                if (entry != 0) {
+                    let replaceResult = steps.last().rowReplacement(i, currentRow, -entry);
+                    let replaceInstruct = `Add ${-entry} times row ${currentRow} to row ${i}`;
+                    steps.addStep(replaceResult, replaceInstruct);
+                }
+            }
             if (++currentCol >= this.columns) {
                 return steps;
             }
@@ -83,16 +117,11 @@ function isZero(array) {
     }
     return true;
 }
-function table(array) {
-    for (let i = 0; i < array.length; i++) {
-        console.table(array[i].array);
-    }
-}
-let B = [
-    [0, 2, 3],
-    [0, 5, 1],
-    [0, 8, 7]
+let A = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
 ];
-let matrixB = new Matrix(3, 3, B);
-let steps = matrixB.ref();
-table(steps);
+let matrixA = new Matrix(3, 3, A);
+let steps = matrixA.ref();
+steps.log();
