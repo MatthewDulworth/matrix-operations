@@ -5,6 +5,32 @@ http://www.xarg.org/2014/03/rational-numbers-in-javascript/
 Copyright (c) 2015, Robert Eisele (robert@xarg.org)
 Dual licensed under the MIT or GPL Version 2 licenses.
 */
+
+/*
+MIT License
+
+Copyright (c) 2017 Robert Eisele
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+
 (function(x){function l(a,b){var c=0,k=1,h=1,e=0,u=0,l=0,p=1,r=1,f=0,g=1,t=1,q=1;if(void 0!==a&&null!==a)if(void 0!==b)c=a,k=b,h=c*k;else switch(typeof a){case "object":"d"in a&&"n"in a?(c=a.n,k=a.d,"s"in a&&(c*=a.s)):0 in a?(c=a[0],1 in a&&(k=a[1])):v();h=c*k;break;case "number":0>a&&(h=a,a=-a);if(0===a%1)c=a;else if(0<a){1<=a&&(r=Math.pow(10,Math.floor(1+Math.log(a)/Math.LN10)),a/=r);for(;1E7>=g&&1E7>=q;)if(c=(f+t)/(g+q),a===c){1E7>=g+q?(c=f+t,k=g+q):q>g?(c=t,k=q):(c=f,k=g);break}else a>c?(f+=t,
    g+=q):(t+=f,q+=g),1E7<g?(c=t,k=q):(c=f,k=g);c*=r}else if(isNaN(a)||isNaN(b))k=c=NaN;break;case "string":g=a.match(/\d+|./g);null===g&&v();"-"===g[f]?(h=-1,f++):"+"===g[f]&&f++;if(g.length===f+1)u=n(g[f++],h);else if("."===g[f+1]||"."===g[f]){"."!==g[f]&&(e=n(g[f++],h));f++;if(f+1===g.length||"("===g[f+1]&&")"===g[f+3]||"'"===g[f+1]&&"'"===g[f+3])u=n(g[f],h),p=Math.pow(10,g[f].length),f++;if("("===g[f]&&")"===g[f+2]||"'"===g[f]&&"'"===g[f+2])l=n(g[f+1],h),r=Math.pow(10,g[f+1].length)-1,f+=3}else"/"===
    g[f+1]||":"===g[f+1]?(u=n(g[f],h),p=n(g[f+2],1),f+=3):"/"===g[f+3]&&" "===g[f+1]&&(e=n(g[f],h),u=n(g[f+2],h),p=n(g[f+4],1),f+=5);if(g.length<=f){k=p*r;h=c=l+k*e+r*u;break}default:v()}if(0===k)throw new y;d.s=0>h?-1:1;d.n=Math.abs(c);d.d=Math.abs(k)}function w(a){function b(){var b=Error.apply(this,arguments);b.name=this.name=a;this.stack=b.stack;this.message=b.message}function c(){}c.prototype=Error.prototype;b.prototype=new c;return b}function n(a,b){isNaN(a=parseInt(a,10))&&v();return a*b}function v(){throw new z;
