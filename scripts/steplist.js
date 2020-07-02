@@ -17,13 +17,13 @@ class StepList {
    log() {
       for (let i = 0; i < this.length; i++) {
          console.log(this.instructions[i]);
-         console.table(this.matrices[i].array);
+         this.matrices[i].log();
       }
    }
    logShort() {
       console.log("Original.");
-      console.table(this.matrices[0].array);
+      this.matrices[0].log();
       console.log("Final");
-      console.table(this.last().array);
+      this.last().log();
    }
 }

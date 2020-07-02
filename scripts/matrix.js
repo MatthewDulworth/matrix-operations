@@ -33,7 +33,18 @@ class Matrix {
     * Displays the matrix on the console.
     */
    log() {
-      console.table(this.array);
+      console.table(this.toString());
+   }
+
+   toString() {
+      let strArray = [];
+      for (let i = 0; i < this.rows; i++) {
+         strArray[i] = [];
+         for (let j = 0; j < this.columns; j++) {
+            strArray[i][j] = this.array[i][j].toString();
+         }
+      }
+      return strArray;
    }
 
    /**
@@ -175,10 +186,10 @@ function indexOfMaxAbs(array) {
 
 
 let B = [
-   [3, -6, -3],
-   [2, -4, 1],
-   [1, -2, 2]
+   [1, 0, 0],
+   [0, 1, 0],
+   [0, 0, 1]
 ];
 let matrixB = new Matrix(3, 3, B);
-// let steps = matrixB.ref();
-// steps.log();
+let steps = matrixB.ref();
+steps.log();
