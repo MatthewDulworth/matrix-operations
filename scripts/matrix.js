@@ -1,4 +1,8 @@
 "use strict";
+
+/**
+ * A class to model a matrix and matrix operations. 
+ */
 class Matrix {
    /**
     * Constructs a multidimensional array of fractions to hold the entries of the matrix based on the input matrix.
@@ -79,6 +83,11 @@ class Matrix {
       return this.array[row][column];
    }
 
+
+   // ---------------------------------------------------------------------------
+   // Row Operations
+   // ---------------------------------------------------------------------------
+
    /**
     * Returns a new matrix with the target and actor rows swapped.
     * @param {number} targetRow 
@@ -116,6 +125,11 @@ class Matrix {
       result[targetRow] = this.array[targetRow].map((entry, col) => entry.add(this.array[actorRow][col].mul(scalar)).simplify());
       return new Matrix(this.rows, this.columns, result);
    }
+
+
+   // ---------------------------------------------------------------------------
+   // Row Reduction
+   // ---------------------------------------------------------------------------
 
    /**
     * Returns the index of the entry in the array with the largest absolute value. 
@@ -215,6 +229,45 @@ class Matrix {
       }
       return steps;
    }
+
+   /**
+    * Finds the pivot columns in an echelon form matrix.
+    * @param {Matrix} echelonMatrix
+    * @returns {Object[]}
+    */
+   findPivotColsInRef(echelonMatrix) {
+      let pivotLocations = [];
+      let minCol = 0;
+
+      for (let row = 0; row < this.rows; row++) {
+         for (let col = minCol; col < this.columns; col++) {
+            if (!echelonMatrix.at(row, col).equals(0)) {
+               pivotLocations.push({ 'row': row, 'col': col });
+               minCol++;
+               break;
+            }
+         }
+      }
+      return pivotLocations;
+   }
+
+   /**
+    * Returns a list containing all the steps to reduce the matrix to row reduced echelon form.
+    */
+   rref() {
+      let steps = this.ref();
+
+      // let B = [
+      //    [1, 1, 1, 1],
+      //    [0, 1, 1, 1],
+      //    [0, 0, 0, 1]
+      // ];
+      // let matrixB = new Matrix(3, 4, B);
+      // steps.addStep(matrixB, "KJAHDKASJDHKA");
+
+      let pivotLocs = this.findPivotColsInRef(steps.last());
+      return steps;
+   }
 }
 
 let B = [
@@ -223,5 +276,4 @@ let B = [
    [3, 3, 2, -3]
 ];
 let matrixB = new Matrix(3, 4, B);
-let steps = matrixB.ref();
-steps.log();
+let steps = matrixB.rref();
