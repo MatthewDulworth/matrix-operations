@@ -1,24 +1,22 @@
 "use strict";
 class Matrix {
    /**
+    * Constructs a multidimensional array of fractions to hold the entries of the matrix based on the input matrix.
     * 
-    * @param {*} rows 
-    * @param {*} columns 
-    * @param {*} inputMatrix 
+    * @param {number} rows
+    * @param {number} columns 
+    * @param {Array} inputMatrix 
     */
    constructor(rows, columns, inputMatrix) {
-      if (rows != inputMatrix.length || columns != inputMatrix[0].length) {
-      }
-      else if (rows == 0 || columns == 0) {
-      }
       this.rows = rows;
       this.columns = columns;
       this.array = this.toFraction(inputMatrix);
    }
 
    /**
-    * 
-    * @param {*} array 
+    * Takes in an array of numbers and turns it into an array of fractions.
+    * @param {number[]}
+    * @returns {Fraction[][]}
     */
    toFraction(array) {
       let fracArray = [];
@@ -31,40 +29,91 @@ class Matrix {
       return fracArray;
    }
 
+   /**
+    * Displays the matrix on the console.
+    */
    log() {
       console.table(this.array);
    }
+
+   /**
+    * Returns the specified column of the matrix as an array of Fractions.
+    * @param {number} column 
+    * @returns {Fraction}
+    */
    getColumn(column) {
       return this.array.map(row => row[column]);
    }
+
+   /**
+    * Returns the specified row of the matrix as an array of Fraction.
+    * @param {number} row 
+    * @return {Fraction[]}
+    */
    getRow(row) {
       return this.array[row];
    }
+
+   /**
+    * Returns the entry in the matrix at the specified row and column.
+    * @param {number} row 
+    * @param {number} column 
+    * @returns {Fraction}
+    */
    at(row, column) {
       return this.array[row][column];
    }
-   // row operations
+
+   /**
+    * Returns a new matrix with the target and actor rows swapped.
+    * @param {number} targetRow 
+    * @param {number} actorRow 
+    * @returns {Matrix}
+    */
    rowSwap(targetRow, actorRow) {
       let swapped = this.array.map(row => row.slice());
       swapped[targetRow] = this.array[actorRow].slice();
       swapped[actorRow] = this.array[targetRow].slice();
       return new Matrix(this.rows, this.columns, swapped);
    }
+
+   /**
+    * Returns a new matrix with the target row multiplied by the scalar. 
+    * @param {number} targetRow 
+    * @param {number} scalar 
+    * @returns {Matrix}
+    */
    rowMultiplication(targetRow, scalar) {
       let multiplied = this.array.map(row => row.slice());
       multiplied[targetRow] = this.array[targetRow].map(entry => entry.mul(scalar).simplify());
       return new Matrix(this.rows, this.columns, multiplied);
    }
+
+   /**
+    * Returns a new matrix created by adding the scalar multiplied by the actor row to the target row.
+    * @param {number} targetRow 
+    * @param {number} actorRow 
+    * @param {number} scalar 
+    * @returns {Matrix}
+    */
    rowReplacement(targetRow, actorRow, scalar) {
       let result = this.array.map(row => row.slice());
       result[targetRow] = this.array[targetRow].map((entry, col) => entry.add(this.array[actorRow][col].mul(scalar)).simplify());
       return new Matrix(this.rows, this.columns, result);
    }
-   // row reduction
+
+   /**
+    * Returns a list containing all the steps to reduce the matrix to row echelon form.
+    * @returns {StepList}
+    */
    ref() {
       let steps = new StepList(this);
       let currentCol = 0;
+
+      // Loop through each row. 
       for (let currentRow = 0; currentRow < this.rows; currentRow++) {
+
+         // Find the next non-zero column
          let column = steps.last().getColumn(currentCol);
          while (column[currentRow].equals(0)) {
             if (++currentCol >= this.columns) {
@@ -72,14 +121,20 @@ class Matrix {
             }
             column = steps.last().getColumn(currentCol);
          }
+
+         // swap the current row with the row with the highest absolute value at the current entry
          let max = indexOfMaxAbs(column.slice(currentRow)) + currentRow;
          let swapResult = steps.last().rowSwap(max, currentRow);
          let swapInstruct = `swapping row ${currentRow} with row ${max}`;
          steps.addStep(swapResult, swapInstruct);
+
+         // make current entry a 1
          let scalar = steps.last().at(currentRow, currentCol).inverse();
          let multiplyResult = steps.last().rowMultiplication(currentRow, scalar);
          let multiplyInstruct = `multiplying row ${currentRow} by ${scalar.toString()}`;
          steps.addStep(multiplyResult, multiplyInstruct);
+
+         // make all entries in current column below the current entry 0.
          for (let i = currentRow + 1; i < this.rows; i++) {
             let entry = steps.last().at(i, currentCol);
             if (!entry.equals(0)) {
@@ -88,6 +143,8 @@ class Matrix {
                steps.addStep(replaceResult, replaceInstruct);
             }
          }
+
+         // Check if we have checked all columns. 
          if (++currentCol >= this.columns) {
             return steps;
          }
@@ -95,6 +152,12 @@ class Matrix {
       return steps;
    }
 }
+
+/**
+ * Returns the index of the entry in the array with the largest absolute value. 
+ * @param {Fraction[]} array 
+ * @returns {number}
+ */
 function indexOfMaxAbs(array) {
    if (array.length == 0) {
       return -1;
@@ -109,6 +172,8 @@ function indexOfMaxAbs(array) {
    }
    return maxIndex;
 }
+
+
 let B = [
    [3, -6, -3],
    [2, -4, 1],
