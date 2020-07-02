@@ -134,16 +134,20 @@ class Matrix {
          }
 
          // swap the current row with the row with the highest absolute value at the current entry
-         let max = indexOfMaxAbs(column.slice(currentRow)) + currentRow;
-         let swapResult = steps.last().rowSwap(max, currentRow);
-         let swapInstruct = `swapping row ${currentRow} with row ${max}`;
-         steps.addStep(swapResult, swapInstruct);
+         let maxIndex = indexOfMaxAbs(column.slice(currentRow)) + currentRow;
+         if (maxIndex !== currentRow) {
+            let swapResult = steps.last().rowSwap(maxIndex, currentRow);
+            let swapInstruct = `swapping row ${currentRow} with row ${maxIndex}`;
+            steps.addStep(swapResult, swapInstruct);
+         }
 
          // make current entry a 1
-         let scalar = steps.last().at(currentRow, currentCol).inverse();
-         let multiplyResult = steps.last().rowMultiplication(currentRow, scalar);
-         let multiplyInstruct = `multiplying row ${currentRow} by ${scalar.toString()}`;
-         steps.addStep(multiplyResult, multiplyInstruct);
+         if (!this.at(currentRow, currentCol).equals(1)) {
+            let scalar = steps.last().at(currentRow, currentCol).inverse();
+            let multiplyResult = steps.last().rowMultiplication(currentRow, scalar);
+            let multiplyInstruct = `multiplying row ${currentRow} by ${scalar.toString()}`;
+            steps.addStep(multiplyResult, multiplyInstruct);
+         }
 
          // make all entries in current column below the current entry 0.
          for (let i = currentRow + 1; i < this.rows; i++) {
