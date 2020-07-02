@@ -118,6 +118,73 @@ class Matrix {
    }
 
    /**
+    * Returns the index of the entry in the array with the largest absolute value. 
+    * @param {Fraction[]} fracArray 
+    * @returns {number}
+    */
+   indexOfMaxAbs(fracArray) {
+      if (fracArray.length == 0) {
+         return -1;
+      }
+      let max = 0;
+      let maxIndex = 0;
+      for (let i = 0; i < fracArray.length; i++) {
+         if (fracArray[i].abs().compare(max) < 0) {
+            max = fracArray[i];
+            maxIndex = i;
+         }
+      }
+      return maxIndex;
+   }
+
+   /**
+    * Uses row operations to swap make the current entry the largest of those below it. 
+    * @param {StepList} steps 
+    * @param {number} column 
+    * @param {number} currentRow 
+    */
+   swapToMax(steps, column, currentRow) {
+      let maxIndex = this.indexOfMaxAbs(column.slice(currentRow)) + currentRow;
+      if (maxIndex !== currentRow) {
+         let swapResult = steps.last().rowSwap(maxIndex, currentRow);
+         let swapInstruct = `Swap row ${currentRow + 1} with row ${maxIndex + 1}`;
+         steps.addStep(swapResult, swapInstruct);
+      }
+   }
+
+   /**
+    * Uses row operations to reduce the current entry to one. 
+    * @param {StepList} steps The stepList being operated on. 
+    * @param {*} currentRow 
+    * @param {*} currentCol 
+    */
+   reduceToOne(steps, currentRow, currentCol) {
+      if (!this.at(currentRow, currentCol).equals(1)) {
+         let scalar = steps.last().at(currentRow, currentCol).inverse();
+         let multiplyResult = steps.last().rowMultiplication(currentRow, scalar);
+         let multiplyInstruct = `Multiply row ${currentRow + 1} by ${scalar.toFraction()}`;
+         steps.addStep(multiplyResult, multiplyInstruct);
+      }
+   }
+
+   /**
+    * Uses row operations to make all entries in the current column below the current row zero.
+    * @param {StepList} steps The steplist being operated on. 
+    * @param {number} currentRow 
+    * @param {number} currentCol 
+    */
+   makeBelowZero(steps, currentRow, currentCol) {
+      for (let i = currentRow + 1; i < this.rows; i++) {
+         let entry = steps.last().at(i, currentCol); 2
+         if (!entry.equals(0)) {
+            let replaceResult = steps.last().rowReplacement(i, currentRow, entry.neg());
+            let replaceInstruct = `Add ${entry.neg().toFraction()} times row ${currentRow + 1} to row ${i + 1}`;
+            steps.addStep(replaceResult, replaceInstruct);
+         }
+      }
+   }
+
+   /**
     * Returns a list containing all the steps to reduce the matrix to row echelon form.
     * @returns {StepList}
     */
@@ -137,31 +204,9 @@ class Matrix {
             column = steps.last().getColumn(currentCol);
          }
 
-         // swap the current row with the row with the highest absolute value at the current entry
-         let maxIndex = indexOfMaxAbs(column.slice(currentRow)) + currentRow;
-         if (maxIndex !== currentRow) {
-            let swapResult = steps.last().rowSwap(maxIndex, currentRow);
-            let swapInstruct = `swapping row ${currentRow} with row ${maxIndex}`;
-            steps.addStep(swapResult, swapInstruct);
-         }
-
-         // make current entry a 1
-         if (!this.at(currentRow, currentCol).equals(1)) {
-            let scalar = steps.last().at(currentRow, currentCol).inverse();
-            let multiplyResult = steps.last().rowMultiplication(currentRow, scalar);
-            let multiplyInstruct = `multiplying row ${currentRow} by ${scalar.toString()}`;
-            steps.addStep(multiplyResult, multiplyInstruct);
-         }
-
-         // make all entries in current column below the current entry 0.
-         for (let i = currentRow + 1; i < this.rows; i++) {
-            let entry = steps.last().at(i, currentCol);
-            if (!entry.equals(0)) {
-               let replaceResult = steps.last().rowReplacement(i, currentRow, entry.neg());
-               let replaceInstruct = `Add ${entry.neg().toString()} times row ${currentRow} to row ${i}`;
-               steps.addStep(replaceResult, replaceInstruct);
-            }
-         }
+         this.swapToMax(steps, column, currentRow);
+         this.reduceToOne(steps, currentRow, currentCol);
+         this.makeBelowZero(steps, currentRow, currentCol);
 
          // Check if we have checked all columns. 
          if (++currentCol >= this.columns) {
@@ -172,32 +217,11 @@ class Matrix {
    }
 }
 
-/**
- * Returns the index of the entry in the array with the largest absolute value. 
- * @param {Fraction[]} array 
- * @returns {number}
- */
-function indexOfMaxAbs(array) {
-   if (array.length == 0) {
-      return -1;
-   }
-   let max = 0;
-   let maxIndex = 0;
-   for (let i = 0; i < array.length; i++) {
-      if (array[i].abs().compare(max) < 0) {
-         max = array[i];
-         maxIndex = i;
-      }
-   }
-   return maxIndex;
-}
-
-
 let B = [
-   [0.5, 0, 0],
-   [0, 1, 0],
-   [0, 0, 1]
+   [3, -3, -2, -1],
+   [0, 2, -3, -3],
+   [3, 3, 2, -3]
 ];
-let matrixB = new Matrix(3, 3, B);
+let matrixB = new Matrix(3, 4, B);
 let steps = matrixB.ref();
 steps.log();
