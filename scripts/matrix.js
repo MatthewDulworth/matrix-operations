@@ -36,12 +36,16 @@ class Matrix {
       console.table(this.toString());
    }
 
+   /**
+    * Returns a 2d string array representation of the matrix. 
+    * @returns {string[][]}
+    */
    toString() {
       let strArray = [];
       for (let i = 0; i < this.rows; i++) {
          strArray[i] = [];
          for (let j = 0; j < this.columns; j++) {
-            strArray[i][j] = this.array[i][j].toString();
+            strArray[i][j] = this.array[i][j].toFraction();
          }
       }
       return strArray;
@@ -190,7 +194,7 @@ function indexOfMaxAbs(array) {
 
 
 let B = [
-   [1, 0, 0],
+   [0.5, 0, 0],
    [0, 1, 0],
    [0, 0, 1]
 ];
