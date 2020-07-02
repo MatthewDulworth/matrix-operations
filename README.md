@@ -1,3 +1,3 @@
 # Matrix Operations
 
-An online matrix calculator written in typescript.
+An online matrix calculator written in javascript.
