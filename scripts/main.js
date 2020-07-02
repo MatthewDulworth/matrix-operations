@@ -6,7 +6,7 @@ let columnInputs = document.querySelectorAll(".col-in");
 let matrixWrappers = document.querySelectorAll(".matrix-wrapper");
 let matrices = [];
 
-createBtns.forEach((btn,index) => btn.addEventListener('click', () => createMatrixInput(index)));
+createBtns.forEach((btn, index) => btn.addEventListener('click', () => createMatrixInput(index)));
 
 /**
  * Startup code goes here.
@@ -20,7 +20,7 @@ window.onload = function () {
  * 
  * @param {number} matrixIndex The matrix to generate.
  */
-function createMatrixInput (matrixIndex) {
+function createMatrixInput(matrixIndex) {
    let rows = rowInputs[matrixIndex].value;
    let columns = columnInputs[matrixIndex].value;
    let matrixWrapper = matrixWrappers[matrixIndex];
@@ -41,13 +41,13 @@ function createMatrixInput (matrixIndex) {
  * 
  * @param {number} matrixIndex The matrix to populate.
  */
-function populateMatrix (matrixIndex) {
+function populateMatrix(matrixIndex) {
    let rows = rowInputs[matrixIndex].value;
    let columns = columnInputs[matrixIndex].value;
    matrices[matrixIndex] = new Matrix(rows, columns);
 
-   for(let i=1; i<=rows; i++){
-      for(let j=1; j<=columns; j++){
+   for (let i = 1; i <= rows; i++) {
+      for (let j = 1; j <= columns; j++) {
          let val = document.getElementById(`${i},${j}`).value;
          matrices[matrixIndex].updateEntry(i, j, val);
       }
