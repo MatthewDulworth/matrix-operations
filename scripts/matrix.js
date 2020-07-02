@@ -182,52 +182,43 @@ class Matrix {
    }
 
    /**
-    * Uses row operations to make all entries in the current column below the current row zero.
+    * Uses row operations to make the current entry zero.
     * @param {StepList} steps The steplist being operated on. 
-    * @param {number} currentRow 
-    * @param {number} currentCol 
+    * @param {number} pivotRow 
+    * @param {number} pivotCol
+    * @param {number} rowIndex The row being operated on. 
     */
-   makeBelowZero(steps, currentRow, currentCol) {
-      for (let i = currentRow + 1; i < this.rows; i++) {
-         let entry = steps.last().at(i, currentCol); 2
-         if (!entry.equals(0)) {
-            let replaceResult = steps.last().rowReplacement(i, currentRow, entry.neg());
-            let replaceInstruct = `Add ${entry.neg().toFraction()} times row ${currentRow + 1} to row ${i + 1}`;
-            steps.addStep(replaceResult, replaceInstruct);
-         }
+   makeZero(steps, pivotRow, pivotCol, rowIndex) {
+      let entry = steps.last().at(rowIndex, pivotCol);
+      if (!entry.equals(0)) {
+         let replaceResult = steps.last().rowReplacement(rowIndex, pivotRow, entry.neg());
+         let replaceInstruct = `Add ${entry.neg().toFraction()} times row ${pivotRow + 1} to row ${rowIndex + 1}`;
+         steps.addStep(replaceResult, replaceInstruct);
       }
    }
 
    /**
-    * Returns a list containing all the steps to reduce the matrix to row echelon form.
-    * @returns {StepList}
+    * Uses row operations to make all entries in the current column below the current row zero.
+    * @param {StepList} steps The steplist being operated on. 
+    * @param {number} pivotRow 
+    * @param {number} pivotCol 
     */
-   ref() {
-      let steps = new StepList(this);
-      let currentCol = 0;
-
-      // Loop through each row. 
-      for (let currentRow = 0; currentRow < this.rows; currentRow++) {
-
-         // Find the next non-zero column
-         let column = steps.last().getColumn(currentCol);
-         while (column[currentRow].equals(0)) {
-            if (++currentCol >= this.columns) {
-               return steps;
-            }
-            column = steps.last().getColumn(currentCol);
-         }
-
-         this.swapToMax(steps, column, currentRow);
-         this.reduceToOne(steps, currentRow, currentCol);
-         this.makeBelowZero(steps, currentRow, currentCol);
-
-         // Check if we have checked all columns. 
-         if (++currentCol >= this.columns) {
-            return steps;
-         }
+   makeZeroBelow(steps, pivotRow, pivotCol) {
+      for (let i = pivotRow + 1; i < this.rows; i++) {
+         this.makeZero(steps, pivotRow, pivotCol, i);
       }
-      return steps;
+   }
+
+   /**
+    * Uses row operations to make all entries in the current column above the current row zero.
+    * @param {StepList} steps The steplist being operated on. 
+    * @param {number} pivotRow 
+    * @param {number} pivotCol 
+    */
+   makeZeroAbove(steps, pivotRow, pivotCol) {
+      for (let i = pivotRow - 1; i >= 0; i--) {
+         this.makeZero(steps, pivotRow, pivotCol, i);
+      }
    }
 
    /**
@@ -252,20 +243,47 @@ class Matrix {
    }
 
    /**
+    * Returns a list containing all the steps to reduce the matrix to row echelon form.
+    * @returns {StepList}
+    */
+   ref() {
+      let steps = new StepList(this);
+      let currentCol = 0;
+
+      // Loop through each row. 
+      for (let currentRow = 0; currentRow < this.rows; currentRow++) {
+
+         // Find the next non-zero column
+         let column = steps.last().getColumn(currentCol);
+         while (column[currentRow].equals(0)) {
+            if (++currentCol >= this.columns) {
+               return steps;
+            }
+            column = steps.last().getColumn(currentCol);
+         }
+
+         this.swapToMax(steps, column, currentRow);
+         this.reduceToOne(steps, currentRow, currentCol);
+         this.makeZeroBelow(steps, currentRow, currentCol);
+
+         // Check if we have checked all columns. 
+         if (++currentCol >= this.columns) {
+            return steps;
+         }
+      }
+      return steps;
+   }
+
+   /**
     * Returns a list containing all the steps to reduce the matrix to row reduced echelon form.
     */
    rref() {
       let steps = this.ref();
-
-      // let B = [
-      //    [1, 1, 1, 1],
-      //    [0, 1, 1, 1],
-      //    [0, 0, 0, 1]
-      // ];
-      // let matrixB = new Matrix(3, 4, B);
-      // steps.addStep(matrixB, "KJAHDKASJDHKA");
-
       let pivotLocs = this.findPivotColsInRef(steps.last());
+
+      for (let j = 0; j < pivotLocs.length; j++) {
+         this.makeZeroAbove(steps, pivotLocs[j].row, pivotLocs[j].col);
+      }
       return steps;
    }
 }
@@ -277,3 +295,4 @@ let B = [
 ];
 let matrixB = new Matrix(3, 4, B);
 let steps = matrixB.rref();
+steps.log();
