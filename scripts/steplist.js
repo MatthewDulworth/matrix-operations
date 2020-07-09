@@ -53,7 +53,14 @@ class StepList {
    logShort() {
       console.log("Original.");
       this.matrices[0].log();
-      console.log("Final");
+      this.logLast();
+   }
+
+   /**
+    * Displays the last final matrix in the list.
+    */
+   logLast() {
+      console.log("Final.");
       this.last().log();
    }
 }

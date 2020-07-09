@@ -291,10 +291,12 @@ class Matrix {
 }
 
 let B = [
-   [3, -3, -2, -1],
-   [0, 2, -3, -3],
-   [3, 3, 2, -3]
+   [3, -3, -2, 3],
+   [0, 0, 0, -3],
+   [4, 3, 2, -3]
 ];
 let matrixB = new Matrix(3, 4, B);
-let steps = matrixB.rref();
-steps.log();
+let steps = matrixB.ref();
+// steps.log();
+// steps = matrixB.rref();
+// steps.logShort();
