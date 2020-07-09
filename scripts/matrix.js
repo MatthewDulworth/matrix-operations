@@ -140,11 +140,12 @@ class Matrix {
       if (fracArray.length == 0) {
          return -1;
       }
-      let max = 0;
+      let max = -1;
       let maxIndex = 0;
       for (let i = 0; i < fracArray.length; i++) {
-         if (fracArray[i].abs().compare(max) < 0) {
-            max = fracArray[i];
+         let value = fracArray[i].abs().valueOf();
+         if (value > max) {
+            max = value;
             maxIndex = i;
          }
       }
@@ -255,14 +256,15 @@ class Matrix {
 
          // Find the next non-zero column
          let column = steps.last().getColumn(currentCol);
+         this.swapToMax(steps, column, currentRow);
          while (column[currentRow].equals(0)) {
             if (++currentCol >= this.columns) {
                return steps;
             }
             column = steps.last().getColumn(currentCol);
+            this.swapToMax(steps, column, currentRow);
          }
 
-         this.swapToMax(steps, column, currentRow);
          this.reduceToOne(steps, currentRow, currentCol);
          this.makeZeroBelow(steps, currentRow, currentCol);
 
