@@ -158,12 +158,15 @@ class Matrix {
     * @param {number} column 
     * @param {number} currentRow 
     */
-   swapToMax(steps, column, currentRow) {
+   swapToMax(steps, column, currentRow, currentCol) {
       let maxIndex = this.indexOfMaxAbs(column.slice(currentRow)) + currentRow;
       if (maxIndex !== currentRow) {
          let swapResult = steps.last().rowSwap(maxIndex, currentRow);
          let swapInstruct = `Swap row ${currentRow + 1} with row ${maxIndex + 1}`;
          steps.addStep(swapResult, swapInstruct);
+
+         // console.log(`row: ${currentRow} col: ${currentCol}`);
+         // steps.logLast();
       }
    }
 
@@ -179,6 +182,9 @@ class Matrix {
          let multiplyResult = steps.last().rowMultiplication(currentRow, scalar);
          let multiplyInstruct = `Multiply row ${currentRow + 1} by ${scalar.toFraction()}`;
          steps.addStep(multiplyResult, multiplyInstruct);
+
+         // console.log(`row: ${currentRow} col: ${currentCol}`);
+         // steps.logLast();
       }
    }
 
@@ -195,6 +201,9 @@ class Matrix {
          let replaceResult = steps.last().rowReplacement(rowIndex, pivotRow, entry.neg());
          let replaceInstruct = `Add ${entry.neg().toFraction()} times row ${pivotRow + 1} to row ${rowIndex + 1}`;
          steps.addStep(replaceResult, replaceInstruct);
+
+         // console.log(`row: ${pivotRow} col: ${pivotCol}`);
+         // steps.logLast();
       }
    }
 
@@ -250,19 +259,22 @@ class Matrix {
    ref() {
       let steps = new StepList(this);
       let currentCol = 0;
+      //steps.logLast();
 
       // Loop through each row. 
       for (let currentRow = 0; currentRow < this.rows; currentRow++) {
 
          // Find the next non-zero column
          let column = steps.last().getColumn(currentCol);
-         this.swapToMax(steps, column, currentRow);
-         while (column[currentRow].equals(0)) {
-            if (++currentCol >= this.columns) {
+         this.swapToMax(steps, column, currentRow, currentCol);
+
+         while (steps.last().at(currentRow, currentCol).equals(0)) {
+            currentCol++;
+            if (currentCol >= this.columns) {
                return steps;
             }
             column = steps.last().getColumn(currentCol);
-            this.swapToMax(steps, column, currentRow);
+            this.swapToMax(steps, column, currentRow, currentCol);
          }
 
          this.reduceToOne(steps, currentRow, currentCol);
@@ -290,13 +302,32 @@ class Matrix {
    }
 }
 
-let B = [
-   [3, -3, -2, 3],
-   [0, 0, 0, -3],
-   [4, 3, 2, -3]
-];
-let matrixB = new Matrix(3, 4, B);
-let steps = matrixB.ref();
-// steps.log();
-// steps = matrixB.rref();
+// let B = [
+//    [3, -3, -2, 3],
+//    [0, 0, 4, -3],
+//    [4, 3, 2, -3]
+// ];
+// let matrixB = new Matrix(3, 4, B);
+// // let steps = matrixB.ref();
+// // steps.log();
+// let steps = matrixB.rref();
 // steps.logShort();
+
+
+// let A = [
+//    [2, 4, 4],
+//    [0, 0, 8],
+//    [4, 4, 4],
+// ];
+// let m = new Matrix(3, 3, A);
+// let steps = m.ref();
+//steps.log();
+
+let C = [
+   [1,2,3,4,5,6,7,8,9,10],
+   [11,12,13,14,15,16,17,18,19,20],
+   [21,22,23,24,25,26,27,28,29,30]
+];
+
+let matrixC = new Matrix(3, 10, C);
+matrixC.ref().log();
