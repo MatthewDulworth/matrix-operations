@@ -312,27 +312,66 @@ class Matrix {
       }
       return steps;
    }
+
+
+   // ---------------------------------------------------------------------------
+   // Matrix Operations
+   // ---------------------------------------------------------------------------
+
+   /**
+    * Multiplies the matrix by the passed matrix. 
+    * 
+    * @param {Matrix} otherMatrix The matrix to multiply by. 
+    * @param {boolean} rightMult Optional parameter. True if right multiplication, else left multiplication. Default is true.
+    */
+   matrixMultiplication(otherMatrix, rightMult = true) {
+
+      let leftMatrix, rightMatrix;
+      let product = [];
+
+      if (rightMult === true) {
+         leftMatrix = this;
+         rightMatrix = otherMatrix;
+      } else {
+         leftMatrix = otherMatrix;
+         rightMatrix = this;
+      }
+
+      if (leftMatrix.columns != rightMatrix.rows) {
+         throw Error(`Cannot multiply multiply a matrix with ${leftMatrix.rows} by a matrix with ${rightMatrix.columns} columns`);
+      }
+
+      for (let leftRow = 0; leftRow < leftMatrix.rows; leftRow++) {
+         product[leftRow] = [];
+         for (let rightCol = 0; rightCol < rightMatrix.columns; rightCol++) {
+            product[leftRow][rightCol] = new Fraction(0);
+            for (let term = 0; term < leftMatrix.columns; term++) {
+               let smallProduct = leftMatrix.at(leftRow, term).mul(rightMatrix.at(term, rightCol));
+               product[leftRow][rightCol] = product[leftRow][rightCol].add(smallProduct);
+            }
+         }
+      }
+      return new Matrix(leftMatrix.rows, rightMatrix.columns, product);
+   }
 }
 
-// let B = [
-//    [3, -3, -2, 3],
-//    [0, 0, 4, -3],
-//    [4, 3, 2, -3]
-// ];
-// let matrixB = new Matrix(3, 4, B);
-// // let steps = matrixB.ref();
-// // steps.log();
-// let steps = matrixB.rref();
-// steps.logShort();
+let A = [
+   [2, 4, 4],
+   [0, 0, 8],
+   [4, 4, 4],
+];
+let matrixA = new Matrix(3, 3, A);
 
-// let A = [
-//    [2, 4, 4],
-//    [0, 0, 8],
-//    [4, 4, 4],
-// ];
-// let m = new Matrix(3, 3, A);
-// let steps = m.ref();
-//steps.log();
+let B = [
+   [3, -3, -2],
+   [0, 0, 4],
+   [4, 3, 2]
+];
+let matrixB = new Matrix(3, 3, B);
+
+let matrixC = matrixA.matrixMultiplication(matrixB, true);
+matrixC.log();
+
 
 // let C = [
 //    [1,2,3,4,5,6,7,8,9,10],
