@@ -363,10 +363,24 @@ class Matrix {
       let product = this.array.map(row => row.map(entry => entry.mul(scalar)));
       return new Matrix(this.rows, this.columns, product);
    }
+
+   /**
+    * @returns {Matrix} The transpose of the matrix.
+    */
+   transpose() {
+      let transpose = [];
+      for (let j = 0; j < this.columns; j++) {
+         transpose[j] = [];
+         for (let i = 0; i < this.rows; i++) {
+            transpose[j][i] = this.array[i][j];
+         }
+      }
+      return new Matrix(this.columns, this.rows, transpose);
+   }
 }
 
 let A = [
-   [0.5, 4, 4],
+   [2, 4, 4],
    [0, 0, 8],
    [4, 4, 4],
 ];
@@ -380,7 +394,7 @@ let B = [
 let matrixB = new Matrix(3, 3, B);
 
 matrixA.log();
-let matrixC = matrixA.scalarMultiplication(2);
+let matrixC = matrixA.transpose();
 matrixC.log();
 
 
