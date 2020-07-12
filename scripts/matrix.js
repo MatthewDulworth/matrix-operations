@@ -110,7 +110,7 @@ class Matrix {
     */
    rowMultiplication(targetRow, scalar) {
       let multiplied = this.array.map(row => row.slice());
-      multiplied[targetRow] = this.array[targetRow].map(entry => entry.mul(scalar).simplify());
+      multiplied[targetRow] = this.array[targetRow].map(entry => entry.mul(scalar));
       return new Matrix(this.rows, this.columns, multiplied);
    }
 
@@ -320,9 +320,9 @@ class Matrix {
 
    /**
     * Multiplies the matrix by the passed matrix. 
-    * 
     * @param {Matrix} otherMatrix The matrix to multiply by. 
     * @param {boolean} rightMult Optional parameter. True if right multiplication, else left multiplication. Default is true.
+    * @returns {Matrix} A matrix representing the product of the operation. 
     */
    matrixMultiplication(otherMatrix, rightMult = true) {
 
@@ -353,10 +353,20 @@ class Matrix {
       }
       return new Matrix(leftMatrix.rows, rightMatrix.columns, product);
    }
+
+   /**
+    * Multiplies the matrix by the passed scalar.
+    * @param {number} scalar 
+    * @returns {Matrix} A matrix representing the product of the operation. 
+    */
+   scalarMultiplication(scalar) {
+      let product = this.array.map(row => row.map(entry => entry.mul(scalar)));
+      return new Matrix(this.rows, this.columns, product);
+   }
 }
 
 let A = [
-   [2, 4, 4],
+   [0.5, 4, 4],
    [0, 0, 8],
    [4, 4, 4],
 ];
@@ -369,7 +379,8 @@ let B = [
 ];
 let matrixB = new Matrix(3, 3, B);
 
-let matrixC = matrixA.matrixMultiplication(matrixB, true);
+matrixA.log();
+let matrixC = matrixA.scalarMultiplication(2);
 matrixC.log();
 
 
