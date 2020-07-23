@@ -1,23 +1,30 @@
-/********* settings *********/
-.matrix-setup {
-   margin: 30px;
+body {
    display: flex;
    flex-direction: column;
-   align-items: center;
 }
 
-.dimensions {
-   padding-bottom: 10px;
+nav {
+   position: relative;
+}
+
+/********* input *********/
+#input {
+   padding: 1.5rem;
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
    border-bottom: 1px solid black;
 }
 
 .dim {
-   max-width: 1.5rem;
+   max-width: 2rem;
    text-align: right;
 }
 
 .matrix-wrapper {
-   margin: 10px;
+   border-top: 1px solid black;
+   padding-top: 5px;
+   margin-top: 7px;
    display: grid;
    row-gap: 10px;
    column-gap: 10px;

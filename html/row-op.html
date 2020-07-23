@@ -14,17 +14,18 @@
 
    <!-- styles -->
    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="../styles/row-op.css">
    <link rel="stylesheet" href="../styles/styles.css">
+   <link rel="stylesheet" href="../styles/row-op.css">
 
    <!-- scripts -->
    <script src="../scripts/fraction.js" defer></script>
    <script src="../scripts/steplist.js" defer></script>
    <script src="../scripts/matrix.js" defer></script>
-   <script src="../scripts/row-op.js" defer></script>
+   <script src="../scripts/main.js" defer></script>
 </head>
 
 <body>
+   <!-- nav bar -->
    <nav>
       <a href="../index.html" id="site-icon-link">
          <img src="../assets/matrix-operations.jpg" alt="Matrix Operations" id="site-icon">
@@ -33,10 +34,29 @@
       <a class="link" href="#">Matrix Operations Calculator</a>
    </nav>
 
+   <!-- main content -->
    <main>
-     
+      <section id="input">
+         <div class="dimensions">
+            <div>Initial Matrix</div>
+            <input class="dim row-in" type="number" name="rows" min="1" max="10" required value="3">
+            x
+            <input class="dim col-in" type="number" name="columns" min="1" max="10" required value="3">
+            <button class="create-btn">setup</button>
+         </div>
+         <div class="matrix-wrapper">
+
+         </div>
+      </section>
+      <section id="output">
+
+      </section>
+      <section id="operations-menu">
+
+      </section>
    </main>
 
+   <!-- copyright notice -->
    <footer>
       <div>
          Copyright &copy; 2020 Matthew Dulworth. All rights Reserved.
