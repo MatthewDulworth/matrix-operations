@@ -1,6 +1,9 @@
 /********* general *********/
+
 * {
    box-sizing: border-box;
+   margin: 0;
+   padding: 0;
 }
 
 body {
@@ -13,4 +16,29 @@ body {
 button {
    font-family: 'Open Sans', sans-serif;
    cursor: pointer;
+}
+
+/********* common elements *********/
+
+#site-icon-link {
+   position: absolute;
+   top: 0rem;
+   left: 0rem;
+}
+
+#site-icon {
+   width: 7rem;
+   height: 3.5rem;
+   object-fit: cover;
+   cursor: pointer;
+}
+
+footer {
+   position: absolute;
+   bottom: 2px;
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   font-size: 0.8rem;
 }
