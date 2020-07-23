@@ -1,12 +1,12 @@
 'use strict';
 
-let createBtns = document.querySelectorAll(".create-btn");
 let rowInputs = document.querySelectorAll(".row-in");
 let columnInputs = document.querySelectorAll(".col-in");
 let matrixWrappers = document.querySelectorAll(".matrix-wrapper");
 let matrices = [];
 
-createBtns.forEach((btn, index) => btn.addEventListener('click', () => createMatrixInput(index)));
+rowInputs.forEach((input, index) => input.addEventListener('change', () => createMatrixInput(index)));
+columnInputs.forEach((input, index) => input.addEventListener('change', () => createMatrixInput(index)));
 
 /**
  * Startup code goes here.
