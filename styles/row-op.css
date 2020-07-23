@@ -33,3 +33,21 @@ nav {
 .entry {
    max-width: 2rem;
 }
+
+
+/********* operations menu *********/
+#operations-menu {
+   padding: 1.5rem;
+}
+
+#operations-menu input {
+   max-width: 2rem;
+}
+
+#operations-menu div {
+   margin-bottom: 1rem;
+}
+
+#operations-menu button {
+   margin-left: 0.5rem;
+}
