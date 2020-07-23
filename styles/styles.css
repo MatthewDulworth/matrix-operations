@@ -1,0 +1,16 @@
+/********* general *********/
+* {
+   box-sizing: border-box;
+}
+
+body {
+   font-size: 1rem;
+   font-family: 'Open Sans', sans-serif;
+   height: 100vh;
+   margin: 0;
+}
+
+button {
+   font-family: 'Open Sans', sans-serif;
+   cursor: pointer;
+}

@@ -8,61 +8,16 @@
 
    <!-- meta content -->
    <title>Matrix Calculator</title>
-
-   <!-- suppress favicon 404 -->
    <link rel="icon" href="data:;base64,=">
 
    <!-- styles -->
    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="styles.css">
-
-   <!-- scripts -->
-   <script src="scripts/fraction.js" defer></script>
-   <script src="scripts/steplist.js" defer></script>
-   <script src="scripts/matrix.js" defer></script>
+   <link rel="stylesheet" href="styles/styles.css">
+   <link rel="stylesheet" href="styles/index.css">
 </head>
 
 <body>
-   <main>
-
-      <!-- settings -->
-      <section id='settings'>
-
-         <!-- matrix A -->
-         <div id="matrix-a" class="matrix-setup">
-
-            <h2>Matrix A</h2>
-            <div class="dimensions">
-               <input class="dim row-in" type="number" name="rows" min="1" max="10" required value="3">
-               x
-               <input class="dim col-in" type="number" name="columns" min="1" max="10" required value="3">
-               <button class="create-btn">setup</button>
-            </div>
-
-            <div class="matrix-wrapper"></div>
-         </div>
-
-         <!-- matrix B -->
-         <div id="matrix-b" class="matrix-setup">
-
-            <h2>Matrix B</h2>
-            <div class="dimensions">
-               <input class="dim row-in" type="number" name="rows" min="1" max="10" required value="3">
-               x
-               <input class="dim col-in" type="number" name="columns" min="1" max="10" required value="3">
-               <button class="create-btn">setup</button>
-            </div>
-
-            <div class="matrix-wrapper"></div>
-         </div>
-      </section>
-
-      <!-- output -->
-      <section id='output'>
-
-      </section>
-
-   </main>
+   <img src="./assets/matrix-operations.jpg" alt="Matrix Operations" id="site-icon">
 </body>
 
 </html>
