@@ -1,27 +1,4 @@
-/********* general *********/
-body {
-   font-size: 1rem;
-   font-family: 'Open Sans', sans-serif;
-   height: 100vh;
-   margin: 0;
-}
-
-button {
-   font-family: 'Open Sans', sans-serif;
-   cursor: pointer;
-}
-
 /********* settings *********/
-#settings {
-   display: flex;
-   justify-content: center;
-}
-
-#settings h2 {
-   font-size: 1rem;
-   font-weight: normal;
-}
-
 .matrix-setup {
    margin: 30px;
    display: flex;
