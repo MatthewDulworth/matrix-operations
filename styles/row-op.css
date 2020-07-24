@@ -38,6 +38,7 @@ nav {
 /********* operations menu *********/
 #operations-menu {
    padding: 1.5rem;
+   border-bottom: 1px solid black;
 }
 
 #operations-menu input {

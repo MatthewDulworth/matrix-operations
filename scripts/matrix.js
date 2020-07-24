@@ -379,24 +379,23 @@ class Matrix {
    }
 }
 
-let A = [
-   [2, 4, 4],
-   [0, 0, 8],
-   [4, 4, 4],
-];
-let matrixA = new Matrix(3, 3, A);
+// let A = [
+//    [2, 4, 4],
+//    [0, 0, 8],
+//    [4, 4, 4],
+// ];
+// let matrixA = new Matrix(3, 3, A);
 
-let B = [
-   [3, -3, -2],
-   [0, 0, 4],
-   [4, 3, 2]
-];
-let matrixB = new Matrix(3, 3, B);
+// let B = [
+//    [3, -3, -2],
+//    [0, 0, 4],
+//    [4, 3, 2]
+// ];
+// let matrixB = new Matrix(3, 3, B);
 
-matrixA.log();
-let matrixC = matrixA.transpose();
-matrixC.log();
-
+// matrixA.log();
+// let matrixC = matrixA.transpose();
+// matrixC.log();
 
 // let C = [
 //    [1,2,3,4,5,6,7,8,9,10],

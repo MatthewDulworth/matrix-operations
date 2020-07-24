@@ -21,7 +21,8 @@
    <script src="../scripts/fraction.js" defer></script>
    <script src="../scripts/steplist.js" defer></script>
    <script src="../scripts/matrix.js" defer></script>
-   <script src="../scripts/main.js" defer></script>
+   <script src="../scripts/matrix-input.js" defer></script>
+   <script src="../scripts/row-op.js" defer></script>
 </head>
 
 <body>
@@ -36,20 +37,24 @@
 
    <!-- main content -->
    <main>
+
       <section id="input">
-         <div class="dimensions">
+         <!-- matrix _0 -->
+         <div class="dimensions _0">
             <div>Initial Matrix</div>
-            <input class="dim row-in" type="number" name="rows" min="1" max="20" value="3">
+            <input class="dim row-in _0" type="number" name="rows" min="1" max="20" value="3">
             x
-            <input class="dim col-in" type="number" name="columns" min="1" max="20" value="3">
+            <input class="dim col-in _0" type="number" name="columns" min="1" max="20" value="3">
+            <button>Create Matrix</button>
          </div>
-         <div class="matrix-wrapper">
-
-         </div>
+         <div class="matrix-wrapper _0"></div>
       </section>
+
       <section id="output">
-
+         <div class="in matrix"></div>
+         <div class="out matrix"></div>
       </section>
+
       <section id="operations-menu">
 
          <div id="row-scale">
