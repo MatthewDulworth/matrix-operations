@@ -1,31 +1,47 @@
 'use strict';
 
-let rowInput = document.querySelector(".row-in");
-let columnInput = document.querySelector(".col-in");
-let matrixWrapper = document.querySelector(".matrix-wrapper");
-let rowLists = document.querySelectorAll(".row-list");
+// -----------------------------------------------------------
+// Variables
+// -----------------------------------------------------------
+const _rowInput = document.querySelector(".row-in");
+const _columnInput = document.querySelector(".col-in");
+const _matrixWrapper = document.querySelector(".matrix-wrapper");
+const _rowLists = document.querySelectorAll(".row-list");
 
-rowInput.addEventListener('change', () => {
-   createMatrixInput("_0");
-   createRowList(rowLists, rowInput);
-});
-columnInput.addEventListener('change', () =>{
-   createMatrixInput("_0");
-   createRowList(rowLists, rowInput);
-}); 
 
+// -----------------------------------------------------------
+// Startup Code
+// -----------------------------------------------------------
 /**
- * Startup code goes here.
+ * Generate an input matrix on startup.
  */
 window.onload = function () {
    createMatrixInput("_0");
-   createRowList(rowLists, rowInput);
+   createRowList(_rowLists, _rowInput);
 }
 
+
+// -----------------------------------------------------------
+// Event Listeners
+// -----------------------------------------------------------
+/**
+ * Generate an input matrix whenever the row input or column input changes.
+ */
+_rowInput.addEventListener('change', () => {
+   createMatrixInput("_0");
+   createRowList(_rowLists, _rowInput);
+});
+_columnInput.addEventListener('change', () => createMatrixInput("_0"));
+
+
+// -----------------------------------------------------------
+// Functions
+// -----------------------------------------------------------
 /**
  * Generates the lists of rows to be used in selecting a row.
  * 
- * @param {number} rowLists 
+ * @param {NodeList} rowLists The select elements.
+ * @param {HTMLElement} rowInput The row input for the matrix.
  */
 function createRowList(rowLists, rowInput) {
    if (rowLists.length > 0) {
