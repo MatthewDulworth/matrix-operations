@@ -1,5 +1,14 @@
 'use strict';
 
+
+// -----------------------------------------------------------
+// Plus Minus Button Event
+// -----------------------------------------------------------
+/**
+ * Adds click event listeners to the plus and minus buttons for the row and column inputs for the given matrix. 
+ * 
+ * @param {string} matrixClass The unique class of input elements for the matrix.
+ */
 function addIncrementBtnListeners(matrixClass) {
    let rowDim = document.querySelector(`.${matrixClass} .dim.row`);
    let colDim = document.querySelector(`.${matrixClass} .dim.col`);
@@ -8,6 +17,11 @@ function addIncrementBtnListeners(matrixClass) {
    addListenerPerDim(colDim);
 }
 
+/**
+ * Adds click event listeners to the plus and minus buttons for the passed dimension input (row or col).
+ * 
+ * @param {HTMLElement} dim The wrapper for the inputs.
+ */
 function addListenerPerDim(dim) {
    let plusBtn = dim.querySelector(".plus-btn");
    let minusBtn = dim.querySelector(".minus-btn");
@@ -17,6 +31,15 @@ function addListenerPerDim(dim) {
    addBtnListener(minusBtn, input, -1);
 }
 
+/**
+ * Adds click event listener to the passed plus or minus button.
+ * Increments or decrements the input if plus or minus button. 
+ * Constrained by input max and min.
+ * 
+ * @param {HTMLElement} btn The button to add the listener to.
+ * @param {HTMLElement} input The text input to change.
+ * @param {number} sign (optional) pass -1 if btn is a minus-btn.
+ */
 function addBtnListener(btn, input, sign = 1) {
    btn.addEventListener('click', () => {
       let value = parseInt(input.value) + 1 * sign;
@@ -49,7 +72,9 @@ function handleRowChanges(matrixClass) {
    }
 }
 
-
+// -----------------------------------------------------------
+// Generate Matrix Input Grid
+// -----------------------------------------------------------
 /**
  * Generates an input grid for a matrix. 
  * @param {string} matrixClass The unique class of input elements for the matrix.
