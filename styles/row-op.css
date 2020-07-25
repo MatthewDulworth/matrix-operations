@@ -8,6 +8,7 @@ nav {
 }
 
 /********* input *********/
+
 #input {
    padding: 1.5rem;
    display: flex;
@@ -16,10 +17,13 @@ nav {
    border-bottom: 1px solid black;
 }
 
-.dim {
-   max-width: 2rem;
+.dim input {
    text-align: right;
+   width: 1.5rem;
+   padding-right: 2px;
 }
+
+/********* input *********/
 
 .matrix-wrapper {
    border-top: 1px solid black;
@@ -34,8 +38,8 @@ nav {
    max-width: 2rem;
 }
 
-
 /********* operations menu *********/
+
 #operations-menu {
    padding: 1.5rem;
    border-bottom: 1px solid black;

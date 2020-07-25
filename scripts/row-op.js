@@ -18,6 +18,7 @@ const _rowLists = document.querySelectorAll(".row-list");
 window.onload = function () {
    createMatrixInput("_0");
    createRowList(_rowLists, _rowInput);
+   addIncrementBtnListeners("_0");
 }
 
 
@@ -27,19 +28,22 @@ window.onload = function () {
 /**
  * Generate an input matrix whenever the row input or column input changes.
  */
-_rowInput.addEventListener('change', () => {
-   createMatrixInput("_0");
-   createRowList(_rowLists, _rowInput);
-});
-_columnInput.addEventListener('change', () => createMatrixInput("_0"));
+// _rowInput.addEventListener('change', () => {
+//    handleRowChanges("_0");
+//    createRowList(_rowLists, _rowInput);
+// });
+// _columnInput.addEventListener('change', () => createMatrixInput("_0"));
 
+// _rowInput.addEventListener('focus', () =>{ 
+//    _rowInput.dataset.oldVal = _rowInput.value;
+//    console.log("focus");
+// });
 
 // -----------------------------------------------------------
 // Functions
 // -----------------------------------------------------------
 /**
  * Generates the lists of rows to be used in selecting a row.
- * 
  * @param {NodeList} rowLists The select elements.
  * @param {HTMLElement} rowInput The row input for the matrix.
  */

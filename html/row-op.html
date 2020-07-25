@@ -42,11 +42,27 @@
          <!-- matrix _0 -->
          <div class="dimensions _0">
             <div>Initial Matrix</div>
-            <input class="dim row-in _0" type="number" name="rows" min="1" max="20" value="3">
-            x
-            <input class="dim col-in _0" type="number" name="columns" min="1" max="20" value="3">
-            <button>Create Matrix</button>
+
+            <div class="dim row">
+               <span>rows:</span>
+               <button class="minus-btn">-</button>
+               <input class="row-in _0" type="text" max="20" min="0" value="3">
+               <button class="plus-btn">+</button>
+            </div>
+
+            <div class="dim col">
+               <span>columns:</span>
+               <button class="minus-btn">-</button>
+               <input class="col-in _0" type="text" max="20" min="0" value="3">
+               <button class="plus-btn">+</button>
+            </div>
+
+            <div>
+               <button class="reset-btn">Reset</button>
+               <button class="create-btn">Create Matrix</button>
+            </div>
          </div>
+
          <div class="matrix-wrapper _0"></div>
       </section>
 
