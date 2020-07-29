@@ -63,7 +63,7 @@ function addDimInputListeners(matrixClass) {
    colInput.addEventListener('change', () => handleColChanges(colInput, rowInput.value, matrixWrapper, matrixClass));
 }
 
-function sanitizeInput(input) {
+function sanitizeToInt(input) {
    let val = parseInt(input.value);
 
    if(isNaN(val)){
@@ -75,7 +75,7 @@ function sanitizeInput(input) {
 
 function handleColChanges(colInput, rows, matrixWrapper, matrixClass) {
 
-   sanitizeInput(colInput);
+   sanitizeToInt(colInput);
    let colsToAdd = colInput.value - colInput.dataset.oldValue;
 
    if (colsToAdd > 0) {
@@ -101,7 +101,7 @@ function removeColumns(colsToRemove, rows, columns, matrixWrapper) {
 
 function handleRowChanges(rowInput, columns, matrixWrapper, matrixClass) {
 
-   sanitizeInput(rowInput);
+   sanitizeToInt(rowInput);
    let rowsToAdd = rowInput.value - rowInput.dataset.oldValue;
    rowInput.dataset.oldValue = rowInput.value;
 
