@@ -20,6 +20,7 @@ window.onload = function () {
    createRowList(_rowLists, _rowInput);
    addIncrementBtnListeners("_0");
    addDimInputListeners("_0");
+   addResetButtonListener("_0");
 }
 
 

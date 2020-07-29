@@ -1,5 +1,19 @@
 'use strict';
 
+
+// -----------------------------------------------------------
+// Reset Button
+// -----------------------------------------------------------
+/**
+ * Adds press event listener to reset button for the specified matrix class. 
+ * @param {string} matrixClass The unique class of input elements for the matrix.
+ */
+function addResetButtonListener(matrixClass) {
+   let resetBtn = document.querySelector(`.${matrixClass} .reset-btn`);
+   let matrixWrapper = document.querySelector(`.${matrixClass}.matrix-wrapper`);
+   resetBtn.addEventListener('click', () => matrixWrapper.childNodes.forEach(entry => entry.value = ""));
+}
+
 // -----------------------------------------------------------
 // Plus Minus Button Handlers
 // -----------------------------------------------------------
@@ -55,7 +69,7 @@ function incrementInput(input, decrement = true) {
  * Adds event listeners to the row and column inputs of the specified matrix class. 
  * On change calls the handle row and handle col functions.
  * On focus selects the input text.
- * @param {string} matrixClass 
+ * @param {string} matrixClass The unique class of input elements for the matrix.
  */
 function addDimInputListeners(matrixClass) {
    let rowInput = document.querySelector(`.${matrixClass}.row-in`);
