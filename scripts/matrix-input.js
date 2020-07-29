@@ -63,18 +63,21 @@ function addDimInputListeners(matrixClass) {
    colInput.addEventListener('change', () => handleColChanges(colInput, rowInput, matrixWrapper, matrixClass));
 }
 
+function sanitizeInput(input) {
+   input.value = Math.min(input.value, input.max);
+   input.value = Math.max(input.value, input.min);
+}
+
 function handleRowChanges(rowInput, colInput, matrixWrapper, matrixClass) {
-   let columns = colInput.value;
-   let rows = rowInput.value;
-   let rowsToAdd = rows - rowInput.dataset.oldValue;
+
+   sanitizeInput(rowInput);
+   let rowsToAdd = rowInput.value - rowInput.dataset.oldValue;
    rowInput.dataset.oldValue = rowInput.value;
 
    if (rowsToAdd > 0) {
-      addRows(rowsToAdd, rows, columns, matrixWrapper, matrixClass);
+      addRows(rowsToAdd, rowInput.value, colInput.value, matrixWrapper, matrixClass);
    } else if(rowsToAdd < 0){
-      removeRows(-rowsToAdd, columns, matrixWrapper);
-   } else {
-      console.log("no change");
+      removeRows(-rowsToAdd, colInput.value, matrixWrapper);
    }
 }
 
