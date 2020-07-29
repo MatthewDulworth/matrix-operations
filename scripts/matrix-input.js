@@ -1,8 +1,7 @@
 'use strict';
 
-
 // -----------------------------------------------------------
-// Plus Minus Button Event
+// Plus Minus Button Handlers
 // -----------------------------------------------------------
 /**
  * Adds click event listeners to the plus and minus buttons for the row and column inputs for the given matrix. 
@@ -13,8 +12,8 @@ function addIncrementBtnListeners(matrixClass) {
    let rowDim = document.querySelector(`.${matrixClass} .dim.row`);
    let colDim = document.querySelector(`.${matrixClass} .dim.col`);
 
-   addListenerPerDim(rowDim);
-   addListenerPerDim(colDim);
+   addIncrementBtnListenerPerDim(rowDim);
+   addIncrementBtnListenerPerDim(colDim);
 }
 
 /**
@@ -22,7 +21,7 @@ function addIncrementBtnListeners(matrixClass) {
  * 
  * @param {HTMLElement} dim The wrapper for the inputs.
  */
-function addListenerPerDim(dim) {
+function addIncrementBtnListenerPerDim(dim) {
    let plusBtn = dim.querySelector(".plus-btn");
    let minusBtn = dim.querySelector(".minus-btn");
    let input = dim.querySelector("input");
@@ -48,6 +47,16 @@ function incrementInput(input, decrement = true) {
    triggerEvent(input, 'change');
 }
 
+
+// -----------------------------------------------------------
+// Dimension Input Listeners
+// -----------------------------------------------------------
+/**
+ * Adds event listeners to the row and column inputs of the specified matrix class. 
+ * On change calls the handle row and handle col functions.
+ * On focus selects the input text.
+ * @param {string} matrixClass 
+ */
 function addDimInputListeners(matrixClass) {
    let rowInput = document.querySelector(`.${matrixClass}.row-in`);
    let colInput = document.querySelector(`.${matrixClass}.col-in`);
@@ -56,13 +65,18 @@ function addDimInputListeners(matrixClass) {
    rowInput.dataset.oldValue = rowInput.value;
    colInput.dataset.oldValue = colInput.value;
 
-   rowInput.addEventListener('focus', () => rowInput.dataset.oldValue = rowInput.value);
-   colInput.addEventListener('focus', () => colInput.dataset.oldValue = colInput.value);
+   rowInput.addEventListener('focus', () => rowInput.select());
+   colInput.addEventListener('focus', () => colInput.select());
 
    rowInput.addEventListener('change', () => handleRowChanges(rowInput, colInput.value, matrixWrapper, matrixClass));
    colInput.addEventListener('change', () => handleColChanges(colInput, rowInput.value, matrixWrapper, matrixClass));
 }
 
+/**
+ * Bounds the value of the input element to its min and max, and makes the input value an integer. 
+ * Tries to parse the value into an integer, if it cannot, sets the value to zero.
+ * @param {HTMLElement} input The input element. 
+ */
 function sanitizeToInt(input) {
    let val = parseInt(input.value);
 
@@ -73,6 +87,20 @@ function sanitizeToInt(input) {
    }
 }
 
+
+// -----------------------------------------------------------
+// Handle Column Changes 
+// -----------------------------------------------------------
+
+/**
+ * Handles the changes to a column input.
+ * Adds or removes columns from the appropriate input matrix as necessary.
+ * Sanitizes column input value.  
+ * @param {HTMLElement} colInput The column input for the input matrix.
+ * @param {number} rows The number of rows in the input matrix.
+ * @param {HTMLElement} matrixWrapper The input matrix. 
+ * @param {string} matrixClass The unique class of input elements for the matrix.
+ */
 function handleColChanges(colInput, rows, matrixWrapper, matrixClass) {
 
    sanitizeToInt(colInput);
@@ -89,6 +117,14 @@ function handleColChanges(colInput, rows, matrixWrapper, matrixClass) {
    }
 }
 
+/**
+ * Adds columns to an input matrix.
+ * @param {number} colsToAdd The number of columns to add. 
+ * @param {number} rows The current number of rows of the input matrix. 
+ * @param {number} columns The current number of columns of the input matrix. 
+ * @param {HTMLElement} matrixWrapper The input matrix. 
+ * @param {string} matrixClass The unique class of input elements for the matrix.
+ */
 function addColumns(colsToAdd, rows, columns, matrixWrapper, matrixClass) {
    for (let i = 0; i < colsToAdd; i++) {
       let offset = 0;
@@ -101,16 +137,37 @@ function addColumns(colsToAdd, rows, columns, matrixWrapper, matrixClass) {
    }
 }
 
+/**
+ * Removes columns from an input matrix. 
+ * @param {number} colsToRemove The number of columns to remove. 
+ * @param {number} rows The current number of rows of the input matrix. 
+ * @param {number} columns The current number of columns of the input matrix. 
+ * @param {HTMLElement} matrixWrapper The input matrix. 
+ */
 function removeColumns(colsToRemove, rows, columns, matrixWrapper) {
    for (let i = 0; i < colsToRemove; i++) {
-      for (let j = rows; j > 0; j--) {
-         let colIndex = j * columns - 1;
-         matrixWrapper.removeChild(matrixWrapper.childNodes[colIndex]);
+      for (let row = rows; row > 0; row--) {
+         let elementIndex = row * columns - 1;
+         matrixWrapper.removeChild(matrixWrapper.childNodes[elementIndex]);
       }
       columns--;
    }
 }
 
+
+// -----------------------------------------------------------
+// Handle Row Changes 
+// -----------------------------------------------------------
+
+/**
+ * Handles the changes to a row input.
+ * Adds or removes rows from the appropriate input matrix as necessary. 
+ * Sanitizes row input value.
+ * @param {HTMLElement} rowInput The row input for the input matrix.
+ * @param {number} columns The number of columns in the input matrix.
+ * @param {HTMLElement} matrixWrapper The input matrix. 
+ * @param {string} matrixClass The unique class of input elements for the matrix.
+ */
 function handleRowChanges(rowInput, columns, matrixWrapper, matrixClass) {
 
    sanitizeToInt(rowInput);
@@ -126,6 +183,14 @@ function handleRowChanges(rowInput, columns, matrixWrapper, matrixClass) {
    }
 }
 
+/**
+ * Adds rows to an input matrix. 
+ * @param {number} rowsToAdd The number of rows to add. 
+ * @param {number} rows The current number of rows of the input matrix.
+ * @param {number} columns The current number of columns of the input matrix.
+ * @param {HTMLElement} matrixWrapper The input matrix. 
+ * @param {HTMLElement} matrixClass The unique class of input elements for the matrix.
+ */
 function addRows(rowsToAdd, rows, columns, matrixWrapper, matrixClass) {
    for (let i = 0; i < rowsToAdd; i++) {
       let currentRow = rows + i;
@@ -135,6 +200,12 @@ function addRows(rowsToAdd, rows, columns, matrixWrapper, matrixClass) {
    }
 }
 
+/**
+ * Removes rows from an input matrix. 
+ * @param {number} rowsToRemove The number of rows to remove. 
+ * @param {number} columns The number of columns of the input matrix. 
+ * @param {HTMLElement} matrixWrapper The input matrix.
+ */
 function removeRows(rowsToRemove, columns, matrixWrapper) {
    for (let i = 0; i < rowsToRemove; i++) {
       for (let col = 0; col < columns; col++) {
@@ -142,6 +213,7 @@ function removeRows(rowsToRemove, columns, matrixWrapper) {
       }
    }
 }
+
 
 // -----------------------------------------------------------
 // Generate Matrix Input Grid
