@@ -53,6 +53,9 @@ function addDimInputListeners(matrixClass) {
    let colInput = document.querySelector(`.${matrixClass}.col-in`);
    let matrixWrapper = document.querySelector(`.${matrixClass}.matrix-wrapper`);
 
+   rowInput.dataset.oldValue = rowInput.value;
+   colInput.dataset.oldValue = colInput.value;
+
    rowInput.addEventListener('focus', () => rowInput.dataset.oldValue = rowInput.value);
    colInput.addEventListener('focus', () => colInput.dataset.oldValue = colInput.value);
 
