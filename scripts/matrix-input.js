@@ -66,7 +66,7 @@ function addDimInputListeners(matrixClass) {
 function sanitizeToInt(input) {
    let val = parseInt(input.value);
 
-   if(isNaN(val)){
+   if (isNaN(val)) {
       input.value = 0;
    } else {
       input.value = Math.max(Math.min(val, input.max), input.min);
@@ -77,16 +77,28 @@ function handleColChanges(colInput, rows, matrixWrapper, matrixClass) {
 
    sanitizeToInt(colInput);
    let colsToAdd = colInput.value - colInput.dataset.oldValue;
+   let columns = colInput.dataset.oldValue;
+   colInput.dataset.oldValue = colInput.value;
 
    if (colsToAdd > 0) {
-      console.log("add col");
+      addColumns(colsToAdd, rows, columns, matrixWrapper, matrixClass)
+      matrixWrapper.style.setProperty('grid-template-columns', `repeat(${colInput.value}, auto)`);
    } else if (colsToAdd < 0) {
-      console.log("remove col");
-      removeColumns(-colsToAdd, rows, colInput.dataset.oldValue, matrixWrapper);
+      removeColumns(-colsToAdd, rows, columns, matrixWrapper);
       matrixWrapper.style.setProperty('grid-template-columns', `repeat(${colInput.value}, auto)`);
    }
+}
 
-   colInput.dataset.oldValue = colInput.value;
+function addColumns(colsToAdd, rows, columns, matrixWrapper, matrixClass) {
+   for (let i = 0; i < colsToAdd; i++) {
+      let offset = 0;
+      for (let row = 1; row <= rows; row++) {
+         let colIndex = row * columns + offset;
+         let entry = matrixEntrySpace(row - 1, colIndex, matrixClass);
+         matrixWrapper.insertBefore(entry, matrixWrapper.childNodes[colIndex]);
+         offset++;
+      }
+   }
 }
 
 function removeColumns(colsToRemove, rows, columns, matrixWrapper) {
