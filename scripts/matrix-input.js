@@ -107,8 +107,10 @@ function handleRowChanges(rowInput, columns, matrixWrapper, matrixClass) {
 
    if (rowsToAdd > 0) {
       addRows(rowsToAdd, rowInput.value, columns, matrixWrapper, matrixClass);
+      matrixWrapper.style.setProperty('grid-template-rows', `repeat(${rowInput.value}, auto)`);
    } else if (rowsToAdd < 0) {
       removeRows(-rowsToAdd, columns, matrixWrapper);
+      matrixWrapper.style.setProperty('grid-template-rows', `repeat(${rowInput.value}, auto)`);
    }
 }
 
