@@ -59,8 +59,8 @@ function addDimInputListeners(matrixClass) {
    rowInput.addEventListener('focus', () => rowInput.dataset.oldValue = rowInput.value);
    colInput.addEventListener('focus', () => colInput.dataset.oldValue = colInput.value);
 
-   rowInput.addEventListener('change', () => handleRowChanges(rowInput, colInput, matrixWrapper, matrixClass));
-   colInput.addEventListener('change', () => handleColChanges(colInput, rowInput, matrixWrapper, matrixClass));
+   rowInput.addEventListener('change', () => handleRowChanges(rowInput, colInput.value, matrixWrapper, matrixClass));
+   colInput.addEventListener('change', () => handleColChanges(colInput, rowInput.value, matrixWrapper, matrixClass));
 }
 
 function sanitizeInput(input) {
@@ -68,16 +68,42 @@ function sanitizeInput(input) {
    input.value = Math.max(input.value, input.min);
 }
 
-function handleRowChanges(rowInput, colInput, matrixWrapper, matrixClass) {
+function handleColChanges(colInput, rows, matrixWrapper, matrixClass) {
+
+   sanitizeInput(colInput);
+   let colsToAdd = colInput.value - colInput.dataset.oldValue;
+
+   if (colsToAdd > 0) {
+      console.log("add col");
+   } else if (colsToAdd < 0) {
+      console.log("remove col");
+      removeColumns(-colsToAdd, rows, colInput.dataset.oldValue, matrixWrapper);
+      matrixWrapper.style.setProperty('grid-template-columns', `repeat(${colInput.value}, auto)`);
+   }
+
+   colInput.dataset.oldValue = colInput.value;
+}
+
+function removeColumns(colsToRemove, rows, columns, matrixWrapper) {
+   for (let i = 0; i < colsToRemove; i++) {
+      for (let j = rows; j > 0; j--) {
+         let colIndex = j * columns - 1;
+         matrixWrapper.removeChild(matrixWrapper.childNodes[colIndex]);
+      }
+      columns--;
+   }
+}
+
+function handleRowChanges(rowInput, columns, matrixWrapper, matrixClass) {
 
    sanitizeInput(rowInput);
    let rowsToAdd = rowInput.value - rowInput.dataset.oldValue;
    rowInput.dataset.oldValue = rowInput.value;
 
    if (rowsToAdd > 0) {
-      addRows(rowsToAdd, rowInput.value, colInput.value, matrixWrapper, matrixClass);
-   } else if(rowsToAdd < 0){
-      removeRows(-rowsToAdd, colInput.value, matrixWrapper);
+      addRows(rowsToAdd, rowInput.value, columns, matrixWrapper, matrixClass);
+   } else if (rowsToAdd < 0) {
+      removeRows(-rowsToAdd, columns, matrixWrapper);
    }
 }
 
