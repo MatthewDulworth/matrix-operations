@@ -19,6 +19,7 @@ window.onload = function () {
    createMatrixInput("_0");
    createRowList(_rowLists, _rowInput);
    addIncrementBtnListeners("_0");
+   addDimInputListeners("_0");
 }
 
 

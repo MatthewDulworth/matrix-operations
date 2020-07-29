@@ -27,48 +27,68 @@ function addListenerPerDim(dim) {
    let minusBtn = dim.querySelector(".minus-btn");
    let input = dim.querySelector("input");
 
-   addBtnListener(plusBtn, input);
-   addBtnListener(minusBtn, input, -1);
+   incrementInput(plusBtn, input);
+   plusBtn.addEventListener('click', () => incrementInput(input, true));
+   minusBtn.addEventListener('click', () => incrementInput(input, false))
 }
 
 /**
- * Adds click event listener to the passed plus or minus button.
- * Increments or decrements the input if plus or minus button. 
+ * Increments or decrements the input.
  * Constrained by input max and min.
  * 
- * @param {HTMLElement} btn The button to add the listener to.
  * @param {HTMLElement} input The text input to change.
  * @param {number} sign (optional) pass -1 if btn is a minus-btn.
  */
-function addBtnListener(btn, input, sign = 1) {
-   btn.addEventListener('click', () => {
-      let value = parseInt(input.value) + 1 * sign;
-
-      if (isNaN(value)) {
-         throw Error("input invalid");
-      } else if (value <= parseInt(input.max) && value >= parseInt(input.min)) {
-         input.value = value;
-      }
-   });
+function incrementInput(input, decrement = true) {
+   let sign = (decrement) ? 1 : -1;
+   let value = parseInt(input.value) + 1 * sign;
+   if (value <= parseInt(input.max) && value >= parseInt(input.min)) {
+      input.value = value;
+   }
+   triggerEvent(input, 'change');
 }
 
-function handleRowChanges(matrixClass) {
+function addDimInputListeners(matrixClass) {
+   let rowInput = document.querySelector(`.${matrixClass}.row-in`);
+   let colInput = document.querySelector(`.${matrixClass}.col-in`);
+   let matrixWrapper = document.querySelector(`.${matrixClass}.matrix-wrapper`);
 
-   let columns = document.querySelector(`.col-in.${matrixClass}`).value;
-   let matrixWrapper = document.querySelector(`.matrix-wrapper.${matrixClass}`);
-   let rowInput = document.querySelector(`.row-in.${matrixClass}`);
-   let row = rowInput.value + 1;
+   rowInput.addEventListener('focus', () => rowInput.dataset.oldValue = rowInput.value);
+   colInput.addEventListener('focus', () => colInput.dataset.oldValue = colInput.value);
 
-   if (rowInput.dataset.oldVal < rowInput.value) {
-      for (let col = 0; col < columns; col++) {
-         matrixWrapper.appendChild(matrixEntrySpace(row, col, matrixClass));
-      }
-   } else if (rowInput.dataset.oldVal < rowInput.value) {
-      for (let col = 0; col < columns; col++) {
-         matrixWrapper.lastElementChild.remove();
-      }
+   rowInput.addEventListener('change', () => handleRowChanges(rowInput, colInput, matrixWrapper, matrixClass));
+   colInput.addEventListener('change', () => handleColChanges(colInput, rowInput, matrixWrapper, matrixClass));
+}
+
+function handleRowChanges(rowInput, colInput, matrixWrapper, matrixClass) {
+   let columns = colInput.value;
+   let rows = rowInput.value;
+   let rowsToAdd = rows - rowInput.dataset.oldValue;
+   rowInput.dataset.oldValue = rowInput.value;
+
+   if (rowsToAdd > 0) {
+      addRows(rowsToAdd, rows, columns, matrixWrapper, matrixClass);
+   } else if(rowsToAdd < 0){
+      removeRows(-rowsToAdd, columns, matrixWrapper);
    } else {
-      console.log("huh, thats weird");
+      console.log("no change");
+   }
+}
+
+function addRows(rowsToAdd, rows, columns, matrixWrapper, matrixClass) {
+   for (let i = 0; i < rowsToAdd; i++) {
+      let currentRow = rows + i;
+      for (let col = 0; col < columns; col++) {
+         matrixWrapper.appendChild(matrixEntrySpace(currentRow, col, matrixClass));
+      }
+   }
+}
+
+function removeRows(rowsToRemove, columns, matrixWrapper) {
+   for (let i = 0; i < rowsToRemove; i++) {
+      for (let col = 0; col < columns; col++) {
+         matrixWrapper.removeChild(matrixWrapper.lastChild);
+      }
    }
 }
 
@@ -110,4 +130,19 @@ function matrixEntrySpace(row, column, matrixClass) {
    entrySpace.classList.add(`${matrixClass}_${row}_${column}`);
    entrySpace.addEventListener("focus", () => entrySpace.select());
    return entrySpace;
+}
+
+// adapted from https://plainjs.com/javascript/events/trigger-an-event-11/
+function triggerEvent(el, type) {
+   if ('createEvent' in document) {
+      // modern browsers, IE9+
+      var e = document.createEvent('HTMLEvents');
+      e.initEvent(type, false, true);
+      el.dispatchEvent(e);
+   } else {
+      // IE 8
+      var e = document.createEventObject();
+      e.eventType = type;
+      el.fireEvent('on' + e.eventType, e);
+   }
 }
