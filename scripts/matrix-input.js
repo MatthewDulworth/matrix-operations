@@ -64,8 +64,13 @@ function addDimInputListeners(matrixClass) {
 }
 
 function sanitizeInput(input) {
-   input.value = Math.min(input.value, input.max);
-   input.value = Math.max(input.value, input.min);
+   let val = parseInt(input.value);
+
+   if(isNaN(val)){
+      input.value = 0;
+   } else {
+      input.value = Math.max(Math.min(val, input.max), input.min);
+   }
 }
 
 function handleColChanges(colInput, rows, matrixWrapper, matrixClass) {
