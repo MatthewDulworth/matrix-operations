@@ -1,17 +1,103 @@
 'use strict';
 
+let _matrix = [];
+
+
+// -----------------------------------------------------------
+// Init Input Matrix.
+// -----------------------------------------------------------
+/**
+ * Creates the initial input matrix and adds event listeners to all buttons and inputs related to the matrix.
+ * @param {string} matrixClass The unique class of input elements for the matrix.
+ */
+function initInputMatrix(matrixClass) {
+   createMatrixInput(matrixClass);
+   addCreateMatrixButtonListener(matrixClass);
+   addResetButtonListener(matrixClass);
+   addIncrementBtnListeners(matrixClass);
+   addDimInputListeners(matrixClass);
+}
+
+// -----------------------------------------------------------
+// Create Matrix Button
+// -----------------------------------------------------------
+/**
+ * Adds click event listener to the create matrix button. 
+ * @param {string} matrixClass The unique class of input elements for the matrix.
+ */
+function addCreateMatrixButtonListener(matrixClass) {
+   let createBtn = document.querySelector(`.${matrixClass} .create-btn`);
+   let inputMatrix = document.querySelector(`.${matrixClass}.input-matrix`);
+   createBtn.addEventListener('click', () => {
+      if (createBtn.textContent === "Create Matrix") {
+         let rows = document.querySelector(`.${matrixClass}.row-in`).value;
+         let columns = document.querySelector(`.${matrixClass}.col-in`).value;
+         populateMatrix(rows, columns, inputMatrix);
+         generateMatrix(rows, columns, matrixClass);
+         inputMatrix.classList.add("display-none");
+      } else {
+
+      }
+   });
+}
+
+/**
+ * 
+ * @param {string[][]} matrix 
+ * @param {HTMLElement} inputMatrix 
+ * @param {string} matrixClass 
+ */
+function populateMatrix(rows, columns, inputMatrix) {
+   let matrix = [];
+
+   for (let row = 0; row < rows; row++) {
+      matrix[row] = [];
+      for (let col = 0; col < columns; col++) {
+         let index = row * columns + col;
+         matrix[row][col] = inputMatrix.childNodes[index].value;
+      }
+   }
+
+   _matrix = matrix;
+   console.log(_matrix);
+}
+
+/**
+ * 
+ * @param {string[][]} matrix 
+ * @param {string} matrixClass 
+ */
+function generateMatrix(rows, columns, matrixClass) {
+   let finalMatrix = document.querySelector(`.${matrixClass}.final-matrix`);
+   finalMatrix.innerHTML = "";
+
+   for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < columns; col++) {
+         let entry = document.createElement('div');
+         entry.textContent = _matrix[row][col];
+         finalMatrix.appendChild(entry);
+      }
+   }
+
+   finalMatrix.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
+   finalMatrix.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
+   finalMatrix.classList.remove("display-none");
+
+   console.log(_matrix);
+}
 
 // -----------------------------------------------------------
 // Reset Button
 // -----------------------------------------------------------
 /**
- * Adds press event listener to reset button for the specified matrix class. 
+ * Adds click event listener to reset button for the specified matrix class.
+ * Sets all the value of all entries in the input matrix to nothing. 
  * @param {string} matrixClass The unique class of input elements for the matrix.
  */
 function addResetButtonListener(matrixClass) {
    let resetBtn = document.querySelector(`.${matrixClass} .reset-btn`);
-   let matrixWrapper = document.querySelector(`.${matrixClass}.matrix-wrapper`);
-   resetBtn.addEventListener('click', () => matrixWrapper.childNodes.forEach(entry => entry.value = ""));
+   let inputMatrix = document.querySelector(`.${matrixClass}.input-matrix`);
+   resetBtn.addEventListener('click', () => inputMatrix.childNodes.forEach(entry => entry.value = ""));
 }
 
 // -----------------------------------------------------------
@@ -74,7 +160,7 @@ function incrementInput(input, decrement = true) {
 function addDimInputListeners(matrixClass) {
    let rowInput = document.querySelector(`.${matrixClass}.row-in`);
    let colInput = document.querySelector(`.${matrixClass}.col-in`);
-   let matrixWrapper = document.querySelector(`.${matrixClass}.matrix-wrapper`);
+   let inputMatrix = document.querySelector(`.${matrixClass}.input-matrix`);
 
    rowInput.dataset.oldValue = rowInput.value;
    colInput.dataset.oldValue = colInput.value;
@@ -82,8 +168,8 @@ function addDimInputListeners(matrixClass) {
    rowInput.addEventListener('focus', () => rowInput.select());
    colInput.addEventListener('focus', () => colInput.select());
 
-   rowInput.addEventListener('change', () => handleRowChanges(rowInput, colInput.value, matrixWrapper, matrixClass));
-   colInput.addEventListener('change', () => handleColChanges(colInput, rowInput.value, matrixWrapper, matrixClass));
+   rowInput.addEventListener('change', () => handleRowChanges(rowInput, colInput.value, inputMatrix, matrixClass));
+   colInput.addEventListener('change', () => handleColChanges(colInput, rowInput.value, inputMatrix, matrixClass));
 }
 
 /**
@@ -112,10 +198,10 @@ function sanitizeToInt(input) {
  * Sanitizes column input value.  
  * @param {HTMLElement} colInput The column input for the input matrix.
  * @param {number} rows The number of rows in the input matrix.
- * @param {HTMLElement} matrixWrapper The input matrix. 
+ * @param {HTMLElement} inputMatrix The input matrix. 
  * @param {string} matrixClass The unique class of input elements for the matrix.
  */
-function handleColChanges(colInput, rows, matrixWrapper, matrixClass) {
+function handleColChanges(colInput, rows, inputMatrix, matrixClass) {
 
    sanitizeToInt(colInput);
    let colsToAdd = colInput.value - colInput.dataset.oldValue;
@@ -123,11 +209,11 @@ function handleColChanges(colInput, rows, matrixWrapper, matrixClass) {
    colInput.dataset.oldValue = colInput.value;
 
    if (colsToAdd > 0) {
-      addColumns(colsToAdd, rows, columns, matrixWrapper, matrixClass)
-      matrixWrapper.style.setProperty('grid-template-columns', `repeat(${colInput.value}, auto)`);
+      addColumns(colsToAdd, rows, columns, inputMatrix, matrixClass)
+      inputMatrix.style.setProperty('grid-template-columns', `repeat(${colInput.value}, auto)`);
    } else if (colsToAdd < 0) {
-      removeColumns(-colsToAdd, rows, columns, matrixWrapper);
-      matrixWrapper.style.setProperty('grid-template-columns', `repeat(${colInput.value}, auto)`);
+      removeColumns(-colsToAdd, rows, columns, inputMatrix);
+      inputMatrix.style.setProperty('grid-template-columns', `repeat(${colInput.value}, auto)`);
    }
 }
 
@@ -136,16 +222,16 @@ function handleColChanges(colInput, rows, matrixWrapper, matrixClass) {
  * @param {number} colsToAdd The number of columns to add. 
  * @param {number} rows The current number of rows of the input matrix. 
  * @param {number} columns The current number of columns of the input matrix. 
- * @param {HTMLElement} matrixWrapper The input matrix. 
+ * @param {HTMLElement} inputMatrix The input matrix. 
  * @param {string} matrixClass The unique class of input elements for the matrix.
  */
-function addColumns(colsToAdd, rows, columns, matrixWrapper, matrixClass) {
+function addColumns(colsToAdd, rows, columns, inputMatrix, matrixClass) {
    for (let i = 0; i < colsToAdd; i++) {
       let offset = 0;
       for (let row = 1; row <= rows; row++) {
          let colIndex = row * columns + offset;
          let entry = matrixEntrySpace(row - 1, colIndex, matrixClass);
-         matrixWrapper.insertBefore(entry, matrixWrapper.childNodes[colIndex]);
+         inputMatrix.insertBefore(entry, inputMatrix.childNodes[colIndex]);
          offset++;
       }
    }
@@ -156,13 +242,13 @@ function addColumns(colsToAdd, rows, columns, matrixWrapper, matrixClass) {
  * @param {number} colsToRemove The number of columns to remove. 
  * @param {number} rows The current number of rows of the input matrix. 
  * @param {number} columns The current number of columns of the input matrix. 
- * @param {HTMLElement} matrixWrapper The input matrix. 
+ * @param {HTMLElement} inputMatrix The input matrix. 
  */
-function removeColumns(colsToRemove, rows, columns, matrixWrapper) {
+function removeColumns(colsToRemove, rows, columns, inputMatrix) {
    for (let i = 0; i < colsToRemove; i++) {
       for (let row = rows; row > 0; row--) {
          let elementIndex = row * columns - 1;
-         matrixWrapper.removeChild(matrixWrapper.childNodes[elementIndex]);
+         inputMatrix.removeChild(inputMatrix.childNodes[elementIndex]);
       }
       columns--;
    }
@@ -179,21 +265,21 @@ function removeColumns(colsToRemove, rows, columns, matrixWrapper) {
  * Sanitizes row input value.
  * @param {HTMLElement} rowInput The row input for the input matrix.
  * @param {number} columns The number of columns in the input matrix.
- * @param {HTMLElement} matrixWrapper The input matrix. 
+ * @param {HTMLElement} inputMatrix The input matrix. 
  * @param {string} matrixClass The unique class of input elements for the matrix.
  */
-function handleRowChanges(rowInput, columns, matrixWrapper, matrixClass) {
+function handleRowChanges(rowInput, columns, inputMatrix, matrixClass) {
 
    sanitizeToInt(rowInput);
    let rowsToAdd = rowInput.value - rowInput.dataset.oldValue;
    rowInput.dataset.oldValue = rowInput.value;
 
    if (rowsToAdd > 0) {
-      addRows(rowsToAdd, rowInput.value, columns, matrixWrapper, matrixClass);
-      matrixWrapper.style.setProperty('grid-template-rows', `repeat(${rowInput.value}, auto)`);
+      addRows(rowsToAdd, rowInput.value, columns, inputMatrix, matrixClass);
+      inputMatrix.style.setProperty('grid-template-rows', `repeat(${rowInput.value}, auto)`);
    } else if (rowsToAdd < 0) {
-      removeRows(-rowsToAdd, columns, matrixWrapper);
-      matrixWrapper.style.setProperty('grid-template-rows', `repeat(${rowInput.value}, auto)`);
+      removeRows(-rowsToAdd, columns, inputMatrix);
+      inputMatrix.style.setProperty('grid-template-rows', `repeat(${rowInput.value}, auto)`);
    }
 }
 
@@ -202,14 +288,14 @@ function handleRowChanges(rowInput, columns, matrixWrapper, matrixClass) {
  * @param {number} rowsToAdd The number of rows to add. 
  * @param {number} rows The current number of rows of the input matrix.
  * @param {number} columns The current number of columns of the input matrix.
- * @param {HTMLElement} matrixWrapper The input matrix. 
+ * @param {HTMLElement} inputMatrix The input matrix. 
  * @param {HTMLElement} matrixClass The unique class of input elements for the matrix.
  */
-function addRows(rowsToAdd, rows, columns, matrixWrapper, matrixClass) {
+function addRows(rowsToAdd, rows, columns, inputMatrix, matrixClass) {
    for (let i = 0; i < rowsToAdd; i++) {
       let currentRow = rows + i;
       for (let col = 0; col < columns; col++) {
-         matrixWrapper.appendChild(matrixEntrySpace(currentRow, col, matrixClass));
+         inputMatrix.appendChild(matrixEntrySpace(currentRow, col, matrixClass));
       }
    }
 }
@@ -218,12 +304,12 @@ function addRows(rowsToAdd, rows, columns, matrixWrapper, matrixClass) {
  * Removes rows from an input matrix. 
  * @param {number} rowsToRemove The number of rows to remove. 
  * @param {number} columns The number of columns of the input matrix. 
- * @param {HTMLElement} matrixWrapper The input matrix.
+ * @param {HTMLElement} inputMatrix The input matrix.
  */
-function removeRows(rowsToRemove, columns, matrixWrapper) {
+function removeRows(rowsToRemove, columns, inputMatrix) {
    for (let i = 0; i < rowsToRemove; i++) {
       for (let col = 0; col < columns; col++) {
-         matrixWrapper.removeChild(matrixWrapper.lastChild);
+         inputMatrix.removeChild(inputMatrix.lastChild);
       }
    }
 }
@@ -239,17 +325,17 @@ function removeRows(rowsToRemove, columns, matrixWrapper) {
 function createMatrixInput(matrixClass) {
    let rows = document.querySelector(`.row-in.${matrixClass}`).value;
    let columns = document.querySelector(`.col-in.${matrixClass}`).value;
-   let matrixWrapper = document.querySelector(`.matrix-wrapper.${matrixClass}`);
-   matrixWrapper.innerHTML = "";
+   let inputMatrix = document.querySelector(`.input-matrix.${matrixClass}`);
+   inputMatrix.innerHTML = "";
 
    for (let row = 0; row < rows; row++) {
       for (let col = 0; col < columns; col++) {
-         matrixWrapper.appendChild(matrixEntrySpace(row, col, matrixClass));
+         inputMatrix.appendChild(matrixEntrySpace(row, col, matrixClass));
       }
    }
 
-   matrixWrapper.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
-   matrixWrapper.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
+   inputMatrix.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
+   inputMatrix.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
 }
 
 /**

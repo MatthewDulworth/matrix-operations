@@ -16,11 +16,8 @@ const _rowLists = document.querySelectorAll(".row-list");
  * Generate an input matrix on startup.
  */
 window.onload = function () {
-   createMatrixInput("_0");
+   initInputMatrix("_0");
    createRowList(_rowLists, _rowInput);
-   addIncrementBtnListeners("_0");
-   addDimInputListeners("_0");
-   addResetButtonListener("_0");
 }
 
 

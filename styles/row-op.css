@@ -25,7 +25,24 @@ nav {
 
 /********* input *********/
 
-.matrix-wrapper {
+.final-matrix {
+   display: grid;
+   padding: 4px 6px;
+   margin: 10px;
+   column-gap: 12px;
+   border: 1px solid black;
+}
+
+.final-matrix div{
+   text-align: center;
+   min-width: 1rem;
+}
+
+.display-none {
+   display: none !important;
+}
+
+.input-matrix {
    border-top: 1px solid black;
    padding-top: 5px;
    margin-top: 7px;
@@ -35,6 +52,7 @@ nav {
 }
 
 .entry {
+   text-align: right;
    max-width: 2rem;
 }
 
@@ -55,4 +73,19 @@ nav {
 
 #operations-menu button {
    margin-left: 0.5rem;
+}
+
+.a {
+   display: flex;
+   justify-content: center;
+}
+
+.matrix-end {
+   display: grid;
+   padding: 4px 6px;
+   margin: 10px;
+   grid-template-rows: repeat(3, auto);
+   grid-template-columns: repeat(3, auto);
+   column-gap: 12px;
+   border: 1px solid black;
 }
