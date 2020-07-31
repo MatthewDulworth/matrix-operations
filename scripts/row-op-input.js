@@ -3,8 +3,8 @@
 // -----------------------------------------------------------
 // Variables
 // -----------------------------------------------------------
-const _matrixInput = findMatrixInput("_0");
-const mi = new MatrixInput("_0");
+/**@type {MatrixInput} */
+let _matrixInput; 
 
 /**@type {string[][]} */
 const _matrix = [];
@@ -16,7 +16,7 @@ const _matrix = [];
  * Generate an input matrix on startup.
  */
 window.onload = function () {
-   initInputMatrix(_matrixInput);
+   _matrixInput = new MatrixInput("_0");
 }
 
 // -----------------------------------------------------------
