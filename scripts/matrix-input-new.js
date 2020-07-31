@@ -13,14 +13,14 @@ class DimensionInput {
       this.input = document.querySelector(`.${matrixClass} .${type}-in`);
       this.plusBtn = document.querySelector(`.${matrixClass} .${type} .plus-btn`);
       this.minusBtn = document.querySelector(`.${matrixClass} .${type} .minus-btn`);
-      this.oldValue = this.input.value;
+      this.oldValue = this.validateInput();
    }
-   
+
    /**
     * Attempts to parse the input value to an integer, if it cannot it sets the input to min. 
     * Constrains the input value to the html max and min.
     * Updates the input value html to the validated input.
-    * @returns {string} A string integer between  
+    * @returns {string} A string integer between the min and max.
     */
    validateInput() {
       let val = parseInt(this.input.value);
@@ -31,7 +31,8 @@ class DimensionInput {
          val = Math.min(val, this.input.max);
          val = Math.max(val, this.input.min);
       }
-      return this.input.value = val;
+      this.input.value = val;
+      return this.input.value;
    }
 }
 
@@ -117,14 +118,14 @@ class MatrixInput {
     * @returns {number} The number of rows the matrix has. 
     */
    rows() {
-      return this.row.input.value;
+      return parseInt(this.row.validateInput());
    }
 
    /**
     * @returns {number} The number of columns the matrix has. 
     */
    columns() {
-      return this.col.input.value;
+      return parseInt(this.col.validateInput());
    }
 
    /**
@@ -139,7 +140,7 @@ class MatrixInput {
     * @param {number} column The column of the entry.
     * @returns {string} The value of the entry at 
     */
-   entryValue(row, column) {
+   entry(row, column) {
       const index = row * this.columns() + column;
 
       if (index < 0 || index >= this.matrix.childNodes.length) {
