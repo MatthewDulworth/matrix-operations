@@ -4,9 +4,10 @@
 // Variables
 // -----------------------------------------------------------
 const _matrixInput = findMatrixInput("_0");
+const mi = new MatrixInput("_0");
 
 /**@type {string[][]} */
-const _matrix_ = [];
+const _matrix = [];
 
 // -----------------------------------------------------------
 // Startup Code
@@ -15,7 +16,7 @@ const _matrix_ = [];
  * Generate an input matrix on startup.
  */
 window.onload = function () {
-   initInputMatrix("_0");
+   initInputMatrix(_matrixInput);
 }
 
 // -----------------------------------------------------------
@@ -89,18 +90,20 @@ function findMatrixInput(matrixClass) {
 
    MatrixInput.row = {};
    MatrixInput.row.input = document.querySelector(`.${matrixClass} .row-in`);
-   MatrixInput.row.plusBtn = document.querySelector(`.${matrixClass} .plus-btn`);
-   MatrixInput.row.minusBtn = document.querySelector(`.${matrixClass} .minus-btn`);
+   MatrixInput.row.plusBtn = document.querySelector(`.${matrixClass} .row .plus-btn`);
+   MatrixInput.row.minusBtn = document.querySelector(`.${matrixClass} .row .minus-btn`);
 
    MatrixInput.col = {};
    MatrixInput.col.input = document.querySelector(`.${matrixClass} .col-in`);
-   MatrixInput.col.plusBtn = document.querySelector(`.${matrixClass} .plus-btn`);
-   MatrixInput.col.minusBtn = document.querySelector(`.${matrixClass} .minus-btn`);
+   MatrixInput.col.plusBtn = document.querySelector(`.${matrixClass} .col .plus-btn`);
+   MatrixInput.col.minusBtn = document.querySelector(`.${matrixClass} .col .minus-btn`);
 
    MatrixInput.resetBtn = document.querySelector(`.${matrixClass} .reset-btn`);
    MatrixInput.createBtn = document.querySelector(`.${matrixClass} .create-btn`);
 
    MatrixInput.matrix = document.querySelector(`.${matrixClass}.input-matrix`);
+   MatrixInput.class = matrixClass;
 
    return MatrixInput;
 }
+

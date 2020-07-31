@@ -1,8 +1,5 @@
 'use strict';
 
-let _matrix = [];
-
-
 // -----------------------------------------------------------
 // Init Input Matrix.
 // -----------------------------------------------------------
@@ -10,58 +7,17 @@ let _matrix = [];
  * Creates the initial input matrix and adds event listeners to all buttons and inputs related to the matrix.
  * @param {string} matrixClass The unique class of input elements for the matrix.
  */
-function initInputMatrix(matrixClass) {
-   createMatrixInput(matrixClass);
-   addCreateMatrixButtonListener(matrixClass);
-   addResetButtonListener(matrixClass);
-   addIncrementBtnListeners(matrixClass);
-   addDimInputListeners(matrixClass);
+function initInputMatrix(matrixInput) {
+
+   createMatrixInput(matrixInput);
+   addResetButtonListener(matrixInput);
+   addIncrementBtnListeners(matrixInput);
+   addDimInputListeners(matrixInput);
 }
 
 // -----------------------------------------------------------
 // Create Matrix Button
 // -----------------------------------------------------------
-/**
- * Adds click event listener to the create matrix button. 
- * @param {string} matrixClass The unique class of input elements for the matrix.
- */
-function addCreateMatrixButtonListener(matrixClass) {
-   let createBtn = document.querySelector(`.${matrixClass} .create-btn`);
-   let inputMatrix = document.querySelector(`.${matrixClass}.input-matrix`);
-   createBtn.addEventListener('click', () => {
-      if (createBtn.textContent === "Create Matrix") {
-         let rows = document.querySelector(`.${matrixClass}.row-in`).value;
-         let columns = document.querySelector(`.${matrixClass}.col-in`).value;
-         populateMatrix(rows, columns, inputMatrix);
-         generateMatrix(rows, columns, matrixClass);
-         inputMatrix.classList.add("display-none");
-      } else {
-
-      }
-   });
-}
-
-/**
- * 
- * @param {string[][]} matrix 
- * @param {HTMLElement} inputMatrix 
- * @param {string} matrixClass 
- */
-function populateMatrix(rows, columns, inputMatrix) {
-   let matrix = [];
-
-   for (let row = 0; row < rows; row++) {
-      matrix[row] = [];
-      for (let col = 0; col < columns; col++) {
-         let index = row * columns + col;
-         matrix[row][col] = inputMatrix.childNodes[index].value;
-      }
-   }
-
-   _matrix = matrix;
-   console.log(_matrix);
-}
-
 /**
  * 
  * @param {string[][]} matrix 
@@ -92,12 +48,10 @@ function generateMatrix(rows, columns, matrixClass) {
 /**
  * Adds click event listener to reset button for the specified matrix class.
  * Sets all the value of all entries in the input matrix to nothing. 
- * @param {string} matrixClass The unique class of input elements for the matrix.
+ * @param {string} matrixInput
  */
-function addResetButtonListener(matrixClass) {
-   let resetBtn = document.querySelector(`.${matrixClass} .reset-btn`);
-   let inputMatrix = document.querySelector(`.${matrixClass}.input-matrix`);
-   resetBtn.addEventListener('click', () => inputMatrix.childNodes.forEach(entry => entry.value = ""));
+function addResetButtonListener(matrixInput) {
+   matrixInput.resetBtn.addEventListener('click', () => matrixInput.matrix.childNodes.forEach(entry => entry.value = ""));
 }
 
 // -----------------------------------------------------------
@@ -105,30 +59,13 @@ function addResetButtonListener(matrixClass) {
 // -----------------------------------------------------------
 /**
  * Adds click event listeners to the plus and minus buttons for the row and column inputs for the given matrix. 
- * 
- * @param {string} matrixClass The unique class of input elements for the matrix.
+ * @param {string} matrixInput 
  */
-function addIncrementBtnListeners(matrixClass) {
-   let rowDim = document.querySelector(`.${matrixClass} .dim.row`);
-   let colDim = document.querySelector(`.${matrixClass} .dim.col`);
-
-   addIncrementBtnListenerPerDim(rowDim);
-   addIncrementBtnListenerPerDim(colDim);
-}
-
-/**
- * Adds click event listeners to the plus and minus buttons for the passed dimension input (row or col).
- * 
- * @param {HTMLElement} dim The wrapper for the inputs.
- */
-function addIncrementBtnListenerPerDim(dim) {
-   let plusBtn = dim.querySelector(".plus-btn");
-   let minusBtn = dim.querySelector(".minus-btn");
-   let input = dim.querySelector("input");
-
-   incrementInput(plusBtn, input);
-   plusBtn.addEventListener('click', () => incrementInput(input, true));
-   minusBtn.addEventListener('click', () => incrementInput(input, false))
+function addIncrementBtnListeners(matrixInput) {
+   matrixInput.row.plusBtn.addEventListener('click', () => incrementInput(matrixInput.row.input, true));
+   matrixInput.row.minusBtn.addEventListener('click', () => incrementInput(matrixInput.row.input, false));
+   matrixInput.col.plusBtn.addEventListener('click', () => incrementInput(matrixInput.col.input, true));
+   matrixInput.col.minusBtn.addEventListener('click', () => incrementInput(matrixInput.col.input, false));
 }
 
 /**
@@ -155,21 +92,21 @@ function incrementInput(input, decrement = true) {
  * Adds event listeners to the row and column inputs of the specified matrix class. 
  * On change calls the handle row and handle col functions.
  * On focus selects the input text.
- * @param {string} matrixClass The unique class of input elements for the matrix.
+ * @param {Object} matrixInput The unique class of input elements for the matrix.
  */
-function addDimInputListeners(matrixClass) {
-   let rowInput = document.querySelector(`.${matrixClass}.row-in`);
-   let colInput = document.querySelector(`.${matrixClass}.col-in`);
-   let inputMatrix = document.querySelector(`.${matrixClass}.input-matrix`);
+function addDimInputListeners(matrixInput) {
 
-   rowInput.dataset.oldValue = rowInput.value;
-   colInput.dataset.oldValue = colInput.value;
+   let rows = matrixInput.row.input.value;
+   let cols = matrixInput.col.input.value;
+  
+   matrixInput.row.input.dataset.oldValue = rows;
+   matrixInput.col.input.dataset.oldValue = cols;
 
-   rowInput.addEventListener('focus', () => rowInput.select());
-   colInput.addEventListener('focus', () => colInput.select());
+   matrixInput.row.input.addEventListener('focus', () => matrixInput.row.input.select());
+   matrixInput.col.input.addEventListener('focus', () => matrixInput.col.input.select());
 
-   rowInput.addEventListener('change', () => handleRowChanges(rowInput, colInput.value, inputMatrix, matrixClass));
-   colInput.addEventListener('change', () => handleColChanges(colInput, rowInput.value, inputMatrix, matrixClass));
+   matrixInput.row.input.addEventListener('change', () => handleRowChanges(matrixInput.row.input, cols, matrixInput.matrix, matrixInput.class));
+   matrixInput.col.input.addEventListener('change', () => handleColChanges(matrixInput.col.input, rows, matrixInput.matrix, matrixInput.class));
 }
 
 /**
@@ -320,22 +257,21 @@ function removeRows(rowsToRemove, columns, inputMatrix) {
 // -----------------------------------------------------------
 /**
  * Generates an input grid for a matrix. 
- * @param {string} matrixClass The unique class of input elements for the matrix.
+ * @param {Object} matrixInput 
  */
-function createMatrixInput(matrixClass) {
-   let rows = document.querySelector(`.row-in.${matrixClass}`).value;
-   let columns = document.querySelector(`.col-in.${matrixClass}`).value;
-   let inputMatrix = document.querySelector(`.input-matrix.${matrixClass}`);
-   inputMatrix.innerHTML = "";
+function createMatrixInput(matrixInput) {
+   let rows = matrixInput.row.input.value;
+   let columns = matrixInput.col.input.value;
+   matrixInput.matrix.innerHTML = "";
 
    for (let row = 0; row < rows; row++) {
       for (let col = 0; col < columns; col++) {
-         inputMatrix.appendChild(matrixEntrySpace(row, col, matrixClass));
+         matrixInput.matrix.appendChild(matrixEntrySpace(row, col, matrixInput.class));
       }
    }
 
-   inputMatrix.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
-   inputMatrix.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
+   matrixInput.matrix.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
+   matrixInput.matrix.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
 }
 
 /**
