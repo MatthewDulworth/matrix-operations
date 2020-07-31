@@ -15,6 +15,24 @@ class DimensionInput {
       this.minusBtn = document.querySelector(`.${matrixClass} .${type} .minus-btn`);
       this.oldValue = this.input.value;
    }
+   
+   /**
+    * Attempts to parse the input value to an integer, if it cannot it sets the input to min. 
+    * Constrains the input value to the html max and min.
+    * Updates the input value html to the validated input.
+    * @returns {string} A string integer between  
+    */
+   validateInput() {
+      let val = parseInt(this.input.value);
+
+      if (isNaN(val)) {
+         val = this.input.min;
+      } else {
+         val = Math.min(val, this.input.max);
+         val = Math.max(val, this.input.min);
+      }
+      return this.input.value = val;
+   }
 }
 
 /**
@@ -64,7 +82,6 @@ class MatrixInput {
             this.matrix.appendChild(this.createMatrixEntry(row, col, this.class));
          }
       }
-
       this.matrix.style.setProperty('grid-template-rows', `repeat(${this.rows()}, auto)`);
       this.matrix.style.setProperty('grid-template-columns', `repeat(${this.columns()}, auto)`);
    }
