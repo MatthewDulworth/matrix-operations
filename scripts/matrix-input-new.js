@@ -7,20 +7,50 @@ class DimensionInput {
    /**
     * Adds the event listeners to the buttons/input. 
     * @param {string} matrixClass The unique html class of the input matrix. 
-    * @param {string} type row or col.
+    * @param {string} type "row" or "col".
     */
    constructor(matrixClass, type) {
+
+      if(type !== "row" && type !== "col") {
+         throw Error('Invalid Input, type must be either "row" or "col"');
+      }
+
       this.input = document.querySelector(`.${matrixClass} .${type}-in`);
       this.plusBtn = document.querySelector(`.${matrixClass} .${type} .plus-btn`);
       this.minusBtn = document.querySelector(`.${matrixClass} .${type} .minus-btn`);
+
+      if(this.input === null || this.plusBtn === null || this.minusBtn === null){
+         throw Error("Input Elements Are Null");
+      }
+
       this.oldValue = this.validateInput();
+      this.addIncrementButtonListeners();
+   }
+
+   /**
+    * Adds click event listeners to the plus and minus buttons.
+    * The plus button increments the input by 1, while the minus increments it by -1.
+    */
+   addIncrementButtonListeners() {
+      this.plusBtn.addEventListener('click', () => this.incrementInput(1));
+      this.minusBtn.addEventListener('click', () => this.incrementInput(-1));
+   }
+
+   /**
+    * Increments the input value by the given amount then validates the input. 
+    * @param {number} increment The amount to increment by. 
+    * @returns {number} Incremented, validated input value.
+    */
+   incrementInput(increment) {;
+      this.input.value = this.validateInput() + increment;
+      return this.validateInput();
    }
 
    /**
     * Attempts to parse the input value to an integer, if it cannot it sets the input to min. 
     * Constrains the input value to the html max and min.
     * Updates the input value html to the validated input.
-    * @returns {string} A string integer between the min and max.
+    * @returns {number} An integer between the min and max.
     */
    validateInput() {
       let val = parseInt(this.input.value);
@@ -32,7 +62,7 @@ class DimensionInput {
          val = Math.max(val, this.input.min);
       }
       this.input.value = val;
-      return this.input.value;
+      return val;
    }
 }
 
@@ -51,6 +81,10 @@ class MatrixInput {
       this.resetBtn = document.querySelector(`.${matrixClass} .reset-btn`);
       this.createBtn = document.querySelector(`.${matrixClass} .create-btn`);
       this.matrix = document.querySelector(`.${matrixClass}.input-matrix`);
+
+      if(this.resetBtn === null || this.createBtn === null || this.matrix === null) {
+         throw Error("Input Elements Are Null")
+      }
 
       this.row = new DimensionInput(matrixClass, "row");
       this.col = new DimensionInput(matrixClass, "col");
@@ -144,7 +178,7 @@ class MatrixInput {
       const index = row * this.columns() + column;
 
       if (index < 0 || index >= this.matrix.childNodes.length) {
-         throw Error("Invalid index");
+         throw Error("Invalid Index");
       } else {
          return this.matrix.childNodes[index];
       }
