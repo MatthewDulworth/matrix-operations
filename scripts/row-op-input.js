@@ -3,10 +3,7 @@
 // -----------------------------------------------------------
 // Variables
 // -----------------------------------------------------------
-const _rowInput = document.querySelector(".row-in");
-const _columnInput = document.querySelector(".col-in");
-const _matrixWrapper = document.querySelector(".matrix-wrapper");
-const _rowLists = document.querySelectorAll(".row-list");
+const _matrixInput = findMatrixInput("_0");
 
 /**@type {string[][]} */
 const _matrix_ = [];
@@ -19,35 +16,31 @@ const _matrix_ = [];
  */
 window.onload = function () {
    initInputMatrix("_0");
-   createRowList(_rowLists, _rowInput);
 }
 
 // -----------------------------------------------------------
 // Functions
 // -----------------------------------------------------------
 /**
- * Generates the lists of rows to be used in selecting a row.
- * @param {NodeList} rowLists The select elements.
- * @param {HTMLElement} rowInput The row input for the matrix.
- */
-function createRowList(rowLists, rowInput) {
-   if (rowLists.length > 0) {
-      let rows = rowInput.value;
-      let options = "";
-      for (let row = 1; row <= rows; row++) {
-         options += `<option value=${row}>${row}</option>`;
-      }
-      rowLists.forEach(list => list.innerHTML = options);
-   }
-}
-
-/**
  * Generates a matrix (2d array of strings) from the values of a a given input matrix. 
  * @param {HTMLElement} inputMatrix 
  * @returns {string[][]}
  */
-function generateMatrix(inputMatrix) {
+function generateMatrix(inputMatrix, rows, columns) {
+   let matrix = [];
 
+   for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < columns; col++) {
+         let entry = inputMatrix.childNodes[row * columns + col].value;
+         entry = removeWhiteSpace(entry);
+
+         if (inputIsValid(entry)) {
+            matrix[row][col] = entry;
+         } else {
+            throw Error("invalid input");
+         }
+      }
+   }
 }
 
 /**
@@ -84,4 +77,30 @@ function inputIsValid(value) {
  */
 function removeWhiteSpace(str) {
    return str.replace(/\s+/g, '');
+}
+
+/**
+ * Creates an object holding all the various inputs for a given matrix.
+ * 
+ * @param {string} matrixClass The unique class that of the matrix inputs.
+ */
+function findMatrixInput(matrixClass) {
+   let MatrixInput = {};
+
+   MatrixInput.row = {};
+   MatrixInput.row.input = document.querySelector(`.${matrixClass} .row-in`);
+   MatrixInput.row.plusBtn = document.querySelector(`.${matrixClass} .plus-btn`);
+   MatrixInput.row.minusBtn = document.querySelector(`.${matrixClass} .minus-btn`);
+
+   MatrixInput.col = {};
+   MatrixInput.col.input = document.querySelector(`.${matrixClass} .col-in`);
+   MatrixInput.col.plusBtn = document.querySelector(`.${matrixClass} .plus-btn`);
+   MatrixInput.col.minusBtn = document.querySelector(`.${matrixClass} .minus-btn`);
+
+   MatrixInput.resetBtn = document.querySelector(`.${matrixClass} .reset-btn`);
+   MatrixInput.createBtn = document.querySelector(`.${matrixClass} .create-btn`);
+
+   MatrixInput.matrix = document.querySelector(`.${matrixClass}.input-matrix`);
+
+   return MatrixInput;
 }
