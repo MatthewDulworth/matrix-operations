@@ -24,7 +24,6 @@ class DimensionInput {
  * Holds behaviour for them as well. 
  */
 class MatrixInput {
-
    /**
     * Generates an initial input matrix and adds the event listeners to the buttons. 
     * @param {string} matrixClass The unique html class of the input matrix.
@@ -43,15 +42,12 @@ class MatrixInput {
 
 
    // -----------------------------------------------------------
-   // Create Matrix
+   // Setup
    // -----------------------------------------------------------
-
    /**
     * Generates the initial entries for the input matrix. 
     */
    initMatrix() {
-      this.matrix.innerHTML = "";
-
       for (let row = 0; row < this.rows(); row++) {
          for (let col = 0; col < this.columns(); col++) {
             this.matrix.appendChild(this.createMatrixEntry(row, col, this.class));
@@ -62,6 +58,10 @@ class MatrixInput {
       this.matrix.style.setProperty('grid-template-columns', `repeat(${this.columns()}, auto)`);
    }
 
+
+   // -----------------------------------------------------------
+   // Create Matrix Entry
+   // -----------------------------------------------------------
    /**
     * Creates a text input for the entry of the matrix.
     * @event focus Selects its content on focus.

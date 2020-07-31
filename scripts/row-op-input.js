@@ -1,23 +1,13 @@
 'use strict';
 
 // -----------------------------------------------------------
-// Variables
+// Constants
 // -----------------------------------------------------------
 /**@type {MatrixInput} */
-let _matrixInput; 
+const _matrixInput = new MatrixInput("_0");; 
 
 /**@type {string[][]} */
 const _matrix = [];
-
-// -----------------------------------------------------------
-// Startup Code
-// -----------------------------------------------------------
-/**
- * Generate an input matrix on startup.
- */
-window.onload = function () {
-   _matrixInput = new MatrixInput("_0");
-}
 
 // -----------------------------------------------------------
 // Functions
