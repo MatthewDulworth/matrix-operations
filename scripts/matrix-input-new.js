@@ -38,11 +38,13 @@ class DimensionInput {
 
    /**
     * Increments the input value by the given amount then validates the input. 
+    * @fires change Fires the change event on the this.input.
     * @param {number} increment The amount to increment by. 
     * @returns {number} Incremented, validated input value.
     */
    incrementInput(increment) {;
       this.input.value = this.validateInput() + increment;
+      triggerEvent(this.input, 'change');
       return this.validateInput();
    }
 
@@ -91,6 +93,7 @@ class MatrixInput {
 
       this.initMatrix();
       this.addResetButtonListener();
+      this.addRowColChangeListeners();
    }
 
    // -----------------------------------------------------------
@@ -102,6 +105,14 @@ class MatrixInput {
     */
    addResetButtonListener() {
       this.resetBtn.addEventListener('click', () => this.entries().forEach(entry => entry.value = ""));
+   }
+
+   /**
+    * 
+    */
+   addRowColChangeListeners() {
+      this.row.input.addEventListener('change', () => console.log("change"));
+      this.col.input.addEventListener('change', () => console.log("change"));
    }
 
 
