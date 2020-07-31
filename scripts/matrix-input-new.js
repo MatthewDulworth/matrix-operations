@@ -1,4 +1,3 @@
-
 /**
  * Holds the inputs for a dimension of an input matrix. 
  * Is either a row input or a column input. 
@@ -38,6 +37,18 @@ class MatrixInput {
       this.col = new DimensionInput(matrixClass, "col");
 
       this.initMatrix();
+      this.addResetButtonListener();
+   }
+
+   // -----------------------------------------------------------
+   // Add Event Listeners
+   // -----------------------------------------------------------
+   /**
+    * Adds a click event listener to the reset button.
+    * On click sets the value to every entry in the input matrix to a blank string.
+    */
+   addResetButtonListener() {
+      this.resetBtn.addEventListener('click', () => this.entries().forEach(entry => entry.value = ""));
    }
 
 
@@ -64,10 +75,10 @@ class MatrixInput {
    // -----------------------------------------------------------
    /**
     * Creates a text input for the entry of the matrix.
-    * @event focus Selects its content on focus.
+    * Adds an event listener for the focus event to each entry. Selects the input on focus. 
     * @param {number} row The row of the entry.
     * @param {number} column The column of the entry. 
-    * @returns {HTMLElement} The entry.
+    * @returns {HTMLElement} The text input that is the entry.
     */
    createMatrixEntry(row, column) {
       let entrySpace = document.createElement('input');
@@ -86,16 +97,59 @@ class MatrixInput {
    // -----------------------------------------------------------
 
    /**
-    * @returns The number of rows the matrix has. 
+    * @returns {number} The number of rows the matrix has. 
     */
    rows() {
       return this.row.input.value;
    }
 
    /**
-    * @returns The number of columns the matrix has. 
+    * @returns {number} The number of columns the matrix has. 
     */
    columns() {
       return this.col.input.value;
+   }
+
+   /**
+    * @returns {NodeList} The entries in the matrix. 
+    */
+   entries() {
+      return this.matrix.childNodes;
+   }
+
+   /**
+    * @param {number} row The row of the entry.
+    * @param {number} column The column of the entry.
+    * @returns {string} The value of the entry at 
+    */
+   entryValue(row, column) {
+      const index = row * this.columns() + column;
+
+      if (index < 0 || index >= this.matrix.childNodes.length) {
+         throw Error("Invalid index");
+      } else {
+         return this.matrix.childNodes[index];
+      }
+   }
+}
+
+// 
+/**
+ * Triggers the given event on the given element.
+ * Adapted from https://plainjs.com/javascript/events/trigger-an-event-11/.
+ * @param {HTMLElement} element The element to trigger the event on. 
+ * @param {string} eventType The type of event to trigger.
+ */
+function triggerEvent(element, eventType) {
+   if ('createEvent' in document) {
+      // modern browsers, IE9+
+      var e = document.createEvent('HTMLEvents');
+      e.initEvent(eventType, false, true);
+      element.dispatchEvent(e);
+   } else {
+      // IE 8
+      var e = document.createEventObject();
+      e.eventType = eventType;
+      element.fireEvent('on' + e.eventType, e);
    }
 }
