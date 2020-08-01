@@ -9,7 +9,7 @@ nav {
 
 /********* input *********/
 
-main {
+.matrix-input {
    padding: 1.5rem;
    display: flex;
    flex-direction: column;
