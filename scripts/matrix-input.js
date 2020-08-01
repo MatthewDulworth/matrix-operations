@@ -1,307 +1,368 @@
-'use strict';
-
-// -----------------------------------------------------------
-// Init Input Matrix.
-// -----------------------------------------------------------
 /**
- * Creates the initial input matrix and adds event listeners to all buttons and inputs related to the matrix.
- * @param {string} matrixClass The unique class of input elements for the matrix.
+ * Holds the inputs for a dimension of an input matrix. 
+ * Is either a row input or a column input. 
+ * Contains behavior for the plus/minus buttons and the text input that holds the number of rows/columns.
  */
-function initInputMatrix(matrixInput) {
+class DimensionInput {
+   /**
+    * Adds the event listeners to the buttons/input. 
+    * @param {HTMLElement} wrapper The matrix input wrapper.
+    * @param {string} type "row" or "col".
+    */
+   constructor(wrapper, type) {
 
-   createMatrixInput(matrixInput);
-   addResetButtonListener(matrixInput);
-   addIncrementBtnListeners(matrixInput);
-   addDimInputListeners(matrixInput);
+      if (type !== "row" && type !== "col") {
+         throw Error('Invalid Input, type must be either "row" or "col"');
+      }
+
+      this.input = wrapper.querySelector(`.${type}-in`);
+      this.plusBtn = wrapper.querySelector(`.${type} .plus-btn`);
+      this.minusBtn = wrapper.querySelector(`.${type} .minus-btn`);
+
+      if (this.input === null || this.plusBtn === null || this.minusBtn === null) {
+         throw Error("Input Elements Are Null");
+      }
+
+      this.oldValue = this.validateInput();
+      this.addIncrementButtonListeners();
+      this.addFocusEventListener();
+   }
+
+   /**
+    * Adds focus event to the input.
+    * On focus selects the text content of the input.
+    */
+   addFocusEventListener() {
+      this.input.addEventListener('focus', () => this.input.select());
+   }
+
+   /**
+    * Adds click event listeners to the plus and minus buttons.
+    * The plus button increments the input by 1, while the minus increments it by -1.
+    */
+   addIncrementButtonListeners() {
+      this.plusBtn.addEventListener('click', () => this.incrementInput(1));
+      this.minusBtn.addEventListener('click', () => this.incrementInput(-1));
+   }
+
+   /**
+    * Increments the input value by the given amount then validates the input. 
+    * @fires change Fires the change event on the this.input.
+    * @param {number} increment The amount to increment by. 
+    * @returns {number} Incremented, validated input value.
+    */
+   incrementInput(increment) {
+      this.input.value = this.validateInput() + increment;
+      triggerEvent(this.input, 'change');
+      return this.validateInput();
+   }
+
+   /**
+    * Attempts to parse the input value to an integer, if it cannot it sets the input to 0. 
+    * Constrains the input value to an integer between 0 and the html max.
+    * Updates the input value html to the validated input.
+    * @returns {number} An integer between 0 and max.
+    */
+   validateInput() {
+      let val = parseInt(this.input.value);
+
+      if (isNaN(val)) {
+         val = 0;
+      } else {
+         val = Math.max(val, 0);
+         val = Math.min(val, this.input.max);
+      }
+      this.input.value = val;
+      return val;
+   }
 }
 
-// -----------------------------------------------------------
-// Create Matrix Button
-// -----------------------------------------------------------
 /**
- * 
- * @param {string[][]} matrix 
- * @param {string} matrixClass 
+ * Represents inputs for a matrix.
+ * Holds the row inputs, column inputs, matrix entry inputs, and reset and create buttons.
+ * Holds behaviour for them as well. 
  */
-function generateMatrix(rows, columns, matrixClass) {
-   let finalMatrix = document.querySelector(`.${matrixClass}.final-matrix`);
-   finalMatrix.innerHTML = "";
+class MatrixInput {
+   /**
+    * Generates an initial input matrix and adds the event listeners to the buttons. 
+    * @param {string} matrixID The unique html id of the input matrix.
+    */
+   constructor(matrixID) {
+      this.wrapper = document.getElementById(matrixID);
+      this.ID = matrixID;
+      this.resetBtn = this.wrapper.querySelector('.reset-btn');
+      this.createBtn = this.wrapper.querySelector('.create-btn');
+      this.matrix = this.wrapper.querySelector('.input-grid');
 
-   for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < columns; col++) {
-         let entry = document.createElement('div');
-         entry.textContent = _matrix[row][col];
-         finalMatrix.appendChild(entry);
+      if (this.resetBtn === null || this.createBtn === null || this.matrix === null) {
+         throw Error("Input Elements Are Null")
+      }
+
+      this.row = new DimensionInput(this.wrapper, "row");
+      this.col = new DimensionInput(this.wrapper, "col");
+
+      this.initMatrix();
+      this.addResetButtonListener();
+      this.addRowColChangeListeners();
+   }
+
+   // -----------------------------------------------------------
+   // Add Event Listeners
+   // -----------------------------------------------------------
+   /**
+    * Adds a click event listener to the reset button.
+    * On click sets the value to every entry in the input matrix to a blank string.
+    */
+   addResetButtonListener() {
+      this.resetBtn.addEventListener('click', () => this.entries().forEach(entry => entry.value = ""));
+   }
+
+   /**
+    * 
+    */
+   addRowColChangeListeners() {
+      this.row.input.addEventListener('change', () => this.handleRowChanges());
+      this.col.input.addEventListener('change', () => this.handleColChanges());
+   }
+
+
+   // -----------------------------------------------------------
+   // Handle Row Changes
+   // -----------------------------------------------------------
+   /**
+    * Adds or removes rows as needed based on input.
+    */
+   handleRowChanges() {
+      const rows = this.rows();
+      const columns = this.columns();
+      const oldRows = this.row.oldValue;
+      const rowsToAdd = rows - oldRows;
+
+      if (rowsToAdd > 0) {
+         this.addRows(rowsToAdd, oldRows, columns);
+         this.setMatrixGridRows(this.rows());
+      } else if (rowsToAdd < 0) {
+         this.removeRows(-rowsToAdd, columns);
+         this.setMatrixGridRows(this.rows());
+      }
+
+      this.row.oldValue = rows;
+   }
+
+   /**
+    * Adds the specified number of rows to the matrix input grid.
+    * @param {number} rowsToAdd The number of rows to add.
+    * @param {number} oldRows The the current (soon to be old) number of rows.
+    * @param {number} columns The current number of columns.
+    */
+   addRows(rowsToAdd, oldRows, columns) {
+      for (let i = 0; i < rowsToAdd; i++) {
+         let currentRow = oldRows + i;
+         for (let col = 0; col < columns; col++) {
+            this.matrix.appendChild(this.createMatrixEntry(currentRow, col));
+         }
       }
    }
 
-   finalMatrix.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
-   finalMatrix.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
-   finalMatrix.classList.remove("display-none");
-
-   console.log(_matrix);
-}
-
-// -----------------------------------------------------------
-// Reset Button
-// -----------------------------------------------------------
-/**
- * Adds click event listener to reset button for the specified matrix class.
- * Sets all the value of all entries in the input matrix to nothing. 
- * @param {string} matrixInput
- */
-function addResetButtonListener(matrixInput) {
-   matrixInput.resetBtn.addEventListener('click', () => matrixInput.matrix.childNodes.forEach(entry => entry.value = ""));
-}
-
-// -----------------------------------------------------------
-// Plus Minus Button Handlers
-// -----------------------------------------------------------
-/**
- * Adds click event listeners to the plus and minus buttons for the row and column inputs for the given matrix. 
- * @param {string} matrixInput 
- */
-function addIncrementBtnListeners(matrixInput) {
-   matrixInput.row.plusBtn.addEventListener('click', () => incrementInput(matrixInput.row.input, true));
-   matrixInput.row.minusBtn.addEventListener('click', () => incrementInput(matrixInput.row.input, false));
-   matrixInput.col.plusBtn.addEventListener('click', () => incrementInput(matrixInput.col.input, true));
-   matrixInput.col.minusBtn.addEventListener('click', () => incrementInput(matrixInput.col.input, false));
-}
-
-/**
- * Increments or decrements the input.
- * Constrained by input max and min.
- * 
- * @param {HTMLElement} input The text input to change.
- * @param {number} sign (optional) pass -1 if btn is a minus-btn.
- */
-function incrementInput(input, decrement = true) {
-   let sign = (decrement) ? 1 : -1;
-   let value = parseInt(input.value) + 1 * sign;
-   if (value <= parseInt(input.max) && value >= parseInt(input.min)) {
-      input.value = value;
+   /**
+    * Removes the specified number of rows from the matrix input grid. 
+    * @param {number} rowsToRemove The number of rows to remove.
+    * @param {number} columns The current number of columns. 
+    */
+   removeRows(rowsToRemove, columns) {
+      for (let i = 0; i < rowsToRemove; i++) {
+         for (let col = 0; col < columns; col++) {
+            this.matrix.removeChild(this.matrix.lastChild);
+         }
+      }
    }
-   triggerEvent(input, 'change');
-}
 
 
-// -----------------------------------------------------------
-// Dimension Input Listeners
-// -----------------------------------------------------------
-/**
- * Adds event listeners to the row and column inputs of the specified matrix class. 
- * On change calls the handle row and handle col functions.
- * On focus selects the input text.
- * @param {Object} matrixInput The unique class of input elements for the matrix.
- */
-function addDimInputListeners(matrixInput) {
+   // -----------------------------------------------------------
+   // Handle Column Changes
+   // -----------------------------------------------------------
+   /**
+    * Adds or removes columns as needed based on input.
+    */
+   handleColChanges() {
+      const rows = this.rows();
+      const columns = this.columns();
+      const oldColumns = this.col.oldValue;
+      const colsToAdd = columns - oldColumns;
 
-   let rows = matrixInput.row.input.value;
-   let cols = matrixInput.col.input.value;
-  
-   matrixInput.row.input.dataset.oldValue = rows;
-   matrixInput.col.input.dataset.oldValue = cols;
+      if (colsToAdd > 0) {
+         this.addColumns(colsToAdd, oldColumns, rows);
+         this.setMatrixGridCols(this.columns());
+      } else if (colsToAdd < 0) {
+         this.removeColumns(-colsToAdd, oldColumns, rows);
+         this.setMatrixGridCols(this.columns());
+      }
 
-   matrixInput.row.input.addEventListener('focus', () => matrixInput.row.input.select());
-   matrixInput.col.input.addEventListener('focus', () => matrixInput.col.input.select());
-
-   matrixInput.row.input.addEventListener('change', () => handleRowChanges(matrixInput.row.input, cols, matrixInput.matrix, matrixInput.class));
-   matrixInput.col.input.addEventListener('change', () => handleColChanges(matrixInput.col.input, rows, matrixInput.matrix, matrixInput.class));
-}
-
-/**
- * Bounds the value of the input element to its min and max, and makes the input value an integer. 
- * Tries to parse the value into an integer, if it cannot, sets the value to zero.
- * @param {HTMLElement} input The input element. 
- */
-function sanitizeToInt(input) {
-   let val = parseInt(input.value);
-
-   if (isNaN(val)) {
-      input.value = 0;
-   } else {
-      input.value = Math.max(Math.min(val, input.max), input.min);
+      this.col.oldValue = columns;
    }
-}
 
+   /**
+    * Adds the specified number of columns to the matrix input grid.
+    * @param {number} colsToAdd The number of columns to add.
+    * @param {number} oldColumns The the current (soon to be old) number of columns.
+    * @param {number} rows The current number of rows.
+    */
+   addColumns(colsToAdd, oldColumns, rows) {
 
-// -----------------------------------------------------------
-// Handle Column Changes 
-// -----------------------------------------------------------
-
-/**
- * Handles the changes to a column input.
- * Adds or removes columns from the appropriate input matrix as necessary.
- * Sanitizes column input value.  
- * @param {HTMLElement} colInput The column input for the input matrix.
- * @param {number} rows The number of rows in the input matrix.
- * @param {HTMLElement} inputMatrix The input matrix. 
- * @param {string} matrixClass The unique class of input elements for the matrix.
- */
-function handleColChanges(colInput, rows, inputMatrix, matrixClass) {
-
-   sanitizeToInt(colInput);
-   let colsToAdd = colInput.value - colInput.dataset.oldValue;
-   let columns = colInput.dataset.oldValue;
-   colInput.dataset.oldValue = colInput.value;
-
-   if (colsToAdd > 0) {
-      addColumns(colsToAdd, rows, columns, inputMatrix, matrixClass)
-      inputMatrix.style.setProperty('grid-template-columns', `repeat(${colInput.value}, auto)`);
-   } else if (colsToAdd < 0) {
-      removeColumns(-colsToAdd, rows, columns, inputMatrix);
-      inputMatrix.style.setProperty('grid-template-columns', `repeat(${colInput.value}, auto)`);
+      for (let i = 0; i < colsToAdd; i++) {
+         let offset = 0;
+         for (let row = 0; row < rows; row++) {
+            let entry = this.createMatrixEntry(row, oldColumns);
+            let before = this.entries()[oldColumns * row + oldColumns + offset];
+            this.matrix.insertBefore(entry, before);
+            offset++;
+         }
+         oldColumns++;
+      }
    }
-}
 
-/**
- * Adds columns to an input matrix.
- * @param {number} colsToAdd The number of columns to add. 
- * @param {number} rows The current number of rows of the input matrix. 
- * @param {number} columns The current number of columns of the input matrix. 
- * @param {HTMLElement} inputMatrix The input matrix. 
- * @param {string} matrixClass The unique class of input elements for the matrix.
- */
-function addColumns(colsToAdd, rows, columns, inputMatrix, matrixClass) {
-   for (let i = 0; i < colsToAdd; i++) {
-      let offset = 0;
-      for (let row = 1; row <= rows; row++) {
-         let colIndex = row * columns + offset;
-         let entry = matrixEntrySpace(row - 1, colIndex, matrixClass);
-         inputMatrix.insertBefore(entry, inputMatrix.childNodes[colIndex]);
-         offset++;
+   /**
+    * Removes the specified number of columns to the matrix input grid.
+    * @param {number} colsToRemove The number of columns to remove.
+    * @param {number} oldColumns The the current (soon to be old) number of columns.
+    * @param {number} rows The current number of rows.
+    */
+   removeColumns(colsToRemove, oldColumns, rows) {
+      oldColumns = oldColumns - 1;
+      let entries = [];
+
+      for (let i = 0; i < colsToRemove; i++) {
+         for (let row = rows - 1; row >= 0; row--) {
+            let entry = this.entry(row, oldColumns);
+            entries.push(entry);
+         }
+         oldColumns--;
+      }
+      entries.forEach(col => col.remove());
+   }
+
+
+   // -----------------------------------------------------------
+   // Setup
+   // -----------------------------------------------------------
+   /**
+    * Generates the initial entries for the input matrix. 
+    */
+   initMatrix() {
+      const rows = this.rows();
+      const columns = this.columns();
+
+      for (let row = 0; row < rows; row++) {
+         for (let col = 0; col < columns; col++) {
+            this.matrix.appendChild(this.createMatrixEntry(row, col, this.ID));
+         }
+      }
+
+      this.setMatrixGridRows(rows);
+      this.setMatrixGridCols(columns);
+   }
+
+
+   // -----------------------------------------------------------
+   // Create Matrix Entry
+   // -----------------------------------------------------------
+   /**
+    * Creates a text input for the entry of the matrix.
+    * Adds an event listener for the focus event to each entry. Selects the input on focus. 
+    * @param {number} row The row of the entry.
+    * @param {number} column The column of the entry. 
+    * @returns {HTMLElement} The text input that is the entry.
+    */
+   createMatrixEntry(row, column) {
+      let entrySpace = document.createElement('input');
+      entrySpace.type = 'text';
+
+      entrySpace.classList.add("entry");
+      entrySpace.classList.add(`${this.ID}_${row}_${column}`);
+
+      entrySpace.addEventListener("focus", () => entrySpace.select());
+      return entrySpace;
+   }
+
+
+   // -----------------------------------------------------------
+   // Helper Functions
+   // -----------------------------------------------------------
+   /**
+    * Sets grid-template-rows  and for the matrix entries grid. 
+    * @param {number} rows 
+    */
+   setMatrixGridRows(rows) {
+      this.matrix.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
+   }
+
+   /**
+    * Sets the grid-template-columns for the matrix entries grid.
+    * @param {number} columns 
+    */
+   setMatrixGridCols(columns) {
+      this.matrix.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
+   }
+
+
+   // -----------------------------------------------------------
+   // Getters
+   // -----------------------------------------------------------
+
+   /**
+    * @returns {number} The number of rows the matrix has. 
+    */
+   rows() {
+      return parseInt(this.row.validateInput());
+   }
+
+   /**
+    * @returns {number} The number of columns the matrix has. 
+    */
+   columns() {
+      return parseInt(this.col.validateInput());
+   }
+
+   /**
+    * @returns {NodeList} The entries in the matrix. 
+    */
+   entries() {
+      return this.matrix.childNodes;
+   }
+
+   /**
+    * @param {number} row The row of the entry.
+    * @param {number} column The column of the entry.
+    * @returns {string} The value of the entry at 
+    */
+   entry(row, column) {
+      const index = row * this.col.oldValue + column;
+
+      if (index < 0 || index >= this.matrix.childNodes.length) {
+         throw Error("Invalid Index");
+      } else {
+         return this.matrix.childNodes[index];
       }
    }
 }
 
+// 
 /**
- * Removes columns from an input matrix. 
- * @param {number} colsToRemove The number of columns to remove. 
- * @param {number} rows The current number of rows of the input matrix. 
- * @param {number} columns The current number of columns of the input matrix. 
- * @param {HTMLElement} inputMatrix The input matrix. 
+ * Triggers the given event on the given element.
+ * Adapted from https://plainjs.com/javascript/events/trigger-an-event-11/.
+ * @param {HTMLElement} element The element to trigger the event on. 
+ * @param {string} eventType The type of event to trigger.
  */
-function removeColumns(colsToRemove, rows, columns, inputMatrix) {
-   for (let i = 0; i < colsToRemove; i++) {
-      for (let row = rows; row > 0; row--) {
-         let elementIndex = row * columns - 1;
-         inputMatrix.removeChild(inputMatrix.childNodes[elementIndex]);
-      }
-      columns--;
-   }
-}
-
-
-// -----------------------------------------------------------
-// Handle Row Changes 
-// -----------------------------------------------------------
-
-/**
- * Handles the changes to a row input.
- * Adds or removes rows from the appropriate input matrix as necessary. 
- * Sanitizes row input value.
- * @param {HTMLElement} rowInput The row input for the input matrix.
- * @param {number} columns The number of columns in the input matrix.
- * @param {HTMLElement} inputMatrix The input matrix. 
- * @param {string} matrixClass The unique class of input elements for the matrix.
- */
-function handleRowChanges(rowInput, columns, inputMatrix, matrixClass) {
-
-   sanitizeToInt(rowInput);
-   let rowsToAdd = rowInput.value - rowInput.dataset.oldValue;
-   rowInput.dataset.oldValue = rowInput.value;
-
-   if (rowsToAdd > 0) {
-      addRows(rowsToAdd, rowInput.value, columns, inputMatrix, matrixClass);
-      inputMatrix.style.setProperty('grid-template-rows', `repeat(${rowInput.value}, auto)`);
-   } else if (rowsToAdd < 0) {
-      removeRows(-rowsToAdd, columns, inputMatrix);
-      inputMatrix.style.setProperty('grid-template-rows', `repeat(${rowInput.value}, auto)`);
-   }
-}
-
-/**
- * Adds rows to an input matrix. 
- * @param {number} rowsToAdd The number of rows to add. 
- * @param {number} rows The current number of rows of the input matrix.
- * @param {number} columns The current number of columns of the input matrix.
- * @param {HTMLElement} inputMatrix The input matrix. 
- * @param {HTMLElement} matrixClass The unique class of input elements for the matrix.
- */
-function addRows(rowsToAdd, rows, columns, inputMatrix, matrixClass) {
-   for (let i = 0; i < rowsToAdd; i++) {
-      let currentRow = rows + i;
-      for (let col = 0; col < columns; col++) {
-         inputMatrix.appendChild(matrixEntrySpace(currentRow, col, matrixClass));
-      }
-   }
-}
-
-/**
- * Removes rows from an input matrix. 
- * @param {number} rowsToRemove The number of rows to remove. 
- * @param {number} columns The number of columns of the input matrix. 
- * @param {HTMLElement} inputMatrix The input matrix.
- */
-function removeRows(rowsToRemove, columns, inputMatrix) {
-   for (let i = 0; i < rowsToRemove; i++) {
-      for (let col = 0; col < columns; col++) {
-         inputMatrix.removeChild(inputMatrix.lastChild);
-      }
-   }
-}
-
-
-// -----------------------------------------------------------
-// Generate Matrix Input Grid
-// -----------------------------------------------------------
-/**
- * Generates an input grid for a matrix. 
- * @param {Object} matrixInput 
- */
-function createMatrixInput(matrixInput) {
-   let rows = matrixInput.row.input.value;
-   let columns = matrixInput.col.input.value;
-   matrixInput.matrix.innerHTML = "";
-
-   for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < columns; col++) {
-         matrixInput.matrix.appendChild(matrixEntrySpace(row, col, matrixInput.class));
-      }
-   }
-
-   matrixInput.matrix.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
-   matrixInput.matrix.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
-}
-
-/**
- * Creates a text input for the entry of the matrix.
- * @param {number} row The row of the entry.
- * @param {number} column The column of the entry. 
- * @param {string} matrixClass The unique class of input elements for the matrix.
- * @returns {HTMLElement} A text input.
- */
-function matrixEntrySpace(row, column, matrixClass) {
-   let entrySpace = document.createElement('input');
-   entrySpace.type = 'text';
-   entrySpace.name = `${row}_${column}`;
-   entrySpace.classList.add("entry");
-   entrySpace.classList.add(`${matrixClass}_${row}_${column}`);
-   entrySpace.addEventListener("focus", () => entrySpace.select());
-   return entrySpace;
-}
-
-// adapted from https://plainjs.com/javascript/events/trigger-an-event-11/
-function triggerEvent(el, type) {
+function triggerEvent(element, eventType) {
    if ('createEvent' in document) {
       // modern browsers, IE9+
       var e = document.createEvent('HTMLEvents');
-      e.initEvent(type, false, true);
-      el.dispatchEvent(e);
+      e.initEvent(eventType, false, true);
+      element.dispatchEvent(e);
    } else {
       // IE 8
       var e = document.createEventObject();
-      e.eventType = type;
-      el.fireEvent('on' + e.eventType, e);
+      e.eventType = eventType;
+      element.fireEvent('on' + e.eventType, e);
    }
 }

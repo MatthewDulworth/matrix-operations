@@ -18,7 +18,7 @@
    <link rel="stylesheet" href="../styles/row-op-input.css">
 
    <!-- scripts -->
-   <script src="../scripts/matrix-input-new.js" defer></script>
+   <script src="../scripts/matrix-input.js" defer></script>
    <script src="../scripts/row-op-input.js" defer></script>
 </head>
 
@@ -35,30 +35,34 @@
    <!-- main content -->
    <main>
       <!-- matrix _0 -->
-      <div class="dimensions _0">
+
+      <section id="_0" class="matrix-input">
          <div>Initial Matrix</div>
 
-         <div class="dim row">
-            <span>rows:</span>
-            <button class="minus-btn">-</button>
-            <input class="row-in _0" type="text" max="20" value="3">
-            <button class="plus-btn">+</button>
+         <div class="dimensions">
+         
+            <div class="dim row">
+               <span>rows:</span>
+               <button class="minus-btn">-</button>
+               <input class="row-in" type="text" max="20" value="3">
+               <button class="plus-btn">+</button>
+            </div>
+   
+            <div class="dim col">
+               <span>columns:</span>
+               <button class="minus-btn">-</button>
+               <input class="col-in" type="text" max="20" value="3">
+               <button class="plus-btn">+</button>
+            </div>
+   
+            <div>
+               <button class="reset-btn">Reset</button>
+               <button class="create-btn">Create Matrix</button>
+            </div>
          </div>
 
-         <div class="dim col">
-            <span>columns:</span>
-            <button class="minus-btn">-</button>
-            <input class="col-in _0" type="text" max="20" value="3">
-            <button class="plus-btn">+</button>
-         </div>
-
-         <div>
-            <button class="reset-btn">Reset</button>
-            <button class="create-btn">Create Matrix</button>
-         </div>
-      </div>
-
-      <div class="input-matrix _0"></div>
+         <div class="input-grid"></div>
+      </section>
    </main>
 
    <!-- copyright notice -->
