@@ -165,6 +165,19 @@ class MatrixInput {
       }
    }
 
+  /**
+   * Removes the specified number of rows from the matrix input grid. 
+   * @param {number} rowsToRemove The number of rows to remove.
+   * @param {number} columns The current number of columns. 
+   */
+   removeRows(rowsToRemove, columns) {
+      for (let i = 0; i < rowsToRemove; i++) {
+         for (let col = 0; col < columns; col++) {
+            this.matrix.removeChild(this.matrix.lastChild);
+         }
+      }
+   }
+
    // -----------------------------------------------------------
    // Setup
    // -----------------------------------------------------------
