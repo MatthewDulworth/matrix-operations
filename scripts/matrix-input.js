@@ -1,3 +1,6 @@
+// The regular expression used to determine if a string is a decimal number or a fraction.
+const decimalOrFraction = new RegExp(/^-?\d*(?:[.,]\d*)?$|^-?[1-9][0-9]*\/[1-9][0-9]*$/);
+
 /**
  * Holds the inputs for a dimension of an input matrix. 
  * Is either a row input or a column input. 
@@ -6,6 +9,8 @@
 class DimensionInput {
    /**
     * Adds the event listeners to the buttons/input. 
+    * @throws Invalid Input type is not "row" or "col".
+    * @throws Input Elements Are Null if input, plusBtn or minusBtn cannot be found. 
     * @param {HTMLElement} wrapper The matrix input wrapper.
     * @param {string} type "row" or "col".
     */
@@ -77,6 +82,7 @@ class DimensionInput {
    }
 }
 
+
 /**
  * Represents inputs for a matrix.
  * Holds the row inputs, column inputs, matrix entry inputs, and reset and create buttons.
@@ -85,6 +91,7 @@ class DimensionInput {
 class MatrixInput {
    /**
     * Generates an initial input matrix and adds the event listeners to the buttons. 
+    * @throws Input Elements Are Null if resetBtn, createBtn, or the matrix input grid cannot be found.
     * @param {string} matrixID The unique html id of the input matrix.
     */
    constructor(matrixID) {
@@ -106,6 +113,7 @@ class MatrixInput {
       this.addRowColChangeListeners();
    }
 
+
    // -----------------------------------------------------------
    // Add Event Listeners
    // -----------------------------------------------------------
@@ -118,7 +126,8 @@ class MatrixInput {
    }
 
    /**
-    * 
+    * Adds change event listeners to row and column inputs.
+    * On change calls methods to handle the row and column changes.
     */
    addRowColChangeListeners() {
       this.row.input.addEventListener('change', () => this.handleRowChanges());
@@ -243,7 +252,84 @@ class MatrixInput {
 
 
    // -----------------------------------------------------------
-   // Setup
+   // Output
+   // -----------------------------------------------------------
+   /**
+    * @throws Invalid Input Error
+    * @returns {string[][]}
+    */
+   toArray() {
+      let matrix = [];
+
+      const rows = this.rows();
+      const columns = this.columns();
+
+      for (let row = 0; row < rows; row++) {
+         matrix[row] = [];
+         for (let col = 0; col < columns; col++) {
+            let value = this.validateEntry(row, col);
+            matrix[row][col] = value;
+         }
+      }
+
+      return matrix;
+   }
+
+   /**
+    * Checks if the value of the passed entry is a floating point number, an integer, or a fraction.
+    * If the entry is is blank, its value is set to "0".
+    * If the entry value is invalid, throws the invalid input error.
+    * 
+    * The decimal point can either be a comma {,} or a period {.}.
+    * The value can only have at most one decimal point. 
+    * 
+    * Fraction numerator and denominators can only be integers.
+    * Denominators cannot start with zero. 
+    * 
+    * e.g. 
+    * 2.345 | 2,345 | 234. | ,345 are all valid decimal numbers
+    * while 2,345.5 | 2,.345 | 2.3.4 are not. 
+    *
+    * 2/3 | 345/345 | 12/1 | 0/1 are all valid fractions
+    * while 2.0/3.0 | 1/0 | are not. 
+    * 
+    * @throws Invalid Input Error if the entry value is invalid.
+    * @param {number} row 
+    * @param {number} columns
+    * @returns {string} The validated entry value.
+    */
+   validateEntry(row, column) {
+
+      let entry = this.entry(row, column);
+      let entryValue = this.cleanEntryValue(entry.value);
+
+      if (!decimalOrFraction.test(entryValue)) {
+         throw Error("Invalid Input");
+      }
+
+      entry.value = entryValue;
+      return entryValue;
+   }
+
+   /**
+    * Removes whitespace, replaces commas "," with periods ".", then if the string is blank "",
+    * only a period ".", a minus sign then a period "-.", or just a minus sign "-", sets the 
+    * string to a single zero "0".
+    * @param {string} value The value to clean.
+    * @returns {string} THe cleaned value.
+    */
+   cleanEntryValue(value) {
+      value = value.replace(/\s+/g, '');
+      value = value.replace(',', '.');
+
+      if (value.length < 1 || value === "." || value === "-." || value === "-") {
+         value = "0";
+      }
+      return value;
+   }
+
+   // -----------------------------------------------------------
+   // Initialize Matrix Input Grid
    // -----------------------------------------------------------
    /**
     * Generates the initial entries for the input matrix. 
@@ -308,7 +394,6 @@ class MatrixInput {
    // -----------------------------------------------------------
    // Getters
    // -----------------------------------------------------------
-
    /**
     * @returns {number} The number of rows the matrix has. 
     */
@@ -331,6 +416,7 @@ class MatrixInput {
    }
 
    /**
+    * @throws Invalid Index if row and column out of bounds.
     * @param {number} row The row of the entry.
     * @param {number} column The column of the entry.
     * @returns {string} The value of the entry at 
@@ -346,7 +432,6 @@ class MatrixInput {
    }
 }
 
-// 
 /**
  * Triggers the given event on the given element.
  * Adapted from https://plainjs.com/javascript/events/trigger-an-event-11/.
