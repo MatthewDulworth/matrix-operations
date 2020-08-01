@@ -129,16 +129,20 @@ class MatrixInput {
    // Handle Row Changes
    // -----------------------------------------------------------
 
+   /**
+    * Adds or removes rows as needed based on input.
+    */
    handleRowChanges() {
-      // save current value of rows and columns as to save validation calls.
+   
       const rows = this.rows();
       const columns = this.columns();
+      const oldRows = this.row.oldValue;
+      const rowsToAdd =  rows - oldRows;
 
-      const rowsToAdd = rows - this.row.oldValue;
       this.row.oldValue = rows;
 
       if (rowsToAdd > 0) {
-         this.addRows(rowsToAdd, rows, columns);
+         this.addRows(rowsToAdd, oldRows, columns);
          this.setMatrixGridRows(this.rows());
       } else if (rowsToAdd < 0) {
          this.removeRows(-rowsToAdd, columns);
@@ -147,16 +151,16 @@ class MatrixInput {
    }
 
    /**
-    * 
-    * @param {number} rowsToAdd 
-    * @param {number} rows 
-    * @param {number} columns 
+    * Adds the specified number of rows to the matrix input grid.
+    * @param {number} rowsToAdd The number of rows to add.
+    * @param {number} oldRows The the current (soon to be old) number of rows.
+    * @param {number} columns The current number of columns.
     */
-   addRows(rowsToAdd, rows, columns){
+   addRows(rowsToAdd, oldRows, columns){
       for (let i = 0; i < rowsToAdd; i++) {
-         let currentRow = rows + i;
+         let currentRow = oldRows + i;
          for (let col = 0; col < columns; col++) {
-            this.matrix.appendChild(this.createMatrixEntry(currentRow, columns));
+            this.matrix.appendChild(this.createMatrixEntry(currentRow, col));
          }
       }
    }
