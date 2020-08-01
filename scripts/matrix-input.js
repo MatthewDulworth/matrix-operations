@@ -134,23 +134,6 @@ class MatrixInput {
       this.col.input.addEventListener('change', () => this.handleColChanges());
    }
 
-   /**
-    * Adds click listener to create button. 
-    * On click tries to store the input matrix values in session storage.
-    * If any input is invalid, alerts the user to this, does not store the matrix.
-    */
-   addCreateButtonListener() {
-      this.createBtn.addEventListener('click', () => {
-         try {
-            let matrix = matrixInput.toArray();
-            let matrixString = JSON.stringify(matrix);
-            sessionStorage.setItem(matrixInput.ID, matrixString);
-         } catch (error) {
-            alert("Please make sure your matrix input is limited to fractions or decimal numbers.");
-         }
-      });
-   }
-
 
    // -----------------------------------------------------------
    // Handle Row Changes
