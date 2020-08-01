@@ -18,10 +18,6 @@
    <link rel="stylesheet" href="../styles/row-op.css">
 
    <!-- scripts -->
-   <script src="../scripts/fraction.js" defer></script>
-   <script src="../scripts/steplist.js" defer></script>
-   <script src="../scripts/matrix.js" defer></script>
-   <script src="../scripts/matrix-input.js" defer></script>
    <script src="../scripts/row-op.js" defer></script>
 </head>
 
@@ -37,10 +33,18 @@
 
    <!-- main content -->
    <main>
+      <section id="display">
 
-      <section id="output">
-         <div class="in matrix _0"></div>
-         <div class="out matrix"></div>
+         <div id="initial" class="display-matrix">
+            <div class="matrix-title">Initial matrix</div>
+            <div class="matrix-wrapper"></div>
+         </div>
+
+         <div id="final" class="display-matrix">
+            <div class="matrix-title">Final Matrix</div>
+            <div class="matrix-wrapper"></div>
+         </div>
+
       </section>
 
       <section id="operations-menu">
@@ -59,21 +63,6 @@
          </div>
 
       </section>
-
-      <div class="a">
-         <div class="matrix-end">
-            <div>1</div>
-            <div>2</div>
-            <div>3</div>
-            <div>4</div>
-            <div>5</div>
-            <div>6</div>
-            <div>7</div>
-            <div>8</div>
-            <div>9</div>
-         </div>
-      </div>
-
    </main>
 
    <!-- copyright notice -->

@@ -1,42 +1,14 @@
 'use strict';
 
 // -----------------------------------------------------------
-// Variables
+// Constants
 // -----------------------------------------------------------
-const _rowInput = document.querySelector(".row-in");
-const _columnInput = document.querySelector(".col-in");
-const _matrixWrapper = document.querySelector(".matrix-wrapper");
-const _rowLists = document.querySelectorAll(".row-list");
+const rowLists = document.querySelectorAll(".row-list");
+const initialMatrix = document.querySelector("#initial .matrix-wrapper");
+const finalMatrix = document.getElementById("#final .matrix-wrapper");
+const inputMatrixArray = JSON.parse(sessionStorage.getItem("_0"));
 
-
-// -----------------------------------------------------------
-// Startup Code
-// -----------------------------------------------------------
-/**
- * Generate an input matrix on startup.
- */
-window.onload = function () {
-   initInputMatrix("_0");
-   createRowList(_rowLists, _rowInput);
-}
-
-
-// -----------------------------------------------------------
-// Event Listeners
-// -----------------------------------------------------------
-/**
- * Generate an input matrix whenever the row input or column input changes.
- */
-// _rowInput.addEventListener('change', () => {
-//    handleRowChanges("_0");
-//    createRowList(_rowLists, _rowInput);
-// });
-// _columnInput.addEventListener('change', () => createMatrixInput("_0"));
-
-// _rowInput.addEventListener('focus', () =>{ 
-//    _rowInput.dataset.oldVal = _rowInput.value;
-//    console.log("focus");
-// });
+generateDisplayMatrix(inputMatrixArray, initialMatrix);
 
 // -----------------------------------------------------------
 // Functions
@@ -55,4 +27,25 @@ function createRowList(rowLists, rowInput) {
       }
       rowLists.forEach(list => list.innerHTML = options);
    }
+}
+
+/**
+ * @param {string[][]} matrixArray
+ * @param {HTMLElement} displayMatrix
+ */
+function generateDisplayMatrix(matrix, displayMatrix) {
+   let rows = matrix.length;
+   let columns = matrix[0].length;
+
+   for(let row = 0; row<rows; row++){
+      for(let col=0; col<columns; col++){
+        let entry = document.createElement('div');
+        entry.textContent = matrix[row][col];
+        displayMatrix.appendChild(entry);
+      }
+   }
+
+   displayMatrix.parentElement.style.setProperty('display', 'block');
+   displayMatrix.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
+   displayMatrix.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
 }
