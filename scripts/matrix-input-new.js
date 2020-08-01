@@ -137,8 +137,6 @@ class MatrixInput {
       const oldRows = this.row.oldValue;
       const rowsToAdd = rows - oldRows;
 
-      this.row.oldValue = rows;
-
       if (rowsToAdd > 0) {
          this.addRows(rowsToAdd, oldRows, columns);
          this.setMatrixGridRows(this.rows());
@@ -146,6 +144,8 @@ class MatrixInput {
          this.removeRows(-rowsToAdd, columns);
          this.setMatrixGridRows(this.rows());
       }
+
+      this.row.oldValue = rows;
    }
 
    /**
@@ -189,15 +189,15 @@ class MatrixInput {
       const oldColumns = this.col.oldValue;
       const colsToAdd = columns - oldColumns;
 
-      this.col.oldValue = columns;
-
       if (colsToAdd > 0) {
          this.addColumns(colsToAdd, oldColumns, rows);
          this.setMatrixGridCols(this.columns());
-      } else if (rowsToAdd < 0) {
-         this.removeRows(-rowsToAdd, columns);
+      } else if (colsToAdd < 0) {
+         this.removeColumns(-colsToAdd, oldColumns, rows);
          this.setMatrixGridCols(this.columns());
       }
+
+      this.col.oldValue = columns;
    }
 
    /**
@@ -218,6 +218,21 @@ class MatrixInput {
          }
          oldColumns++;
       }
+   }
+
+   removeColumns(colsToRemove, columns, rows) {
+      console.log(`remove: ${colsToRemove} cols: ${columns} rows: ${rows}`);
+      columns = columns - 1;
+      let entries = [];
+
+      for (let i = 0; i < colsToRemove; i++) {
+         for (let row = rows - 1; row >= 0; row--) {
+            let entry = this.entry(row, columns);
+            entries.push(entry);
+         }
+         columns--;
+      }
+      entries.forEach(col => col.remove());
    }
 
 
@@ -315,7 +330,7 @@ class MatrixInput {
     * @returns {string} The value of the entry at 
     */
    entry(row, column) {
-      const index = row * this.columns() + column;
+      const index = row * this.col.oldValue + column;
 
       if (index < 0 || index >= this.matrix.childNodes.length) {
          throw Error("Invalid Index");
