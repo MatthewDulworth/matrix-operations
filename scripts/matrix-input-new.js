@@ -11,7 +11,7 @@ class DimensionInput {
     */
    constructor(matrixClass, type) {
 
-      if(type !== "row" && type !== "col") {
+      if (type !== "row" && type !== "col") {
          throw Error('Invalid Input, type must be either "row" or "col"');
       }
 
@@ -19,12 +19,21 @@ class DimensionInput {
       this.plusBtn = document.querySelector(`.${matrixClass} .${type} .plus-btn`);
       this.minusBtn = document.querySelector(`.${matrixClass} .${type} .minus-btn`);
 
-      if(this.input === null || this.plusBtn === null || this.minusBtn === null){
+      if (this.input === null || this.plusBtn === null || this.minusBtn === null) {
          throw Error("Input Elements Are Null");
       }
 
       this.oldValue = this.validateInput();
       this.addIncrementButtonListeners();
+      this.addFocusEventListener();
+   }
+
+   /**
+    * Adds focus event to the input.
+    * On focus selects the text content of the input.
+    */
+   addFocusEventListener() {
+      this.input.addEventListener('focus', () => this.input.select());
    }
 
    /**
@@ -42,7 +51,7 @@ class DimensionInput {
     * @param {number} increment The amount to increment by. 
     * @returns {number} Incremented, validated input value.
     */
-   incrementInput(increment) {;
+   incrementInput(increment) {
       this.input.value = this.validateInput() + increment;
       triggerEvent(this.input, 'change');
       return this.validateInput();
@@ -61,7 +70,7 @@ class DimensionInput {
          val = 0;
       } else {
          val = Math.max(val, 0);
-         val = Math.min(val, this.input.max); 
+         val = Math.min(val, this.input.max);
       }
       this.input.value = val;
       return val;
@@ -84,7 +93,7 @@ class MatrixInput {
       this.createBtn = document.querySelector(`.${matrixClass} .create-btn`);
       this.matrix = document.querySelector(`.${matrixClass}.input-matrix`);
 
-      if(this.resetBtn === null || this.createBtn === null || this.matrix === null) {
+      if (this.resetBtn === null || this.createBtn === null || this.matrix === null) {
          throw Error("Input Elements Are Null")
       }
 
