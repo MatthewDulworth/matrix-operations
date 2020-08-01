@@ -201,9 +201,9 @@ class MatrixInput {
    }
 
    /**
-    * Adds the specified number of rows to the matrix input grid.
-    * @param {number} colsToAdd The number of rows to add.
-    * @param {number} oldColumns The the current (soon to be old) number of rows.
+    * Adds the specified number of columns to the matrix input grid.
+    * @param {number} colsToAdd The number of columns to add.
+    * @param {number} oldColumns The the current (soon to be old) number of columns.
     * @param {number} rows The current number of rows.
     */
    addColumns(colsToAdd, oldColumns, rows) {
@@ -220,17 +220,22 @@ class MatrixInput {
       }
    }
 
-   removeColumns(colsToRemove, columns, rows) {
-      console.log(`remove: ${colsToRemove} cols: ${columns} rows: ${rows}`);
-      columns = columns - 1;
+   /**
+    * Removes the specified number of columns to the matrix input grid.
+    * @param {number} colsToRemove The number of columns to remove.
+    * @param {number} oldColumns The the current (soon to be old) number of columns.
+    * @param {number} rows The current number of rows.
+    */
+   removeColumns(colsToRemove, oldColumns, rows) {
+      oldColumns = oldColumns - 1;
       let entries = [];
 
       for (let i = 0; i < colsToRemove; i++) {
          for (let row = rows - 1; row >= 0; row--) {
-            let entry = this.entry(row, columns);
+            let entry = this.entry(row, oldColumns);
             entries.push(entry);
          }
-         columns--;
+         oldColumns--;
       }
       entries.forEach(col => col.remove());
    }
