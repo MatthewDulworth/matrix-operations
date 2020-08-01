@@ -120,10 +120,46 @@ class MatrixInput {
     * 
     */
    addRowColChangeListeners() {
-      this.row.input.addEventListener('change', () => console.log("change"));
+      this.row.input.addEventListener('change', () => this.handleRowChanges());
       this.col.input.addEventListener('change', () => console.log("change"));
    }
 
+
+   // -----------------------------------------------------------
+   // Handle Row Changes
+   // -----------------------------------------------------------
+
+   handleRowChanges() {
+      // save current value of rows and columns as to save validation calls.
+      const rows = this.rows();
+      const columns = this.columns();
+
+      const rowsToAdd = rows - this.row.oldValue;
+      this.row.oldValue = rows;
+
+      if (rowsToAdd > 0) {
+         this.addRows(rowsToAdd, rows, columns);
+         this.setMatrixGridRows(this.rows());
+      } else if (rowsToAdd < 0) {
+         this.removeRows(-rowsToAdd, columns);
+         this.setMatrixGridRows(this.rows());
+      }
+   }
+
+   /**
+    * 
+    * @param {number} rowsToAdd 
+    * @param {number} rows 
+    * @param {number} columns 
+    */
+   addRows(rowsToAdd, rows, columns){
+      for (let i = 0; i < rowsToAdd; i++) {
+         let currentRow = rows + i;
+         for (let col = 0; col < columns; col++) {
+            this.matrix.appendChild(this.createMatrixEntry(currentRow, columns));
+         }
+      }
+   }
 
    // -----------------------------------------------------------
    // Setup
@@ -132,13 +168,17 @@ class MatrixInput {
     * Generates the initial entries for the input matrix. 
     */
    initMatrix() {
-      for (let row = 0; row < this.rows(); row++) {
-         for (let col = 0; col < this.columns(); col++) {
+      const rows = this.rows();
+      const columns = this.columns();
+
+      for (let row = 0; row < rows; row++) {
+         for (let col = 0; col < columns; col++) {
             this.matrix.appendChild(this.createMatrixEntry(row, col, this.class));
          }
       }
-      this.matrix.style.setProperty('grid-template-rows', `repeat(${this.rows()}, auto)`);
-      this.matrix.style.setProperty('grid-template-columns', `repeat(${this.columns()}, auto)`);
+
+      this.setMatrixGridRows(rows);
+      this.setMatrixGridCols(columns);
    }
 
 
@@ -161,6 +201,26 @@ class MatrixInput {
 
       entrySpace.addEventListener("focus", () => entrySpace.select());
       return entrySpace;
+   }
+
+
+   // -----------------------------------------------------------
+   // Helper Functions
+   // -----------------------------------------------------------
+   /**
+    * Sets grid-template-rows  and for the matrix entries grid. 
+    * @param {number} rows 
+    */
+   setMatrixGridRows(rows) {
+      this.matrix.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
+   }
+
+   /**
+    * Sets the grid-template-columns for the matrix entries grid.
+    * @param {number} columns 
+    */
+   setMatrixGridCols(columns) {
+      this.matrix.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
    }
 
 
