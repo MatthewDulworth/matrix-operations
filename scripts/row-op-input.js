@@ -3,8 +3,16 @@
 // -----------------------------------------------------------
 // Constants
 // -----------------------------------------------------------
-/**@type {MatrixInput} */
 const matrixInput = new MatrixInput("_0");
+
+// -----------------------------------------------------------
+// Create Button Listener
+// -----------------------------------------------------------
+/**
+ * When the create button is clicked try to generate a string matrix from the matrix input.
+ * If so, store it in sessions storage and go to the next page.
+ * If not, alert the user that their input is invalid.
+ */
 matrixInput.createBtn.addEventListener('click', () => {
 
    let success = true;
@@ -21,5 +29,4 @@ matrixInput.createBtn.addEventListener('click', () => {
       sessionStorage.setItem(matrixInput.ID, JSON.stringify(matrix));
       window.location.href = '../html/row-op.html';
    }
-
 });
