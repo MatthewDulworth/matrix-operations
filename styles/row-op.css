@@ -10,7 +10,7 @@ nav {
 /********* display matrix *********/
 
 #display {
-   padding: 0.5rem 1.5rem;
+   padding: 1rem 1.5rem;
    border-bottom: 1px solid black;
 }
 
@@ -34,7 +34,7 @@ nav {
 /********* operations menu *********/
 
 #operations-menu {
-   padding: 1.5rem;
+   padding: 1rem 1.5rem;
    border-bottom: 1px solid black;
 }
 
