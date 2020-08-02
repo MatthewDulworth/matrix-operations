@@ -17,8 +17,8 @@ class RowOperationsCalculator {
       this.resultMatrix;
 
       this.rowLists = document.querySelectorAll(".row-list");
-      this.initialDisplayMatrix = document.querySelector("#initial .matrix-wrapper");
-      this.finalDisplayMatrix = document.querySelector("#final .matrix-wrapper");
+      this.initialDisplayMatrix = document.querySelector(".input");
+      this.finalDisplayMatrix = document.querySelector(".result");
 
       this.multiplyBtn = document.querySelector("#row-multiply button");
       this.addBtn = document.querySelector("#row-replace button");
@@ -71,7 +71,7 @@ class RowOperationsCalculator {
          }
       }
 
-      matrixWrapper.parentElement.style.setProperty('display', 'block');
+      matrixWrapper.style.setProperty('display', 'grid');
       matrixWrapper.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
       matrixWrapper.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
    }
@@ -80,6 +80,9 @@ class RowOperationsCalculator {
    // ---------------------------------------------------------------------------
    // Operations
    // ---------------------------------------------------------------------------
+   /**
+    * Multiplies a row by a scalar and displays the output.
+    */
    multiply() {
       let row = parseInt(document.querySelector("#row-multiply select").value) - 1;
       let scalar = document.querySelector("#row-multiply input").value;
@@ -88,7 +91,7 @@ class RowOperationsCalculator {
       try {
          result = this.inputMatrix.rowMultiplication(row, scalar);
       } catch (error) {
-        alert("Invalid Input");
+         alert("Invalid Input");
       }
 
       if (result !== undefined) {
@@ -96,6 +99,9 @@ class RowOperationsCalculator {
       }
    }
 
+   /**
+    * Adds a scalar times a row to another row and displays the result.
+    */
    add() {
       let scalar = document.querySelector("#row-replace input").value;
       let actorRow = parseInt(document.querySelector("#row-replace select:nth-of-type(1)").value) - 1;
@@ -105,7 +111,7 @@ class RowOperationsCalculator {
       try {
          result = this.inputMatrix.rowReplacement(targetRow, actorRow, scalar);
       } catch (error) {
-        alert("Invalid Input");
+         alert("Invalid Input");
       }
 
       if (result !== undefined) {
@@ -113,6 +119,9 @@ class RowOperationsCalculator {
       }
    }
 
+   /**
+    * Swaps two rows and displays the result.
+    */
    swap() {
       let actorRow = parseInt(document.querySelector("#row-swap select:nth-of-type(1)").value) - 1;
       let targetRow = parseInt(document.querySelector("#row-swap select:nth-of-type(2)").value) - 1;
@@ -121,7 +130,7 @@ class RowOperationsCalculator {
       try {
          result = this.inputMatrix.rowSwap(targetRow, actorRow);
       } catch (error) {
-        alert("Invalid Input");
+         alert("Invalid Input");
       }
 
       if (result !== undefined) {

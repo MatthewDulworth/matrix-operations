@@ -15,19 +15,19 @@ nav {
    border-bottom: 1px solid black;
 }
 
+.matrix-pair {
+   display: flex;
+}
+
 .display-matrix {
    display: none;
    margin-right: 50px;
-}
-
-.matrix-wrapper {
-   display: grid;
    padding: 4px 6px;
    column-gap: 12px;
    border: 1px solid black;
 }
 
-.matrix-wrapper div {
+.display-matrix div {
    text-align: center;
    min-width: 1rem;
 }
