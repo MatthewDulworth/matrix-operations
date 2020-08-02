@@ -1,9 +1,14 @@
 'use strict';
 
+/**
+ * Holds the behavior and UI of a row operations calculator.
+ * Depends on the Matrix class for matrix calculations.
+ * 
+ * Allows the user to do row operations or row reduction on a matrix.
+ */
 class RowOperationsCalculator {
    /**
-    * 
-    * @param {string} matrixID 
+    * @param {string} matrixID Where the initial matrix array is stored in session storage.
     */
    constructor(matrixID) {
       this.rowLists = document.querySelectorAll(".row-list");
@@ -24,6 +29,10 @@ class RowOperationsCalculator {
       this.initRowLists(this.rowLists, this.inputMatrixArray.length);
    }
 
+
+   // ---------------------------------------------------------------------------
+   // Initialize Row Lists
+   // ---------------------------------------------------------------------------
    /**
     * Generates the lists of rows to be used in selecting a row.
     * @param {NodeList} rowLists The select elements.
@@ -37,9 +46,12 @@ class RowOperationsCalculator {
       rowLists.forEach(list => list.innerHTML = options);
    }
 
+
+   // ---------------------------------------------------------------------------
+   // Display Matrix
+   // ---------------------------------------------------------------------------
    /**
-    * Displays the passed matrixArray on the screen. 
-    * 
+    * Displays the passed matrixArray on the page. 
     * @param {string[][]} matrixArray The matrix to display.
     * @param {HTMLElement} matrixWrapper The element to house the matrix.
     */
@@ -60,6 +72,10 @@ class RowOperationsCalculator {
       matrixWrapper.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
    }
 
+
+   // ---------------------------------------------------------------------------
+   // Operations
+   // ---------------------------------------------------------------------------
    multiply() {
 
    }
