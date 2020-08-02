@@ -10,17 +10,16 @@ nav {
 /********* display matrix *********/
 
 #display {
-   display: flex;
-   padding: 1.5rem;
+   padding: 0.5rem 1.5rem;
    border-bottom: 1px solid black;
 }
 
 .matrix-pair {
-   display: flex;
+   margin: 0.5rem 0rem;
 }
 
 .display-matrix {
-   display: none;
+   display: inline-grid;
    margin-right: 50px;
    padding: 4px 6px;
    column-gap: 12px;

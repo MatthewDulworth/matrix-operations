@@ -12,13 +12,10 @@ class RowOperationsCalculator {
     */
    constructor(matrixID) {
       let matrixArray = JSON.parse(sessionStorage.getItem(matrixID));
-      this.inputMatrix = new Matrix(matrixArray.length, matrixArray[0].length, matrixArray);
-      console.log(this.inputMatrix.toString());
-      this.resultMatrix;
+      this.matrices = [new Matrix(matrixArray.length, matrixArray[0].length, matrixArray)];
 
       this.rowLists = document.querySelectorAll(".row-list");
-      this.initialDisplayMatrix = document.querySelector(".input");
-      this.finalDisplayMatrix = document.querySelector(".result");
+      this.display = document.getElementById("display");
 
       this.multiplyBtn = document.querySelector("#row-multiply button");
       this.addBtn = document.querySelector("#row-replace button");
@@ -30,7 +27,7 @@ class RowOperationsCalculator {
       this.swapBtn.addEventListener('click', () => this.swap());
       this.reduceBtn.addEventListener('click', () => this.reduce());
 
-      this.displayMatrix(matrixArray, this.initialDisplayMatrix);
+      this.display.firstElementChild.appendChild(this.createDisplayMatrix(this.lastResult(), "input"));
       this.initRowLists(this.rowLists, matrixArray.length);
    }
 
@@ -60,22 +57,38 @@ class RowOperationsCalculator {
     * @param {string[][]} matrixArray The matrix to display.
     * @param {HTMLElement} matrixWrapper The element to house the matrix.
     */
-   displayMatrix(matrixArray, matrixWrapper) {
-      let rows = matrixArray.length;
-      let columns = matrixArray[0].length;
-      matrixWrapper.innerHTML = "";
+   createDisplayMatrix(matrix, name) {
 
-      for (let row = 0; row < rows; row++) {
-         for (let col = 0; col < columns; col++) {
+      let displayMatrix = document.createElement('div');
+      displayMatrix.classList.add(name);
+      displayMatrix.classList.add("display-matrix");
+      displayMatrix.innerHTML = "";
+
+      let array = matrix.toString();
+      for (let row = 0; row < matrix.rows; row++) {
+         for (let col = 0; col < matrix.columns; col++) {
             let entry = document.createElement('div');
-            entry.textContent = matrixArray[row][col];
-            matrixWrapper.appendChild(entry);
+            entry.textContent = array[row][col];
+            displayMatrix.appendChild(entry);
          }
       }
 
-      matrixWrapper.style.setProperty('display', 'grid');
-      matrixWrapper.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
-      matrixWrapper.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
+      displayMatrix.style.setProperty('grid-template-rows', `repeat(${matrix.rows}, auto)`);
+      displayMatrix.style.setProperty('grid-template-columns', `repeat(${matrix.columns}, auto)`);
+
+      return displayMatrix;
+   }
+
+   displayOperation(input, result) {
+      let matrixPair = document.createElement("div");
+      matrixPair.classList.add("matrix-pair");
+
+      let inputDisplay = this.createDisplayMatrix(input, "input");
+      let resultDisplay = this.createDisplayMatrix(result, "result");
+
+      matrixPair.appendChild(inputDisplay);
+      matrixPair.appendChild(resultDisplay);
+      this.display.appendChild(matrixPair);
    }
 
 
@@ -91,13 +104,14 @@ class RowOperationsCalculator {
       let result;
 
       try {
-         result = this.inputMatrix.rowMultiplication(row, scalar);
+         result = this.lastResult().rowMultiplication(row, scalar);
       } catch (error) {
          alert("Invalid Input");
       }
 
       if (result !== undefined) {
-         this.displayMatrix(result.toString(), this.finalDisplayMatrix);
+         this.displayOperation(this.lastResult(), result);
+         this.matrices.push(result);
       }
    }
 
@@ -111,13 +125,14 @@ class RowOperationsCalculator {
       let result;
 
       try {
-         result = this.inputMatrix.rowReplacement(targetRow, actorRow, scalar);
+         result = this.lastResult().rowReplacement(targetRow, actorRow, scalar);
       } catch (error) {
          alert("Invalid Input");
       }
 
       if (result !== undefined) {
-         this.displayMatrix(result.toString(), this.finalDisplayMatrix);
+         this.displayOperation(this.lastResult(), result);
+         this.matrices.push(result);
       }
    }
 
@@ -130,13 +145,14 @@ class RowOperationsCalculator {
       let result;
 
       try {
-         result = this.inputMatrix.rowSwap(targetRow, actorRow);
+         result = this.lastResult().rowSwap(targetRow, actorRow);
       } catch (error) {
          alert("Invalid Input");
       }
 
       if (result !== undefined) {
-         this.displayMatrix(result.toString(), this.finalDisplayMatrix);
+         this.displayOperation(this.lastResult(), result);
+         this.matrices.push(result);
       }
    }
 
@@ -147,14 +163,23 @@ class RowOperationsCalculator {
       let result;
 
       try {
-         result = this.inputMatrix.rref().last();
+         result = this.lastResult().rref().last();
       } catch (error) {
          alert("Invalid Input");
       }
 
       if (result !== undefined) {
-         this.displayMatrix(result.toString(), this.finalDisplayMatrix);
+         this.displayOperation(this.lastResult(), result);
+         this.matrices.push(result);
       }
+   }
+
+
+   // ---------------------------------------------------------------------------
+   // Getters
+   // ---------------------------------------------------------------------------
+   lastResult() {
+      return this.matrices[this.matrices.length - 1];
    }
 }
 
