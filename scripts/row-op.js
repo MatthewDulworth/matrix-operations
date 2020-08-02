@@ -131,11 +131,17 @@ class RowOperationsCalculator {
    // Display Matrix
    // ---------------------------------------------------------------------------
    /**
-    * Displays the passed matrixArray on the page. 
-    * @param {string[][]} matrixArray The matrix to display.
-    * @param {HTMLElement} matrixWrapper The element to house the matrix.
+    * Creates html to display the passed matrix.
+    * @throws Invalid Input if name is not "input" or "result"
+    * @param {Matrix} matrix The matrix to display.
+    * @param {string} name The type of matrix it is, "input" or "result".
+    * @returns {HTMLElement} The matrix display element.
     */
    createDisplayMatrix(matrix, name) {
+
+      if (name != "input" && name != "result") {
+         throw Error('Invalid Input, name must be "input" or "result"');
+      }
 
       let displayMatrix = document.createElement('div');
       displayMatrix.classList.add(name);
@@ -158,9 +164,9 @@ class RowOperationsCalculator {
    }
 
    /**
-    * 
-    * @param {Matrix} input 
-    * @param {Matrix} result 
+    * Displays an operation on the page. 
+    * @param {Matrix} input The input matrix.
+    * @param {Matrix} result the resulting matrix.
     */
    displayOperation(input, result) {
 
@@ -184,6 +190,9 @@ class RowOperationsCalculator {
    // ---------------------------------------------------------------------------
    // Getters
    // ---------------------------------------------------------------------------
+   /**
+    * @returns The result of the last matrix operation.
+    */
    lastResult() {
       return this.matrices[this.matrices.length - 1];
    }
