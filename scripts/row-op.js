@@ -12,7 +12,10 @@ class RowOperationsCalculator {
     */
    constructor(matrixID) {
       let matrixArray = JSON.parse(sessionStorage.getItem(matrixID));
+
+      /*** @type {Matrix[]}*/
       this.matrices = [new Matrix(matrixArray.length, matrixArray[0].length, matrixArray)];
+      this.first = true;
 
       this.rowLists = document.querySelectorAll(".row-list");
       this.display = document.getElementById("display");
@@ -50,6 +53,81 @@ class RowOperationsCalculator {
 
 
    // ---------------------------------------------------------------------------
+   // Operations
+   // ---------------------------------------------------------------------------
+   /**
+    * Attempts to perform a row operation, if unsuccessful, alerts the user.
+    * If successful, displays the result, scrolls the button that triggered 
+    * the operation into view, and stores the result in this.matrices.
+    * @param {Function} operation A callback to the operation to perform.
+    * @param {Array<number|string>} params The operations parameters.
+    * @param {HTMLElement} button The button that triggered the operation.
+    */
+   tryOperation(operation, params, button) {
+      let result;
+
+      try {
+         result = operation(...params);
+      } catch (error) {
+         alert("Invalid Input");
+      }
+
+      if (result !== undefined) {
+         this.displayOperation(this.lastResult(), result);
+         this.matrices.push(result);
+         button.scrollIntoView();
+      }
+   }
+
+   /**
+    * Multiplies a row by a scalar and displays the output.
+    */
+   multiply() {
+      let targetRow = parseInt(document.querySelector("#row-multiply select").value) - 1;
+      let scalar = document.querySelector("#row-multiply input").value;
+      this.tryOperation(this.lastResult().rowMultiplication.bind(this.lastResult()), [targetRow, scalar], this.multiplyBtn);
+   }
+
+   /**
+    * Adds a scalar times a row to another row and displays the result.
+    */
+   add() {
+      let targetRow = parseInt(document.querySelector("#row-replace select:nth-of-type(2)").value) - 1;
+      let actorRow = parseInt(document.querySelector("#row-replace select:nth-of-type(1)").value) - 1;
+      let scalar = document.querySelector("#row-replace input").value;
+      this.tryOperation(this.lastResult().rowReplacement.bind(this.lastResult()), [actorRow, targetRow, scalar], this.addBtn);
+   }
+
+   /**
+    * Swaps two rows and displays the result.
+    */
+   swap() {
+      let actorRow = parseInt(document.querySelector("#row-swap select:nth-of-type(1)").value) - 1;
+      let targetRow = parseInt(document.querySelector("#row-swap select:nth-of-type(2)").value) - 1;
+      this.tryOperation(this.lastResult().rowSwap.bind(this.lastResult()), [actorRow, targetRow], this.swapBtn);
+   }
+
+   /**
+    * Row reduces matrix and displays the result.
+    */
+   reduce() {
+      let result;
+
+      try {
+         result = this.lastResult().rref().last();
+      } catch (error) {
+         alert("Invalid Input");
+      }
+
+      if (result !== undefined) {
+         this.displayOperation(this.lastResult(), result);
+         this.matrices.push(result);
+         this.reduceBtn.scrollIntoView();
+      }
+   }
+
+
+   // ---------------------------------------------------------------------------
    // Display Matrix
    // ---------------------------------------------------------------------------
    /**
@@ -79,7 +157,18 @@ class RowOperationsCalculator {
       return displayMatrix;
    }
 
+   /**
+    * 
+    * @param {Matrix} input 
+    * @param {Matrix} result 
+    */
    displayOperation(input, result) {
+
+      if (this.first) {
+         this.display.firstElementChild.remove();
+         this.first = false;
+      }
+
       let matrixPair = document.createElement("div");
       matrixPair.classList.add("matrix-pair");
 
@@ -89,89 +178,6 @@ class RowOperationsCalculator {
       matrixPair.appendChild(inputDisplay);
       matrixPair.appendChild(resultDisplay);
       this.display.appendChild(matrixPair);
-   }
-
-
-   // ---------------------------------------------------------------------------
-   // Operations
-   // ---------------------------------------------------------------------------
-   /**
-    * Multiplies a row by a scalar and displays the output.
-    */
-   multiply() {
-      let row = parseInt(document.querySelector("#row-multiply select").value) - 1;
-      let scalar = document.querySelector("#row-multiply input").value;
-      let result;
-
-      try {
-         result = this.lastResult().rowMultiplication(row, scalar);
-      } catch (error) {
-         alert("Invalid Input");
-      }
-
-      if (result !== undefined) {
-         this.displayOperation(this.lastResult(), result);
-         this.matrices.push(result);
-      }
-   }
-
-   /**
-    * Adds a scalar times a row to another row and displays the result.
-    */
-   add() {
-      let scalar = document.querySelector("#row-replace input").value;
-      let actorRow = parseInt(document.querySelector("#row-replace select:nth-of-type(1)").value) - 1;
-      let targetRow = parseInt(document.querySelector("#row-replace select:nth-of-type(2)").value) - 1;
-      let result;
-
-      try {
-         result = this.lastResult().rowReplacement(targetRow, actorRow, scalar);
-      } catch (error) {
-         alert("Invalid Input");
-      }
-
-      if (result !== undefined) {
-         this.displayOperation(this.lastResult(), result);
-         this.matrices.push(result);
-      }
-   }
-
-   /**
-    * Swaps two rows and displays the result.
-    */
-   swap() {
-      let actorRow = parseInt(document.querySelector("#row-swap select:nth-of-type(1)").value) - 1;
-      let targetRow = parseInt(document.querySelector("#row-swap select:nth-of-type(2)").value) - 1;
-      let result;
-
-      try {
-         result = this.lastResult().rowSwap(targetRow, actorRow);
-      } catch (error) {
-         alert("Invalid Input");
-      }
-
-      if (result !== undefined) {
-         this.displayOperation(this.lastResult(), result);
-         this.matrices.push(result);
-      }
-   }
-
-   /**
-    * Row reduces matrix and displays the result.
-    */
-   reduce() {
-      let result;
-
-      try {
-         result = this.lastResult().rref().last();
-      } catch (error) {
-         alert("Invalid Input");
-      }
-
-      if (result !== undefined) {
-         this.displayOperation(this.lastResult(), result);
-         this.matrices.push(result);
-      }
    }
 
 
