@@ -8,6 +8,13 @@ const initialMatrix = document.querySelector("#initial .matrix-wrapper");
 const finalMatrix = document.getElementById("#final .matrix-wrapper");
 const inputMatrixArray = JSON.parse(sessionStorage.getItem("_0"));
 
+// matrix 
+let matrix = new Matrix(inputMatrixArray.length, inputMatrixArray[0].length, inputMatrixArray);
+console.log(matrix);
+
+// -----------------------------------------------------------
+// Main
+// -----------------------------------------------------------
 generateDisplayMatrix(inputMatrixArray, initialMatrix);
 
 // -----------------------------------------------------------
@@ -30,8 +37,10 @@ function createRowList(rowLists, rowInput) {
 }
 
 /**
- * @param {string[][]} matrixArray
- * @param {HTMLElement} displayMatrix
+ * Displays the passed matrixArray on the screen. 
+ * 
+ * @param {string[][]} matrixArray The matrix to display.
+ * @param {HTMLElement} displayMatrix The element to house the matrix.
  */
 function generateDisplayMatrix(matrix, displayMatrix) {
    let rows = matrix.length;
