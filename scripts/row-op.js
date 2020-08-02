@@ -125,9 +125,14 @@ class RowOperationsCalculator {
       }
 
       if (list !== undefined) {
-         for (let i = 1; i < list.length; i++) {
-            this.steplist.addStep(list.matrices[i], list.instructions[i]);
+         if (list.length === 1) {
+            this.steplist.addStep(list.matrices[0], "Already in row reduced form.");
             this.displayOperation();
+         } else {
+            for (let i = 1; i < list.length; i++) {
+               this.steplist.addStep(list.matrices[i], list.instructions[i]);
+               this.displayOperation();
+            }
          }
          this.reduceBtn.scrollIntoView();
       }
@@ -176,10 +181,6 @@ class RowOperationsCalculator {
       matrixPair.appendChild(msgDisplay);
 
       this.display.appendChild(matrixPair);
-   }
-
-   createMessageDisplay(msg) {
-      return msgDisplay;
    }
 
    /**
