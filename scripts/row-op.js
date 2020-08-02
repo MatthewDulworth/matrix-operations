@@ -23,10 +23,12 @@ class RowOperationsCalculator {
       this.multiplyBtn = document.querySelector("#row-multiply button");
       this.addBtn = document.querySelector("#row-replace button");
       this.swapBtn = document.querySelector("#row-swap button");
+      this.reduceBtn = document.querySelector("#row-reduce button");
 
       this.multiplyBtn.addEventListener('click', () => this.multiply());
       this.addBtn.addEventListener('click', () => this.add());
       this.swapBtn.addEventListener('click', () => this.swap());
+      this.reduceBtn.addEventListener('click', () => this.reduce());
 
       this.displayMatrix(matrixArray, this.initialDisplayMatrix);
       this.initRowLists(this.rowLists, matrixArray.length);
@@ -129,6 +131,23 @@ class RowOperationsCalculator {
 
       try {
          result = this.inputMatrix.rowSwap(targetRow, actorRow);
+      } catch (error) {
+         alert("Invalid Input");
+      }
+
+      if (result !== undefined) {
+         this.displayMatrix(result.array, this.finalDisplayMatrix);
+      }
+   }
+
+   /**
+    * Row reduces matrix and displays the result.
+    */
+   reduce() {
+      let result;
+
+      try {
+         result = this.inputMatrix.rref().last();
       } catch (error) {
          alert("Invalid Input");
       }

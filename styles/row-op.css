@@ -44,9 +44,13 @@ nav {
 }
 
 #operations-menu div {
-   margin-bottom: 1rem;
+   margin: 0.5rem 0rem;
 }
 
 #operations-menu button {
    margin-left: 0.5rem;
+}
+
+#row-reduce button {
+   margin: 0;
 }
