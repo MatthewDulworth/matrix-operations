@@ -11,22 +11,25 @@ class RowOperationsCalculator {
     * @param {string} matrixID Where the initial matrix array is stored in session storage.
     */
    constructor(matrixID) {
-      this.rowLists = document.querySelectorAll(".row-list");
-      this.inputMatrixArray = JSON.parse(sessionStorage.getItem(matrixID));
+      let matrixArray = JSON.parse(sessionStorage.getItem(matrixID));
+      this.inputMatrix = new Matrix(matrixArray.length, matrixArray[0].length, matrixArray);
+      console.log(this.inputMatrix.toString());
+      this.resultMatrix;
 
+      this.rowLists = document.querySelectorAll(".row-list");
       this.initialDisplayMatrix = document.querySelector("#initial .matrix-wrapper");
       this.finalDisplayMatrix = document.querySelector("#final .matrix-wrapper");
 
-      this.multiplyBtn = document.getElementById("row-multiply");
-      this.addBtn = document.getElementById("row-replace");
-      this.swapBtn = document.getElementById("row-swap");
+      this.multiplyBtn = document.querySelector("#row-multiply button");
+      this.addBtn = document.querySelector("#row-replace button");
+      this.swapBtn = document.querySelector("#row-swap button");
 
-      this.multiplyBtn.addEventListener('click', this.multiply);
-      this.addBtn.addEventListener('click', this.add);
-      this.swapBtn.addEventListener('click', this.swap);
+      this.multiplyBtn.addEventListener('click', () => this.multiply());
+      this.addBtn.addEventListener('click', () => this.add());
+      this.swapBtn.addEventListener('click', () => this.swap());
 
-      this.displayMatrix(this.inputMatrixArray, this.initialDisplayMatrix);
-      this.initRowLists(this.rowLists, this.inputMatrixArray.length);
+      this.displayMatrix(matrixArray, this.initialDisplayMatrix);
+      this.initRowLists(this.rowLists, matrixArray.length);
    }
 
 
@@ -39,7 +42,7 @@ class RowOperationsCalculator {
     * @param {number} rows The number of rows in the matrix.
     */
    initRowLists(rowLists, rows) {
-      let options = "<option value=''></option>";
+      let options = "";
       for (let row = 1; row <= rows; row++) {
          options += `<option value=${row}>${row}</option>`;
       }
@@ -58,6 +61,7 @@ class RowOperationsCalculator {
    displayMatrix(matrixArray, matrixWrapper) {
       let rows = matrixArray.length;
       let columns = matrixArray[0].length;
+      matrixWrapper.innerHTML = "";
 
       for (let row = 0; row < rows; row++) {
          for (let col = 0; col < columns; col++) {
@@ -77,19 +81,30 @@ class RowOperationsCalculator {
    // Operations
    // ---------------------------------------------------------------------------
    multiply() {
+      let row = parseInt(document.querySelector("#row-multiply select").value) - 1;
+      let scalar = document.querySelector("#row-multiply input").value;
+      let result;
 
+      try {
+         result = this.inputMatrix.rowMultiplication(row, scalar);
+      } catch (error) {
+        alert("Invalid Input");
+      }
+
+      if (result !== undefined) {
+         this.displayMatrix(result.array, this.finalDisplayMatrix);
+      }
    }
 
    add() {
-
+      let scalar = document.querySelector("#row-replace input").value;
+      let actorRow = document.querySelector("#row-replace select:nth-of-type(1)").value;
+      let targetRow = document.querySelector("#row-replace select:nth-of-type(2)").value;
    }
 
    swap() {
-
-   }
-
-   validateInput(str) {
-
+      let actorRow = document.querySelector("#row-swap select:nth-of-type(1)").value;
+      let targetRow = document.querySelector("#row-swap select:nth-of-type(2)").value;
    }
 }
 
