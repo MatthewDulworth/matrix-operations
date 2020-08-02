@@ -7,13 +7,16 @@ class StepList {
 
    /**
     * Creates a new steplist.
-    * @param {Matrix} matrix 
+    * @param {Matrix} matrix The first matrix in the list. Optional.
     */
    constructor(matrix) {
       this.matrices = [];
       this.instructions = [];
       this.length = 0;
-      this.addStep(matrix, "Original matrix.");
+
+      if (matrix !== undefined) {
+         this.addStep(matrix, "Original matrix.");
+      }
    }
 
    /**
@@ -28,11 +31,36 @@ class StepList {
    }
 
    /**
-    * Returns the last matrix in the list.
-    * @returns {Matrix}
+    * @returns {Matrix} The most recently added matrix.
     */
    last() {
-      return this.matrices[this.length - 1];
+      try {
+         return this.matrices[this.length - 1];
+      } catch (e) {
+         return null;
+      }
+   }
+
+   /**
+    * @returns {Matrix} The next to last matrix in the list.
+    */
+   nextToLast() {
+      try {
+         return this.matrices[this.length - 2];
+      } catch (e) {
+         return null;
+      }
+   }
+
+   /**
+    * @returns {string} The most recently added instruction.
+    */
+   lastMsg() {
+      try {
+         return this.instructions[this.length - 1];
+      } catch (e) {
+         return null;
+      }
    }
 
    /**
@@ -41,8 +69,6 @@ class StepList {
    log() {
       for (let i = 0; i < this.length; i++) {
          console.log(`Operation Number ${i}: ${this.instructions[i]}`);
-
-
          this.matrices[i].log();
       }
    }

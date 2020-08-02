@@ -13,8 +13,7 @@ class RowOperationsCalculator {
    constructor(matrixID) {
       let matrixArray = JSON.parse(sessionStorage.getItem(matrixID));
 
-      /*** @type {Matrix[]}*/
-      this.matrices = [new Matrix(matrixArray.length, matrixArray[0].length, matrixArray)];
+      this.steplist = new StepList(new Matrix(matrixArray.length, matrixArray[0].length, matrixArray))
       this.first = true;
 
       this.rowLists = document.querySelectorAll(".row-list");
@@ -30,7 +29,7 @@ class RowOperationsCalculator {
       this.swapBtn.addEventListener('click', () => this.swap());
       this.reduceBtn.addEventListener('click', () => this.reduce());
 
-      this.display.firstElementChild.appendChild(this.createDisplayMatrix(this.lastResult(), "input"));
+      this.display.firstElementChild.appendChild(this.createDisplayMatrix(this.steplist.last(), "input"));
       this.initRowLists(this.rowLists, matrixArray.length);
    }
 
@@ -63,7 +62,7 @@ class RowOperationsCalculator {
     * @param {Array<number|string>} params The operations parameters.
     * @param {HTMLElement} button The button that triggered the operation.
     */
-   tryOperation(operation, params, button) {
+   tryOperation(operation, params, msg, button) {
       let result;
 
       try {
@@ -73,8 +72,8 @@ class RowOperationsCalculator {
       }
 
       if (result !== undefined) {
-         this.displayOperation(this.lastResult(), result);
-         this.matrices.push(result);
+         this.steplist.addStep(result, msg);
+         this.displayOperation();
          button.scrollIntoView();
       }
    }
@@ -85,7 +84,9 @@ class RowOperationsCalculator {
    multiply() {
       let targetRow = parseInt(document.querySelector("#row-multiply select").value) - 1;
       let scalar = document.querySelector("#row-multiply input").value;
-      this.tryOperation(this.lastResult().rowMultiplication.bind(this.lastResult()), [targetRow, scalar], this.multiplyBtn);
+      let params = [targetRow, scalar];
+      let msg = `Multiplied row ${targetRow + 1} by ${scalar}.`;
+      this.tryOperation(this.steplist.last().rowMultiplication.bind(this.steplist.last()), params, msg, this.multiplyBtn);
    }
 
    /**
@@ -95,33 +96,39 @@ class RowOperationsCalculator {
       let targetRow = parseInt(document.querySelector("#row-replace select:nth-of-type(2)").value) - 1;
       let actorRow = parseInt(document.querySelector("#row-replace select:nth-of-type(1)").value) - 1;
       let scalar = document.querySelector("#row-replace input").value;
-      this.tryOperation(this.lastResult().rowReplacement.bind(this.lastResult()), [actorRow, targetRow, scalar], this.addBtn);
+      let params = [targetRow, actorRow, scalar];
+      let msg = `Added ${scalar} times row ${actorRow + 1} to ${targetRow + 1}.`;
+      this.tryOperation(this.steplist.last().rowReplacement.bind(this.steplist.last()), params, msg, this.addBtn);
    }
 
    /**
     * Swaps two rows and displays the result.
     */
    swap() {
-      let actorRow = parseInt(document.querySelector("#row-swap select:nth-of-type(1)").value) - 1;
       let targetRow = parseInt(document.querySelector("#row-swap select:nth-of-type(2)").value) - 1;
-      this.tryOperation(this.lastResult().rowSwap.bind(this.lastResult()), [actorRow, targetRow], this.swapBtn);
+      let actorRow = parseInt(document.querySelector("#row-swap select:nth-of-type(1)").value) - 1;
+      let params = [targetRow, actorRow];
+      let msg = `Swapped row ${actorRow + 1} and row ${targetRow + 1}`;
+      this.tryOperation(this.steplist.last().rowSwap.bind(this.steplist.last()), params, msg, this.swapBtn);
    }
 
    /**
     * Row reduces matrix and displays the result.
     */
    reduce() {
-      let result;
+      let list;
 
       try {
-         result = this.lastResult().rref().last();
+         list = this.steplist.last().rref();
       } catch (error) {
          alert("Invalid Input");
       }
 
-      if (result !== undefined) {
-         this.displayOperation(this.lastResult(), result);
-         this.matrices.push(result);
+      if (list !== undefined) {
+         for(let i=1; i<list.length; i++) {
+            this.steplist.addStep(list.matrices[i], list.instructions[i]);
+            this.displayOperation();
+         }
          this.reduceBtn.scrollIntoView();
       }
    }
@@ -165,36 +172,36 @@ class RowOperationsCalculator {
 
    /**
     * Displays an operation on the page. 
-    * @param {Matrix} input The input matrix.
-    * @param {Matrix} result the resulting matrix.
     */
-   displayOperation(input, result) {
+   displayOperation() {
 
       if (this.first) {
          this.display.firstElementChild.remove();
          this.first = false;
       }
 
+      let result = this.steplist.last();
+      let input = this.steplist.nextToLast();
+      let msg = this.steplist.lastMsg();
+
+      if(input == null || result == null || msg == null) {
+         throw Error("idk man");
+      }
+
       let matrixPair = document.createElement("div");
       matrixPair.classList.add("matrix-pair");
+
+      let msgDisplay = document.createElement("span");
+      msgDisplay.classList.add("operation-msg");
+      msgDisplay.textContent = msg;
 
       let inputDisplay = this.createDisplayMatrix(input, "input");
       let resultDisplay = this.createDisplayMatrix(result, "result");
 
       matrixPair.appendChild(inputDisplay);
       matrixPair.appendChild(resultDisplay);
+      matrixPair.appendChild(msgDisplay);
       this.display.appendChild(matrixPair);
-   }
-
-
-   // ---------------------------------------------------------------------------
-   // Getters
-   // ---------------------------------------------------------------------------
-   /**
-    * @returns The result of the last matrix operation.
-    */
-   lastResult() {
-      return this.matrices[this.matrices.length - 1];
    }
 }
 
