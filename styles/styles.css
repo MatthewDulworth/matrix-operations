@@ -6,23 +6,40 @@
    padding: 0;
 }
 
-body {
-   font-size: 0.9rem;
-   font-family: 'Open Sans', sans-serif;
-   height: 100vh;
-   margin: 0;
-}
-
 button {
    font-family: 'Open Sans', sans-serif;
    cursor: pointer;
 }
 
-/********* common elements *********/
+/********* layout *********/
+
+body {
+   font-size: 0.9rem;
+   font-family: 'Open Sans', sans-serif;
+   height: 100vh;
+   margin: 0;
+   display: flex;
+   flex-direction: column;
+}
+
+main {
+   flex: 1 0 auto;
+}
+
+footer {
+   flex-shrink: 0;
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   font-size: 0.8rem;
+   margin-bottom: 4px;
+}
+
+/********* nav *********/
 
 nav {
-   position: absolute;
-   top: 0;
+   flex-shrink: 0;
    width: 100%;
    border-bottom: 1px solid black;
    display: flex;
@@ -37,14 +54,4 @@ nav a:nth-of-type(2) {
    width: 7rem;
    height: 3.5rem;
    object-fit: cover;
-}
-
-footer {
-   position: absolute;
-   bottom: 2px;
-   width: 100%;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   font-size: 0.8rem;
 }
