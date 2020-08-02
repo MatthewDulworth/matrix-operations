@@ -1,6 +1,3 @@
-// The regular expression used to determine if a string is a decimal number or a fraction.
-const decimalOrFraction = new RegExp(/^-?\d*(?:[.,]\d*)?$|^-?[1-9][0-9]*\/[1-9][0-9]*$/);
-
 /**
  * Holds the inputs for a dimension of an input matrix. 
  * Is either a row input or a column input. 
@@ -284,7 +281,7 @@ class MatrixInput {
     * The value can only have at most one decimal point. 
     * 
     * Fraction numerator and denominators can only be integers.
-    * Denominators cannot start with zero. 
+    * Denominators cannot be zero.
     * 
     * e.g. 
     * 2.345 | 2,345 | 234. | ,345 are all valid decimal numbers
@@ -293,19 +290,15 @@ class MatrixInput {
     * 2/3 | 345/345 | 12/1 | 0/1 are all valid fractions
     * while 2.0/3.0 | 1/0 | are not. 
     * 
-    * @throws Invalid Input Error if the entry value is invalid.
+    * @throws Invalid Input Error if the entry value is not a valid Fraction.
     * @param {number} row 
     * @param {number} columns
-    * @returns {string} The validated entry value.
+    * @returns {string} The validated entry value in the form of a fraction.
     */
    validateEntry(row, column) {
-
       let entry = this.entry(row, column);
       let entryValue = this.cleanEntryValue(entry.value);
-
-      if (!decimalOrFraction.test(entryValue)) {
-         throw Error("Invalid Input");
-      }
+      entryValue = new Fraction(entryValue).toFraction();
 
       entry.value = entryValue;
       return entryValue;
