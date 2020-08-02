@@ -98,13 +98,35 @@ class RowOperationsCalculator {
 
    add() {
       let scalar = document.querySelector("#row-replace input").value;
-      let actorRow = document.querySelector("#row-replace select:nth-of-type(1)").value;
-      let targetRow = document.querySelector("#row-replace select:nth-of-type(2)").value;
+      let actorRow = parseInt(document.querySelector("#row-replace select:nth-of-type(1)").value) - 1;
+      let targetRow = parseInt(document.querySelector("#row-replace select:nth-of-type(2)").value) - 1;
+      let result;
+
+      try {
+         result = this.inputMatrix.rowReplacement(targetRow, actorRow, scalar);
+      } catch (error) {
+        alert("Invalid Input");
+      }
+
+      if (result !== undefined) {
+         this.displayMatrix(result.array, this.finalDisplayMatrix);
+      }
    }
 
    swap() {
-      let actorRow = document.querySelector("#row-swap select:nth-of-type(1)").value;
-      let targetRow = document.querySelector("#row-swap select:nth-of-type(2)").value;
+      let actorRow = parseInt(document.querySelector("#row-swap select:nth-of-type(1)").value) - 1;
+      let targetRow = parseInt(document.querySelector("#row-swap select:nth-of-type(2)").value) - 1;
+      let result;
+
+      try {
+         result = this.inputMatrix.rowSwap(targetRow, actorRow);
+      } catch (error) {
+        alert("Invalid Input");
+      }
+
+      if (result !== undefined) {
+         this.displayMatrix(result.array, this.finalDisplayMatrix);
+      }
    }
 }
 
