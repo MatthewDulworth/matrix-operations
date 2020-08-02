@@ -97,7 +97,7 @@ class RowOperationsCalculator {
       }
 
       if (result !== undefined) {
-         this.displayMatrix(result.array, this.finalDisplayMatrix);
+         this.displayMatrix(result.toString(), this.finalDisplayMatrix);
       }
    }
 
@@ -117,7 +117,7 @@ class RowOperationsCalculator {
       }
 
       if (result !== undefined) {
-         this.displayMatrix(result.array, this.finalDisplayMatrix);
+         this.displayMatrix(result.toString(), this.finalDisplayMatrix);
       }
    }
 
@@ -136,7 +136,7 @@ class RowOperationsCalculator {
       }
 
       if (result !== undefined) {
-         this.displayMatrix(result.array, this.finalDisplayMatrix);
+         this.displayMatrix(result.toString(), this.finalDisplayMatrix);
       }
    }
 
@@ -153,7 +153,7 @@ class RowOperationsCalculator {
       }
 
       if (result !== undefined) {
-         this.displayMatrix(result.array, this.finalDisplayMatrix);
+         this.displayMatrix(result.toString(), this.finalDisplayMatrix);
       }
    }
 }
