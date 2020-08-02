@@ -125,7 +125,7 @@ class RowOperationsCalculator {
       }
 
       if (list !== undefined) {
-         for(let i=1; i<list.length; i++) {
+         for (let i = 1; i < list.length; i++) {
             this.steplist.addStep(list.matrices[i], list.instructions[i]);
             this.displayOperation();
          }
@@ -137,6 +137,51 @@ class RowOperationsCalculator {
    // ---------------------------------------------------------------------------
    // Display Matrix
    // ---------------------------------------------------------------------------
+   /**
+    * Displays an operation on the page. 
+    */
+   displayOperation() {
+
+      if (this.first) {
+         this.display.firstElementChild.remove();
+         this.first = false;
+      }
+
+      let result = this.steplist.last();
+      let input = this.steplist.nextToLast();
+      let msg = this.steplist.lastMsg();
+
+      if (input == null || result == null || msg == null) {
+         throw Error("idk man");
+      }
+
+      let inputDisplay = this.createDisplayMatrix(input, "input");
+      let resultDisplay = this.createDisplayMatrix(result, "result");
+
+      let msgDisplay = document.createElement("div");
+      msgDisplay.classList.add("operation-msg");
+      msgDisplay.innerHTML = msg;
+
+      let arrow = document.createElement('div');
+      arrow.style.setProperty('margin-top', '5px');
+      arrow.style.setProperty('margin-right', '10px');
+      arrow.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill-rule="evenodd" d="M13.22 19.03a.75.75 0 001.06 0l6.25-6.25a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 10-1.06 1.06l4.97 4.97H3.75a.75.75 0 000 1.5h14.44l-4.97 4.97a.75.75 0 000 1.06z"></path></svg>';
+
+      let matrixPair = document.createElement("div");
+      matrixPair.classList.add("matrix-pair");
+
+      matrixPair.appendChild(inputDisplay);
+      matrixPair.appendChild(arrow);
+      matrixPair.appendChild(resultDisplay);
+      matrixPair.appendChild(msgDisplay);
+
+      this.display.appendChild(matrixPair);
+   }
+
+   createMessageDisplay(msg) {
+      return msgDisplay;
+   }
+
    /**
     * Creates html to display the passed matrix.
     * @throws Invalid Input if name is not "input" or "result"
@@ -168,40 +213,6 @@ class RowOperationsCalculator {
       displayMatrix.style.setProperty('grid-template-columns', `repeat(${matrix.columns}, auto)`);
 
       return displayMatrix;
-   }
-
-   /**
-    * Displays an operation on the page. 
-    */
-   displayOperation() {
-
-      if (this.first) {
-         this.display.firstElementChild.remove();
-         this.first = false;
-      }
-
-      let result = this.steplist.last();
-      let input = this.steplist.nextToLast();
-      let msg = this.steplist.lastMsg();
-
-      if(input == null || result == null || msg == null) {
-         throw Error("idk man");
-      }
-
-      let matrixPair = document.createElement("div");
-      matrixPair.classList.add("matrix-pair");
-
-      let msgDisplay = document.createElement("span");
-      msgDisplay.classList.add("operation-msg");
-      msgDisplay.textContent = msg;
-
-      let inputDisplay = this.createDisplayMatrix(input, "input");
-      let resultDisplay = this.createDisplayMatrix(result, "result");
-
-      matrixPair.appendChild(inputDisplay);
-      matrixPair.appendChild(resultDisplay);
-      matrixPair.appendChild(msgDisplay);
-      this.display.appendChild(matrixPair);
    }
 }
 
