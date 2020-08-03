@@ -29,8 +29,8 @@ class RowOperationsCalculator {
       this.undoBtn = document.getElementById("undo");
       this.redoBtn = document.getElementById("redo");
 
-      this.undoBtn.addEventListener('click', () => this.undoUI());
-      this.redoBtn.addEventListener('click', () => this.redoUI());
+      this.undoBtn.addEventListener('click', () => this.handleUndo());
+      this.redoBtn.addEventListener('click', () => this.handleRedo());
 
       this.multiplyBtn.addEventListener('click', () => this.multiply());
       this.addBtn.addEventListener('click', () => this.add());
@@ -152,6 +152,7 @@ class RowOperationsCalculator {
    // ---------------------------------------------------------------------------
    /**
     * Displays an operation on the page. 
+    * @throws "idk man" if the input matrix, result matrix, or operation message are null.
     */
    displayOperation() {
 
@@ -224,67 +225,12 @@ class RowOperationsCalculator {
       return displayMatrix;
    }
 
-   // ---------------------------------------------------------------------------
-   // Memory
-   // ---------------------------------------------------------------------------
-
-   lastResult() {
-      try {
-         return this.steps.matrices[this.stepIndex];
-      } catch (e) {
-         return null;
-      }
-   }
-
-   nextToLastResult() {
-      try {
-         return this.steps.matrices[this.stepIndex - 1];
-      } catch (e) {
-         return null;
-      }
-   }
-
-   lastMsg() {
-      try {
-         return this.steps.instructions[this.stepIndex];
-      } catch (e) {
-         return null;
-      }
-   }
-
-   addStep(result, msg) {
-      // If the last step taken not the last step stored, clear all steps above it.
-      if (this.stepIndex != this.steps.length - 1) {
-         this.steps = this.steps.range(0, this.stepIndex);
-      }
-      // add the step.
-      this.steps.addStep(result, msg);
-      this.stepIndex++;
-   }
-
-   undoStep() {
-      // If there are previous steps, set the last step to the previous step. 
-      if (this.stepIndex - 1 >= 0) {
-         this.stepIndex--;
-         return true;
-      } else {
-         return false;
-      }
-   }
-
-   redoStep() {
-      // If there are steps taken after the last step, set the last step the to the next step.
-      if (this.stepIndex + 1 < this.steps.length) {
-         this.stepIndex++;
-         return true;
-      } else {
-         return false;
-      }
-   }
-
-   undoUI() {
-      if(this.undoStep()) {
-         if(this.stepIndex === 0){
+   /**
+    * Undoes the last step taken.
+    */
+   handleUndo() {
+      if (this.undoStep()) {
+         if (this.stepIndex === 0) {
             let displayMatrix = this.display.firstElementChild.querySelector(".input").cloneNode(true);
             this.display.firstElementChild.innerHTML = "";
             this.display.firstElementChild.appendChild(displayMatrix);
@@ -295,9 +241,99 @@ class RowOperationsCalculator {
       }
    }
 
-   redoUI() {
-      if(this.redoStep()) {
+   /**
+    * Redoes the last undone step.
+    */
+   handleRedo() {
+      if (this.redoStep()) {
          this.displayOperation();
+      }
+   }
+
+   // ---------------------------------------------------------------------------
+   // Memory
+   // ---------------------------------------------------------------------------
+
+   /**
+    * Accounts for undos and redos.
+    * Returns null if the result does not exist.
+    * @returns The result of the last operation taken.
+    */
+   lastResult() {
+      try {
+         return this.steps.matrices[this.stepIndex];
+      } catch (e) {
+         return null;
+      }
+   }
+
+   /**
+    * Accounts for undos and redos.
+    * Returns null if the result does not exist.
+    * @returns The result of the next last operation taken.
+    */
+   nextToLastResult() {
+      try {
+         return this.steps.matrices[this.stepIndex - 1];
+      } catch (e) {
+         return null;
+      }
+   }
+
+   /**
+    * Accounts for undos and redos.
+    * Returns null if the message does not exist.
+    * @returns The message of the last operation taken.
+    */
+   lastMsg() {
+      try {
+         return this.steps.instructions[this.stepIndex];
+      } catch (e) {
+         return null;
+      }
+   }
+
+   /**
+    * Stores the result and message from an operation. 
+    * Clears any previously undone operations.
+    * @param {Matrix} result The result of the operation taken. 
+    * @param {string} msg The message of the operation taken. 
+    */
+   addStep(result, msg) {
+      // If the last step taken not the last step stored, clear all steps above it.
+      if (this.stepIndex != this.steps.length - 1) {
+         this.steps = this.steps.range(0, this.stepIndex);
+      }
+      // add the step.
+      this.steps.addStep(result, msg);
+      this.stepIndex++;
+   }
+
+   /**
+    * Undoes the last step if possible.
+    * @returns {boolean} True if a step was undone. False otherwise. 
+    */
+   undoStep() {
+      // If there are previous steps, set the last step to the previous step. 
+      if (this.stepIndex - 1 >= 0) {
+         this.stepIndex--;
+         return true;
+      } else {
+         return false;
+      }
+   }
+
+   /**
+    * Redoes the last undone step if possible.
+    * @returns {boolean} True if a step was redone. False otherwise.
+    */
+   redoStep() {
+      // If there are steps taken after the last step, set the last step the to the next step.
+      if (this.stepIndex + 1 < this.steps.length) {
+         this.stepIndex++;
+         return true;
+      } else {
+         return false;
       }
    }
 }
