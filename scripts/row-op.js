@@ -66,7 +66,7 @@ class RowOperationsCalculator {
 
 
    // ---------------------------------------------------------------------------
-   // Operations
+   // Row Operations
    // ---------------------------------------------------------------------------
    /**
     * Attempts to perform a row operation, if unsuccessful, alerts the user.
@@ -86,7 +86,13 @@ class RowOperationsCalculator {
       }
 
       if (result !== undefined) {
-         this.addStep(result, msg);
+         
+         let actorRow = null;
+         if(typeof params[1] != "string") {
+            actorRow = params[1];
+         }
+
+         this.addStep(result, msg, params[0], actorRow);
          this.displayOperation();
          button.scrollIntoView();
       }
@@ -99,7 +105,7 @@ class RowOperationsCalculator {
       let targetRow = parseInt(document.querySelector("#row-multiply select").value) - 1;
       let scalar = document.querySelector("#row-multiply input").value;
       let params = [targetRow, scalar];
-      let msg = `Multiplied row ${targetRow + 1} by ${scalar}.`;
+      let msg = `Multiply row ${targetRow + 1} by ${scalar}.`;
       this.tryOperation(this.lastResult().rowMultiplication.bind(this.lastResult()), params, msg, this.multiplyBtn);
    }
 
@@ -111,7 +117,7 @@ class RowOperationsCalculator {
       let actorRow = parseInt(document.querySelector("#row-replace select:nth-of-type(1)").value) - 1;
       let scalar = document.querySelector("#row-replace input").value;
       let params = [targetRow, actorRow, scalar];
-      let msg = `Added ${scalar} times row ${actorRow + 1} to ${targetRow + 1}.`;
+      let msg = `Add ${scalar} times row ${actorRow + 1} to row ${targetRow + 1}.`;
       this.tryOperation(this.lastResult().rowReplacement.bind(this.lastResult()), params, msg, this.addBtn);
    }
 
@@ -122,11 +128,22 @@ class RowOperationsCalculator {
       let targetRow = parseInt(document.querySelector("#row-swap select:nth-of-type(2)").value) - 1;
       let actorRow = parseInt(document.querySelector("#row-swap select:nth-of-type(1)").value) - 1;
       let params = [targetRow, actorRow];
-      let msg = `Swapped row ${actorRow + 1} and row ${targetRow + 1}`;
+      let msg = `Swap row ${actorRow + 1} with row ${targetRow + 1}.`;
       this.tryOperation(this.lastResult().rowSwap.bind(this.lastResult()), params, msg, this.swapBtn);
    }
 
+   // ---------------------------------------------------------------------------
+   // Row Reduction
+   // ---------------------------------------------------------------------------
+   /**
+    * 
+    * @param {Function} reduction 
+    * @param {string} alreadyDoneMsg 
+    * @param {HTMLElement} button 
+    */
    tryMultiple(reduction, alreadyDoneMsg, button) {
+
+      /**@type {StepList} */
       let steplist;
 
       try {
@@ -137,11 +154,11 @@ class RowOperationsCalculator {
 
       if (steplist !== undefined) {
          if (steplist.length === 1) {
-            this.addStep(steplist.matrices[0], alreadyDoneMsg);
+            this.addStep(steplist.matrices[0], alreadyDoneMsg, null, null);
             this.displayOperation();
          } else {
             for (let i = 1; i < steplist.length; i++) {
-               this.addStep(steplist.matrices[i], steplist.instructions[i]);
+               this.addStep(steplist.matrices[i], steplist.instructions[i], steplist.targetRows[i], steplist.actorRows[i]);
                this.displayOperation();
             }
          }
@@ -193,9 +210,7 @@ class RowOperationsCalculator {
       let inputDisplay = this.createDisplayMatrix(input, "input");
       let resultDisplay = this.createDisplayMatrix(result, "result");
 
-      let msgDisplay = document.createElement("div");
-      msgDisplay.classList.add("operation-msg");
-      msgDisplay.innerHTML = msg;
+      let msgDisplay = this.createMessageDisplay(msg);
 
       let arrow = document.createElement('div');
       arrow.style.setProperty('margin-top', '5px');
@@ -222,6 +237,9 @@ class RowOperationsCalculator {
     */
    createDisplayMatrix(matrix, name) {
 
+      const targetRow = this.lastTargetRow();
+      const actorRow = this.lastActorRow();
+
       if (name != "input" && name != "result") {
          throw Error('Invalid Input, name must be "input" or "result"');
       }
@@ -234,8 +252,14 @@ class RowOperationsCalculator {
       let array = matrix.toString();
       for (let row = 0; row < matrix.rows; row++) {
          for (let col = 0; col < matrix.columns; col++) {
+
             let entry = document.createElement('div');
             entry.textContent = array[row][col];
+            if(row === targetRow) {
+               entry.style.setProperty('color', 'red');
+            } else if(row === actorRow) {
+               entry.style.setProperty('color', 'blue');
+            }
             displayMatrix.appendChild(entry);
          }
       }
@@ -245,6 +269,21 @@ class RowOperationsCalculator {
 
       return displayMatrix;
    }
+
+   /**
+    * 
+    * @param {string} msg 
+    */
+   createMessageDisplay(msg) {
+      let msgDisplay = document.createElement("div");
+      msgDisplay.classList.add("operation-msg");
+      msgDisplay.innerHTML = msg;
+      return msgDisplay;
+   }
+
+   // ---------------------------------------------------------------------------
+   // Undo and Edit
+   // ---------------------------------------------------------------------------
 
    /**
     * Undoes the last step taken.
@@ -327,19 +366,46 @@ class RowOperationsCalculator {
    }
 
    /**
+    * Accounts for undos and redos.
+    * Returns null if the message does not exist.
+    * @returns The row the last operation was taken on.
+    */
+   lastTargetRow() {
+      try {
+         return this.steps.targetRows[this.stepIndex];
+      } catch (e) {
+         return null;
+      }
+   }
+
+   /**
+    * Accounts for undos and redos.
+    * Returns null if the message does not exist.
+    * @returns The row the last operation was taken on.
+    */
+   lastActorRow() {
+      try {
+         return this.steps.actorRows[this.stepIndex];
+      } catch (e) {
+         return null;
+      }
+   }
+
+   /**
     * Stores the result and message from an operation. 
     * Clears any previously undone operations.
     * @param {Matrix} result The result of the operation taken. 
     * @param {string} msg The message of the operation taken. 
     */
-   addStep(result, msg) {
+   addStep(result, msg, targetRow, actorRow) {
       // If the last step taken not the last step stored, clear all steps above it.
       if (this.stepIndex != this.steps.length - 1) {
          this.steps = this.steps.range(0, this.stepIndex);
       }
       // add the step.
-      this.steps.addStep(result, msg);
+      this.steps.addStep(result, msg, targetRow, actorRow);
       this.stepIndex++;
+      console.log(targetRow, actorRow);
    }
 
    /**

@@ -163,8 +163,8 @@ class Matrix {
       let maxIndex = this.indexOfMaxAbs(column.slice(currentRow)) + currentRow;
       if (maxIndex !== currentRow) {
          let swapResult = steps.last().rowSwap(maxIndex, currentRow);
-         let swapInstruct = `Swap row ${currentRow + 1} with row ${maxIndex + 1}`;
-         steps.addStep(swapResult, swapInstruct);
+         let swapInstruct = `Swap row ${currentRow + 1} with row ${maxIndex + 1}.`;
+         steps.addStep(swapResult, swapInstruct, currentRow, maxIndex);
 
          if (this.DEBUG === true) {
             console.log(`row: ${currentRow} col: ${currentCol}`);
@@ -184,8 +184,8 @@ class Matrix {
       if (!steps.last().at(currentRow, currentCol).equals(1)) {
          let scalar = steps.last().at(currentRow, currentCol).inverse();
          let multiplyResult = steps.last().rowMultiplication(currentRow, scalar);
-         let multiplyInstruct = `Multiply row ${currentRow + 1} by ${scalar.toFraction()}`;
-         steps.addStep(multiplyResult, multiplyInstruct);
+         let multiplyInstruct = `Multiply row ${currentRow + 1} by ${scalar.toFraction()}.`;
+         steps.addStep(multiplyResult, multiplyInstruct, currentRow, currentRow);
 
          if (this.DEBUG === true) {
             console.log(`row: ${currentRow} col: ${currentCol}`);
@@ -205,8 +205,8 @@ class Matrix {
       let entry = steps.last().at(rowIndex, pivotCol);
       if (!entry.equals(0)) {
          let replaceResult = steps.last().rowReplacement(rowIndex, pivotRow, entry.neg());
-         let replaceInstruct = `Add ${entry.neg().toFraction()} times row ${pivotRow + 1} to row ${rowIndex + 1}`;
-         steps.addStep(replaceResult, replaceInstruct);
+         let replaceInstruct = `Add ${entry.neg().toFraction()} times row ${pivotRow + 1} to row ${rowIndex + 1}.`;
+         steps.addStep(replaceResult, replaceInstruct, rowIndex, pivotRow);
 
          if (this.DEBUG === true) {
             console.log(`row: ${pivotRow} col: ${pivotCol}`);

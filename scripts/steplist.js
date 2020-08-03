@@ -12,10 +12,12 @@ class StepList {
    constructor(matrix) {
       this.matrices = [];
       this.instructions = [];
+      this.targetRows = [];
+      this.actorRows = [];
       this.length = 0;
 
       if (matrix !== undefined) {
-         this.addStep(matrix, "Original matrix.");
+         this.addStep(matrix, "Original matrix.", null, null);
       }
    }
 
@@ -24,9 +26,11 @@ class StepList {
     * @param {Matrix} matrix 
     * @param {string} instruction 
     */
-   addStep(matrix, instruction) {
+   addStep(matrix, instruction, targetRow, actorRow) {
       this.matrices.push(matrix);
       this.instructions.push(instruction);
+      this.targetRows.push(targetRow);
+      this.actorRows.push(actorRow);
       this.length++;
    }
 
@@ -34,7 +38,7 @@ class StepList {
       let steps = new StepList();
       
       for(let index = start; index <= end; index++){
-         steps.addStep(this.matrices[index], this.instructions[index]);
+         steps.addStep(this.matrices[index], this.instructions[index], this.targetRows[index], this.actorRows[index]);
       }
 
       return steps;
@@ -79,6 +83,7 @@ class StepList {
    log() {
       for (let i = 0; i < this.length; i++) {
          console.log(`Operation Number ${i}: ${this.instructions[i]}`);
+         console.log(`Operation on row ${this.targetRows[i]}`);
          this.matrices[i].log();
       }
    }
@@ -98,6 +103,7 @@ class StepList {
     */
    logLast() {
       console.log(this.instructions[this.length - 1]);
+      console.log(`Operation on row ${this.targetRows[this.length - 1]}`);
       this.last().log();
    }
 }
