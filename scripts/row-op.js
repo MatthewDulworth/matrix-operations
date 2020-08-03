@@ -13,7 +13,8 @@ class RowOperationsCalculator {
    constructor(matrixID) {
       let matrixArray = JSON.parse(sessionStorage.getItem(matrixID));
 
-      this.steps = new StepList(new Matrix(matrixArray.length, matrixArray[0].length, matrixArray))
+      this.originalMatrix = new Matrix(matrixArray.length, matrixArray[0].length, matrixArray);
+      this.steps = new StepList(this.originalMatrix);
       this.stepIndex = 0;
       this.first = true;
 
@@ -24,6 +25,12 @@ class RowOperationsCalculator {
       this.addBtn = document.querySelector("#row-replace button");
       this.swapBtn = document.querySelector("#row-swap button");
       this.reduceBtn = document.querySelector("#row-reduce button");
+
+      this.undoBtn = document.getElementById("undo");
+      this.redoBtn = document.getElementById("redo");
+
+      this.undoBtn.addEventListener('click', () => this.undoUI());
+      this.redoBtn.addEventListener('click', () => this.redoUI());
 
       this.multiplyBtn.addEventListener('click', () => this.multiply());
       this.addBtn.addEventListener('click', () => this.add());
@@ -224,7 +231,7 @@ class RowOperationsCalculator {
    lastResult() {
       try {
          return this.steps.matrices[this.stepIndex];
-      } catch(e) {
+      } catch (e) {
          return null;
       }
    }
@@ -232,7 +239,7 @@ class RowOperationsCalculator {
    nextToLastResult() {
       try {
          return this.steps.matrices[this.stepIndex - 1];
-      } catch(e) {
+      } catch (e) {
          return null;
       }
    }
@@ -240,14 +247,14 @@ class RowOperationsCalculator {
    lastMsg() {
       try {
          return this.steps.instructions[this.stepIndex];
-      } catch(e) {
+      } catch (e) {
          return null;
       }
    }
 
    addStep(result, msg) {
       // If the last step taken not the last step stored, clear all steps above it.
-      if(this.stepIndex != this.steps.length - 1) {
+      if (this.stepIndex != this.steps.length - 1) {
          this.steps = this.steps.range(0, this.stepIndex);
       }
       // add the step.
@@ -257,18 +264,39 @@ class RowOperationsCalculator {
 
    undoStep() {
       // If there are previous steps, set the last step to the previous step. 
-      if(this.stepIndex - 1 >= 0) {
+      if (this.stepIndex - 1 >= 0) {
          this.stepIndex--;
+         return true;
+      } else {
+         return false;
       }
-      this.lastResult().log();
    }
 
    redoStep() {
       // If there are steps taken after the last step, set the last step the to the next step.
-      if(this.stepIndex + 1 < this.steps.length) {
+      if (this.stepIndex + 1 < this.steps.length) {
          this.stepIndex++;
+         return true;
+      } else {
+         return false;
       }
-      this.lastResult().log();
+   }
+
+   undoUI() {
+      if(this.undoStep()) {
+         if(this.stepIndex === 0){
+            let displayMatrix = this.display.firstElementChild.querySelector(".input").cloneNode(true);
+            this.display.firstElementChild.innerHTML = "";
+            this.display.firstElementChild.appendChild(displayMatrix);
+            this.first = true;
+         } else {
+            this.display.lastChild.remove();
+         }
+      }
+   }
+
+   redoUI() {
+      console.log("redo") ;
    }
 }
 

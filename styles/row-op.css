@@ -26,6 +26,14 @@
    min-width: 1rem;
 }
 
+/********* undo redo *********/
+
+#undo-redo {
+   padding: 0.5rem 1.5rem;
+   border-bottom: 1px solid black;
+}
+
+
 /********* operations menu *********/
 
 #operations-menu {
