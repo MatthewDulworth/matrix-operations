@@ -13,10 +13,10 @@ class RowOperationsCalculator {
    constructor(matrixID) {
       let matrixArray = JSON.parse(sessionStorage.getItem(matrixID));
 
-      this.originalMatrix = new Matrix(matrixArray.length, matrixArray[0].length, matrixArray);
-      this.steps = new StepList(this.originalMatrix);
+      this.steps = new StepList(new Matrix(matrixArray.length, matrixArray[0].length, matrixArray));
       this.stepIndex = 0;
       this.first = true;
+      this.matrixID = matrixID;
 
       this.rowLists = document.querySelectorAll(".row-list");
       this.display = document.getElementById("display");
@@ -28,9 +28,11 @@ class RowOperationsCalculator {
 
       this.undoBtn = document.getElementById("undo");
       this.redoBtn = document.getElementById("redo");
+      this.editBtn = document.getElementById("edit");
 
       this.undoBtn.addEventListener('click', () => this.handleUndo());
       this.redoBtn.addEventListener('click', () => this.handleRedo());
+      this.editBtn.addEventListener('click', () => this.handleEdit());
 
       this.multiplyBtn.addEventListener('click', () => this.multiply());
       this.addBtn.addEventListener('click', () => this.add());
@@ -251,6 +253,16 @@ class RowOperationsCalculator {
          this.redoBtn.scrollIntoView();
       }
    }
+
+   /**
+    * Allows user to edit the last result
+    */
+   handleEdit() {
+      let matrixJSON = JSON.stringify(this.lastResult().toString());
+      sessionStorage.setItem(this.matrixID, matrixJSON);
+      window.location.href = '../html/row-op-input.html';
+   }
+
 
    // ---------------------------------------------------------------------------
    // Memory

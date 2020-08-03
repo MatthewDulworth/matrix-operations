@@ -105,7 +105,13 @@ class MatrixInput {
       this.row = new DimensionInput(this.wrapper, "row");
       this.col = new DimensionInput(this.wrapper, "col");
 
-      this.initMatrix();
+      if (sessionStorage.getItem(this.ID) !== null) {
+         let matrixArray = JSON.parse(sessionStorage.getItem(this.ID));
+         this.initMatrixFromArray(matrixArray);
+      } else {
+         this.initMatrix();
+      }
+
       this.addResetButtonListener();
       this.addRowColChangeListeners();
    }
@@ -334,6 +340,25 @@ class MatrixInput {
       for (let row = 0; row < rows; row++) {
          for (let col = 0; col < columns; col++) {
             this.matrix.appendChild(this.createMatrixEntry(row, col, this.ID));
+         }
+      }
+
+      this.setMatrixGridRows(rows);
+      this.setMatrixGridCols(columns);
+   }
+
+   /**
+    * @param {string[][]}
+    */
+   initMatrixFromArray(matrixArray) {
+      const rows = matrixArray.length;
+      const columns = matrixArray[0].length;
+
+      for (let row = 0; row < rows; row++) {
+         for (let col = 0; col < columns; col++) {
+            let entry = this.createMatrixEntry(row, col, this.ID);
+            entry.value = matrixArray[row][col];
+            this.matrix.appendChild(entry);
          }
       }
 
