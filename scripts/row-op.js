@@ -238,6 +238,7 @@ class RowOperationsCalculator {
          } else {
             this.display.lastChild.remove();
          }
+         this.undoBtn.scrollIntoView();
       }
    }
 
@@ -247,6 +248,7 @@ class RowOperationsCalculator {
    handleRedo() {
       if (this.redoStep()) {
          this.displayOperation();
+         this.redoBtn.scrollIntoView();
       }
    }
 
