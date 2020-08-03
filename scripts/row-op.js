@@ -21,23 +21,27 @@ class RowOperationsCalculator {
       this.rowLists = document.querySelectorAll(".row-list");
       this.display = document.getElementById("display");
 
-      this.multiplyBtn = document.querySelector("#row-multiply button");
-      this.addBtn = document.querySelector("#row-replace button");
-      this.swapBtn = document.querySelector("#row-swap button");
-      this.reduceBtn = document.querySelector("#row-reduce button");
-
       this.undoBtn = document.getElementById("undo");
       this.redoBtn = document.getElementById("redo");
       this.editBtn = document.getElementById("edit");
 
+      this.multiplyBtn = document.querySelector("#row-multiply button");
+      this.addBtn = document.querySelector("#row-replace button");
+      this.swapBtn = document.querySelector("#row-swap button");
+
+      this.echelonBtn = document.getElementById("row-echelon");
+      this.reduceBtn = document.getElementById("row-reduce");
+
       this.undoBtn.addEventListener('click', () => this.handleUndo());
       this.redoBtn.addEventListener('click', () => this.handleRedo());
       this.editBtn.addEventListener('click', () => this.handleEdit());
-
+      
       this.multiplyBtn.addEventListener('click', () => this.multiply());
       this.addBtn.addEventListener('click', () => this.add());
       this.swapBtn.addEventListener('click', () => this.swap());
+
       this.reduceBtn.addEventListener('click', () => this.reduce());
+      this.echelonBtn.addEventListener('click', () => this.rowEchelon());
 
       this.display.firstElementChild.appendChild(this.createDisplayMatrix(this.lastResult(), "input"));
       this.initRowLists(this.rowLists, matrixArray.length);
@@ -122,30 +126,45 @@ class RowOperationsCalculator {
       this.tryOperation(this.lastResult().rowSwap.bind(this.lastResult()), params, msg, this.swapBtn);
    }
 
-   /**
-    * Row reduces matrix and displays the result.
-    */
-   reduce() {
-      let list;
+   tryMultiple(reduction, alreadyDoneMsg, button) {
+      let steplist;
 
       try {
-         list = this.lastResult().rref();
+         steplist = reduction();
       } catch (error) {
          alert("Invalid Input");
       }
 
-      if (list !== undefined) {
-         if (list.length === 1) {
-            this.addStep(list.matrices[0], "Already in row reduced form.");
+      if (steplist !== undefined) {
+         if (steplist.length === 1) {
+            this.addStep(steplist.matrices[0], alreadyDoneMsg);
             this.displayOperation();
          } else {
-            for (let i = 1; i < list.length; i++) {
-               this.addStep(list.matrices[i], list.instructions[i]);
+            for (let i = 1; i < steplist.length; i++) {
+               this.addStep(steplist.matrices[i], steplist.instructions[i]);
                this.displayOperation();
             }
          }
-         this.reduceBtn.scrollIntoView();
+         button.scrollIntoView();
       }
+   }
+
+   /**
+    * Row reduces matrix and displays the result.
+    */
+   rowEchelon() {
+      let alreadyDoneMsg = "Matrix is already in row echelon form.";
+      let reduction = this.lastResult().ref.bind(this.lastResult());
+      this.tryMultiple(reduction, alreadyDoneMsg, this.echelonBtn);
+   }
+
+   /**
+    * Row reduces matrix and displays the result.
+    */
+   reduce() {
+      let alreadyDoneMsg = "Matrix is already in reduced row echelon form.";
+      let reduction = this.lastResult().rref.bind(this.lastResult());
+      this.tryMultiple(reduction, alreadyDoneMsg, this.reduceBtn);
    }
 
 
