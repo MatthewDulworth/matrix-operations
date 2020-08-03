@@ -104,7 +104,7 @@ class MatrixInput {
 
       this.row = new DimensionInput(this.wrapper, "row");
       this.col = new DimensionInput(this.wrapper, "col");
-
+      
       if (sessionStorage.getItem(this.ID) !== null) {
          let matrixArray = JSON.parse(sessionStorage.getItem(this.ID));
          this.initMatrixFromArray(matrixArray);
@@ -361,6 +361,11 @@ class MatrixInput {
             this.matrix.appendChild(entry);
          }
       }
+
+      this.row.input.value = rows;
+      this.row.oldValue = rows;
+      this.col.input.value = columns;
+      this.col.oldValue = columns;
 
       this.setMatrixGridRows(rows);
       this.setMatrixGridCols(columns);
