@@ -30,6 +30,16 @@ class StepList {
       this.length++;
    }
 
+   range(start, end) {
+      let steps = new StepList();
+      
+      for(let index = start; index <= end; index++){
+         steps.addStep(this.matrices[index], this.instructions[index]);
+      }
+
+      return steps;
+   }
+
    /**
     * @returns {Matrix} The most recently added matrix.
     */

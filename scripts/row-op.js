@@ -13,7 +13,8 @@ class RowOperationsCalculator {
    constructor(matrixID) {
       let matrixArray = JSON.parse(sessionStorage.getItem(matrixID));
 
-      this.steplist = new StepList(new Matrix(matrixArray.length, matrixArray[0].length, matrixArray))
+      this.steps = new StepList(new Matrix(matrixArray.length, matrixArray[0].length, matrixArray))
+      this.stepIndex = 0;
       this.first = true;
 
       this.rowLists = document.querySelectorAll(".row-list");
@@ -29,7 +30,7 @@ class RowOperationsCalculator {
       this.swapBtn.addEventListener('click', () => this.swap());
       this.reduceBtn.addEventListener('click', () => this.reduce());
 
-      this.display.firstElementChild.appendChild(this.createDisplayMatrix(this.steplist.last(), "input"));
+      this.display.firstElementChild.appendChild(this.createDisplayMatrix(this.lastResult(), "input"));
       this.initRowLists(this.rowLists, matrixArray.length);
    }
 
@@ -72,7 +73,7 @@ class RowOperationsCalculator {
       }
 
       if (result !== undefined) {
-         this.steplist.addStep(result, msg);
+         this.addStep(result, msg);
          this.displayOperation();
          button.scrollIntoView();
       }
@@ -86,7 +87,7 @@ class RowOperationsCalculator {
       let scalar = document.querySelector("#row-multiply input").value;
       let params = [targetRow, scalar];
       let msg = `Multiplied row ${targetRow + 1} by ${scalar}.`;
-      this.tryOperation(this.steplist.last().rowMultiplication.bind(this.steplist.last()), params, msg, this.multiplyBtn);
+      this.tryOperation(this.lastResult().rowMultiplication.bind(this.lastResult()), params, msg, this.multiplyBtn);
    }
 
    /**
@@ -98,7 +99,7 @@ class RowOperationsCalculator {
       let scalar = document.querySelector("#row-replace input").value;
       let params = [targetRow, actorRow, scalar];
       let msg = `Added ${scalar} times row ${actorRow + 1} to ${targetRow + 1}.`;
-      this.tryOperation(this.steplist.last().rowReplacement.bind(this.steplist.last()), params, msg, this.addBtn);
+      this.tryOperation(this.lastResult().rowReplacement.bind(this.lastResult()), params, msg, this.addBtn);
    }
 
    /**
@@ -109,7 +110,7 @@ class RowOperationsCalculator {
       let actorRow = parseInt(document.querySelector("#row-swap select:nth-of-type(1)").value) - 1;
       let params = [targetRow, actorRow];
       let msg = `Swapped row ${actorRow + 1} and row ${targetRow + 1}`;
-      this.tryOperation(this.steplist.last().rowSwap.bind(this.steplist.last()), params, msg, this.swapBtn);
+      this.tryOperation(this.lastResult().rowSwap.bind(this.lastResult()), params, msg, this.swapBtn);
    }
 
    /**
@@ -119,18 +120,18 @@ class RowOperationsCalculator {
       let list;
 
       try {
-         list = this.steplist.last().rref();
+         list = this.lastResult().rref();
       } catch (error) {
          alert("Invalid Input");
       }
 
       if (list !== undefined) {
          if (list.length === 1) {
-            this.steplist.addStep(list.matrices[0], "Already in row reduced form.");
+            this.addStep(list.matrices[0], "Already in row reduced form.");
             this.displayOperation();
          } else {
             for (let i = 1; i < list.length; i++) {
-               this.steplist.addStep(list.matrices[i], list.instructions[i]);
+               this.addStep(list.matrices[i], list.instructions[i]);
                this.displayOperation();
             }
          }
@@ -152,9 +153,9 @@ class RowOperationsCalculator {
          this.first = false;
       }
 
-      let result = this.steplist.last();
-      let input = this.steplist.nextToLast();
-      let msg = this.steplist.lastMsg();
+      let result = this.lastResult();
+      let input = this.nextToLastResult();
+      let msg = this.lastMsg();
 
       if (input == null || result == null || msg == null) {
          throw Error("idk man");
@@ -214,6 +215,60 @@ class RowOperationsCalculator {
       displayMatrix.style.setProperty('grid-template-columns', `repeat(${matrix.columns}, auto)`);
 
       return displayMatrix;
+   }
+
+   // ---------------------------------------------------------------------------
+   // Memory
+   // ---------------------------------------------------------------------------
+
+   lastResult() {
+      try {
+         return this.steps.matrices[this.stepIndex];
+      } catch(e) {
+         return null;
+      }
+   }
+
+   nextToLastResult() {
+      try {
+         return this.steps.matrices[this.stepIndex - 1];
+      } catch(e) {
+         return null;
+      }
+   }
+
+   lastMsg() {
+      try {
+         return this.steps.instructions[this.stepIndex];
+      } catch(e) {
+         return null;
+      }
+   }
+
+   addStep(result, msg) {
+      // If the last step taken not the last step stored, clear all steps above it.
+      if(this.stepIndex != this.steps.length - 1) {
+         this.steps = this.steps.range(0, this.stepIndex);
+      }
+      // add the step.
+      this.steps.addStep(result, msg);
+      this.stepIndex++;
+   }
+
+   undoStep() {
+      // If there are previous steps, set the last step to the previous step. 
+      if(this.stepIndex - 1 >= 0) {
+         this.stepIndex--;
+      }
+      this.lastResult().log();
+   }
+
+   redoStep() {
+      // If there are steps taken after the last step, set the last step the to the next step.
+      if(this.stepIndex + 1 < this.steps.length) {
+         this.stepIndex++;
+      }
+      this.lastResult().log();
    }
 }
 
