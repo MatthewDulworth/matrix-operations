@@ -296,7 +296,9 @@ class RowOperationsCalculator {
    }
 
    redoUI() {
-      console.log("redo") ;
+      if(this.redoStep()) {
+         this.displayOperation();
+      }
    }
 }
 
