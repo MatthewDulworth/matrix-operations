@@ -14,6 +14,7 @@ class Matrix {
    constructor(rows, columns, inputMatrix) {
       this.rows = rows;
       this.columns = columns;
+      /** @type {Fraction[][]} */
       this.array = this.toFraction(inputMatrix);
       this.DEBUG = false;
    }
@@ -376,6 +377,34 @@ class Matrix {
          }
       }
       return new Matrix(this.columns, this.rows, transpose);
+   }
+
+   /**
+    * 
+    * @param {Matrix} otherMatrix 
+    * @param {boolean} addition 
+    */
+   matrixAddition(otherMatrix, addition=true) {
+
+      if(this.rows !== otherMatrix.rows || this.columns != otherMatrix.columns) {
+         throw Error("Invalid Input, matrix rows and columns must match");
+      }
+
+      let sign = -1;
+      if(addition) {
+         sign = 1;
+      }
+
+      let resultArray = [];
+
+      for(let row=0; row<this.rows; row++) {
+         resultArray[row] = [];
+         for(let col=0; col<this.columns; col++) {
+            resultArray[row][col] = this.at(row, col).add(otherMatrix.at(row, col).mul(sign)).toFraction();
+         }
+      }
+
+      return new Matrix(this.rows, this.columns, resultArray);
    }
 }
 
