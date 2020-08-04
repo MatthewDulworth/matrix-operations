@@ -16,15 +16,14 @@ main {
    max-width: 500px;
 }
 
-.link-section {
+main .link-section {
    margin-bottom: 30px;
-   border-bottom: 1px solid black;
 }
 
-.link-section p {
+main .link-section p {
    margin: 5px 0px;
 }
 
-#credits {
-   margin-bottom: 20%;
+#push {
+   margin-bottom: 30%;
 }

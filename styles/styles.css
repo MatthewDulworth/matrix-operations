@@ -11,11 +11,6 @@ button {
    cursor: pointer;
 }
 
-section {
-   border-bottom: 1px solid black;
-   padding: 1.5rem;
-}
-
 /********* layout *********/
 
 body {
