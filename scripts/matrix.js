@@ -380,47 +380,67 @@ class Matrix {
    }
 
    /**
-    * 
     * @param {Matrix} otherMatrix 
-    * @param {boolean} addition 
+    * @param {boolean} addition
+    * @returns {Matrix} 
     */
-   matrixAddition(otherMatrix, addition=true) {
+   matrixAddition(otherMatrix, addition = true) {
 
-      if(this.rows !== otherMatrix.rows || this.columns != otherMatrix.columns) {
+      if (this.rows !== otherMatrix.rows || this.columns != otherMatrix.columns) {
          throw Error("Invalid Input, matrix rows and columns must match");
       }
 
       let sign = -1;
-      if(addition) {
+      if (addition) {
          sign = 1;
       }
 
       let resultArray = [];
 
-      for(let row=0; row<this.rows; row++) {
+      for (let row = 0; row < this.rows; row++) {
          resultArray[row] = [];
-         for(let col=0; col<this.columns; col++) {
+         for (let col = 0; col < this.columns; col++) {
             resultArray[row][col] = this.at(row, col).add(otherMatrix.at(row, col).mul(sign)).toFraction();
          }
       }
 
       return new Matrix(this.rows, this.columns, resultArray);
    }
+
+   /**
+    * @param {Matrix} otherMatrix 
+    * @returns {boolean}
+    */
+   equals(otherMatrix) {
+      if (otherMatrix.rows !== this.rows || otherMatrix.columns !== this.columns) {
+         return false;
+      } else {
+         for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.columns; col++) {
+               if (!this.at(row, col).equals(otherMatrix.at(row, col))) {
+                  return false;
+               }
+            }
+         }
+         return true;
+      }
+   }
 }
 
-// let A = [
+// const A = [
 //    [2, 4, 4],
 //    [0, 0, 8],
 //    [4, 4, 4],
 // ];
 // let matrixA = new Matrix(3, 3, A);
 
-// let B = [
+// const B = [
 //    [3, -3, -2],
 //    [0, 0, 4],
 //    [4, 3, 2]
 // ];
 // let matrixB = new Matrix(3, 3, B);
+// let matrixC = new Matrix(3, 3, B);
 
 // matrixA.log();
 // let matrixC = matrixA.transpose();
