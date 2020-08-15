@@ -30,10 +30,10 @@
          <img src="../assets/matrix-operations.jpg" alt="Matrix Operations" id="site-icon">
       </a>
       <a class="link" href="">Row Operations Calculator</a>
-      <a class="link" href="./matrix-op.html">Matrix Operations Calculator</a>
+      <a class="link" href="#">Matrix Operations Calculator</a>
    </nav>
 
-   <!-- matrix _0 -->
+   <!-- matrix A -->
    <main>
       <section id="instructions">
          <p>
@@ -46,29 +46,27 @@
             Fractions cannot contain decimal numbers, values like 3.1/2.5 are not supported.
          </p>
       </section>
-      <section>
-         <div id="_0" class="matrix-input">
-            <div>Initial Matrix</div>
-
-            <div class="dimensions">
-               <div class="dim row">
-                  <span>rows:</span>
-                  <button class="minus-btn">-</button>
-                  <input class="row-in" type="text" max="20" value="3">
-                  <button class="plus-btn">+</button>
-               </div>
-
-               <div class="dim col">
-                  <span>columns:</span>
-                  <button class="minus-btn">-</button>
-                  <input class="col-in" type="text" max="20" value="3">
-                  <button class="plus-btn">+</button>
-               </div>
-
-               <div>
-                  <button class="reset-btn">Reset</button>
-                  <button class="create-btn">Create Matrix</button>
-               </div>
+      <section id="A" class="matrix-input">
+         <div>Initial Matrix</div>
+   
+         <div class="dimensions">
+            <div class="dim row">
+               <span>rows:</span>
+               <button class="minus-btn">-</button>
+               <input class="row-in" type="text" max="20" value="3">
+               <button class="plus-btn">+</button>
+            </div>
+   
+            <div class="dim col">
+               <span>columns:</span>
+               <button class="minus-btn">-</button>
+               <input class="col-in" type="text" max="20" value="3">
+               <button class="plus-btn">+</button>
+            </div>
+   
+            <div>
+               <button class="reset-btn">Reset</button>
+               <button id="create-btn">Create Matrix</button>
             </div>
 
             <div class="input-grid"></div>

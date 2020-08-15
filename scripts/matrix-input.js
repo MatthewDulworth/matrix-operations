@@ -88,17 +88,17 @@ class DimensionInput {
 class MatrixInput {
    /**
     * Generates an initial input matrix and adds the event listeners to the buttons. 
-    * @throws Input Elements Are Null if resetBtn, createBtn, or the matrix input grid cannot be found.
+    * @throws Input Elements Are Null if resetBtn, or the matrix input grid cannot be found.
     * @param {string} matrixID The unique html id of the input matrix.
     */
    constructor(matrixID) {
       this.wrapper = document.getElementById(matrixID);
       this.ID = matrixID;
       this.resetBtn = this.wrapper.querySelector('.reset-btn');
-      this.createBtn = this.wrapper.querySelector('.create-btn');
+
       this.matrix = this.wrapper.querySelector('.input-grid');
 
-      if (this.resetBtn === null || this.createBtn === null || this.matrix === null) {
+      if (this.resetBtn === null || this.matrix === null) {
          throw Error("Input Elements Are Null")
       }
 

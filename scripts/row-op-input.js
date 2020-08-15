@@ -1,32 +1,25 @@
 'use strict';
 
-// -----------------------------------------------------------
-// Constants
-// -----------------------------------------------------------
-const matrixInput = new MatrixInput("_0");
+const matrixInput = new MatrixInput("A");
 
-// -----------------------------------------------------------
-// Create Button Listener
-// -----------------------------------------------------------
 /**
  * When the create button is clicked try to generate a string matrix from the matrix input.
  * If so, store it in sessions storage and go to the next page.
  * If not, alert the user that their input is invalid.
  */
-matrixInput.createBtn.addEventListener('click', () => {
-
-   let success = true;
-   let matrix;
-
+document.getElementById("create-btn").addEventListener('click', () => {
    try {
-      matrix = matrixInput.toArray();
+      createMatrix();
    } catch (error) {
-      success = false;
       alert("Please make sure your matrix input is limited to fractions or decimal numbers.");
    }
-
-   if (success) {
-      sessionStorage.setItem(matrixInput.ID, JSON.stringify(matrix));
-      window.location.href = '../html/row-op.html';
-   }
 });
+
+/**
+ * @throws Invalid Input if any matrix element contains invalid input
+ */
+function createMatrix() {
+   const matrix = matrixInput.toArray();
+   sessionStorage.setItem(matrixInput.ID, JSON.stringify(matrix));
+   window.location.href = '../html/row-op.html';
+}

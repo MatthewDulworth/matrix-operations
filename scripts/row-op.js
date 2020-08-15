@@ -437,4 +437,5 @@ class RowOperationsCalculator {
    }
 }
 
-const rowOpCalculator = new RowOperationsCalculator("_0");
+const matrixID = "A";
+const rowOpCalculator = new RowOperationsCalculator(matrixID);
