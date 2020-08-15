@@ -17,10 +17,12 @@
    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300&display=swap" rel="stylesheet">
    <link rel="stylesheet" href="../styles/styles.css">
    <link rel="stylesheet" href="../styles/matrix-op.css">
+   <link rel="stylesheet" href="../styles/row-op-input.css">
 
    <!-- scripts -->
    <script src="../scripts/fraction.js"></script>
    <script src="../scripts/matrix.js"></script>
+   <script src="../scripts/steplist.js"></script>
 </head>
 
 <body>
@@ -38,8 +40,8 @@
       <section id="input">
 
          <!-- matrix A -->
-         <div id="matrixA">
-            
+         <div id="matrixA" class="matrix-input">
+
             <div>
                <span>Matrix A</span>
                <button class="reset-btn">Reset</button>
@@ -61,11 +63,13 @@
                </div>
 
             </div>
+
+            <div class="input-grid"></div>
          </div>
 
          <!-- matrix B -->
-         <div id="MatrixB">
-            
+         <div id="MatrixB" class="matrix-input">
+
             <div>
                <span>Matrix B</span>
                <button class="reset-btn">Reset</button>
@@ -87,58 +91,85 @@
                </div>
             </div>
 
-            
+            <div class="input-grid"></div>
          </div>
+
       </section>
 
       <!-- operations menu -->
       <section id="operations">
 
          <div id="add">
-            Add <input type="text" value="1"> matrix
+            Add matrix
             <select class="matrix-select">
                <option value="0">A</option>
                <option value="1">B</option>
             </select>
-            and <input type="text" value="1"> matrix
+            and matrix
             <select class="matrix-select">
                <option value="0">A</option>
                <option value="1">B</option>
             </select>
+            <button>Go</button>
          </div>
 
          <div id="subtract">
-            Subtract <input type="text" value="1"> matrix
+            Subtract matrix
             <select class="matrix-select">
                <option value="0">A</option>
                <option value="1">B</option>
             </select>
-            and <input type="text" value="1"> matrix
+            and matrix
             <select class="matrix-select">
                <option value="0">A</option>
                <option value="1">B</option>
             </select>
+            <button>Go</button>
          </div>
 
          <div id="multiply">
-            Multiply <input type="text" value="1"> matrix
+            Multiply matrix
             <select class="matrix-select">
                <option value="0">A</option>
                <option value="1">B</option>
             </select>
-            and <input type="text" value="1"> matrix
+            and matrix
             <select class="matrix-select">
                <option value="0">A</option>
                <option value="1">B</option>
             </select>
+            <button>Go</button>
          </div>
 
-         <div id="transpose">
-            Take the transpose of matrix
+         <div id="scale">
+            Scale matrix
             <select class="matrix-select">
                <option value="0">A</option>
                <option value="1">B</option>
             </select>
+            by
+            <input type="text" value="1">
+            <button>Go</button>
+         </div>
+      </section>
+
+      <section id="inverse-ops">
+         <div id="transpose">
+            Find the transpose of matrix
+            <select class="matrix-select">
+               <option value="0">A</option>
+               <option value="1">B</option>
+            </select>
+            <button>Go</button>
+         </div>
+
+         <div id="inverse">
+            Find the inverse of matrix
+            <select class="matrix-select">
+               <option value="0">A</option>
+               <option value="1">B</option>
+            </select>
+            <button>Go</button>
          </div>
       </section>
 
