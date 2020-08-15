@@ -85,6 +85,17 @@ class Matrix {
       return this.array[row][column];
    }
 
+   cloneArray() {
+      let clone = [];
+      for (let i = 0; i < this.rows; i++) {
+         clone[i] = [];
+         for (let j = 0; j < this.columns; j++) {
+            clone[i][j] = this.at(i, j).clone();
+         }
+      }
+      return clone;
+   }
+
 
    // ---------------------------------------------------------------------------
    // Row Operations
@@ -425,6 +436,96 @@ class Matrix {
          return true;
       }
    }
+
+   /**
+    * @returns {StepList} The steps to achieve the inverse of the matrix if possible. 
+    */
+   inverse() {
+      if (this.rows === this.columns) {
+         const stepList = this.augmentedIdentityMatrix().rref();
+         stepList.instructions[0] = "Create augmented matrix with identity matrix.";
+
+         if (stepList.last().isAugmentedIdentity()) {
+            stepList.addStep(this.retrieveInverse(stepList), "The inverse.");
+         } else {
+            stepList.addStep(this, "This matrix is not invertible because it is not row equivalent to the identity matrix.");
+         }
+         return stepList;
+
+      } else {
+         const stepList = new StepList(this);
+         stepList.instructions[0] = "Matrix is not invertible because it is not square.";
+         return stepList;
+      }
+   }
+
+   /**
+    * Checks if the initial sub matrix of this augmented matrix is an identity matrix.
+    * @returns {boolean} 
+    */
+   isAugmentedIdentity() {
+      if (this.rows * 2 === this.columns) {
+         for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.rows; j++) {
+
+               if (i === j && !this.at(i, j).equals(1)) {
+                  return false;
+               } else if (i !== j && !this.at(i, j).equals(0)) {
+                  return false;
+               }
+
+            }
+         }
+         return true;
+      } else {
+         return false;
+      }
+   }
+
+   /**
+    * @param {StepList} stepList 
+    * @returns {Matrix}
+    */
+   retrieveInverse(stepList) {
+      if (this.rows !== this.columns) {
+         throw Error("This must be a square matrix");
+      }
+      const inverseArray = stepList.last().cloneArray().map(row => row.splice(this.rows));
+      return new Matrix(this.rows, this.columns, inverseArray);
+   }
+
+   retrieveIdentity(stepList) {
+      if (this.rows !== this.columns) {
+         throw Error("This must be a square matrix");
+      }
+   }
+
+   /**
+    * @throws This must be a square matrix.
+    * @returns {Matrix} This matrix augmented with its 
+    */
+   augmentedIdentityMatrix() {
+      if (this.rows === this.columns) {
+         const augmentedArray = [];
+
+         for (let i = 0; i < this.rows; i++) {
+            augmentedArray[i] = [];
+            for (let j = 0; j < this.columns * 2; j++) {
+
+               let value = 0;
+               if (j < this.columns) {
+                  value = this.at(i, j);
+               } else if (i + this.rows === j) {
+                  value = 1;
+               }
+               augmentedArray[i][j] = value;
+            }
+         }
+         return new Matrix(this.rows, this.columns * 2, augmentedArray);
+      } else {
+         throw Error("This must be a square matrix");
+      }
+   }
 }
 
 // const A = [
@@ -456,12 +557,14 @@ class Matrix {
 // matrixC.DEBUG = true;
 // matrixC.rref();
 
-// let D = [
-//    [1,2,3],
-//    [11,12,13],
-//    [21,22,23]
-// ];
+let D = [
+   [3, 2, 1, 0],
+   [4, 5, 6, 3],
+   [7, 8, 0, 4],
+   [1, 2, 3, 4]
+];
 
-// let matrixD = new Matrix(3, 3, D);
-// matrixD.DEBUG = true;
-// matrixD.rref();
+let matrixD = new Matrix(4, 4, D);
+let rref = matrixD.rref();
+let inverse = matrixD.inverse();
+inverse.log()
