@@ -20,9 +20,11 @@
    <link rel="stylesheet" href="../styles/matrix-input.css">
 
    <!-- scripts -->
-   <script src="../scripts/fraction.js"></script>
-   <script src="../scripts/matrix.js"></script>
-   <script src="../scripts/steplist.js"></script>
+   <script src="../scripts/fraction.js" defer></script>
+   <script src="../scripts/matrix.js" defer></script>
+   <script src="../scripts/steplist.js" defer></script>
+   <script src="../scripts/matrix-input.js" defer></script>
+   <script src="../scripts/matrix-op.js" defer></script>
 </head>
 
 <body>
@@ -68,7 +70,7 @@
          </div>
 
          <!-- matrix B -->
-         <div id="MatrixB" class="matrix-input">
+         <div id="matrixB" class="matrix-input">
 
             <div>
                <span>Matrix B</span>
@@ -97,7 +99,7 @@
       </section>
 
       <!-- operations menu -->
-      <section id="operations">
+      <section id="basic-ops">
 
          <div id="add">
             Add matrix
