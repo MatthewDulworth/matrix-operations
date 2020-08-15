@@ -437,6 +437,11 @@ class Matrix {
       }
    }
 
+
+   // ---------------------------------------------------------------------------
+   // Matrix Inverse 
+   // ---------------------------------------------------------------------------
+
    /**
     * @returns {StepList} The steps to achieve the inverse of the matrix if possible. 
     */
@@ -446,7 +451,9 @@ class Matrix {
          stepList.instructions[0] = "Create augmented matrix with identity matrix.";
 
          if (stepList.last().isAugmentedIdentity()) {
-            stepList.addStep(this.retrieveInverse(stepList), "The inverse.");
+            const inverseArray = stepList.last().cloneArray().map(row => row.splice(this.rows));
+            const inverse  = new Matrix(this.rows, this.columns, inverseArray);
+            stepList.addStep(inverse, "The inverse.");
          } else {
             stepList.addStep(this, "This matrix is not invertible because it is not row equivalent to the identity matrix.");
          }
@@ -483,26 +490,8 @@ class Matrix {
    }
 
    /**
-    * @param {StepList} stepList 
-    * @returns {Matrix}
-    */
-   retrieveInverse(stepList) {
-      if (this.rows !== this.columns) {
-         throw Error("This must be a square matrix");
-      }
-      const inverseArray = stepList.last().cloneArray().map(row => row.splice(this.rows));
-      return new Matrix(this.rows, this.columns, inverseArray);
-   }
-
-   retrieveIdentity(stepList) {
-      if (this.rows !== this.columns) {
-         throw Error("This must be a square matrix");
-      }
-   }
-
-   /**
     * @throws This must be a square matrix.
-    * @returns {Matrix} This matrix augmented with its 
+    * @returns {Matrix} This matrix augmented with the identity matrix.
     */
    augmentedIdentityMatrix() {
       if (this.rows === this.columns) {
@@ -557,14 +546,14 @@ class Matrix {
 // matrixC.DEBUG = true;
 // matrixC.rref();
 
-let D = [
-   [3, 2, 1, 0],
-   [4, 5, 6, 3],
-   [7, 8, 0, 4],
-   [1, 2, 3, 4]
-];
+// let D = [
+//    [3, 2, 1, 0],
+//    [4, 5, 6, 3],
+//    [7, 8, 0, 4],
+//    [1, 2, 3, 4]
+// ];
 
-let matrixD = new Matrix(4, 4, D);
-let rref = matrixD.rref();
-let inverse = matrixD.inverse();
-inverse.log()
+// let matrixD = new Matrix(4, 4, D);
+// let rref = matrixD.rref();
+// let inverse = matrixD.inverse();
+// inverse.log()
