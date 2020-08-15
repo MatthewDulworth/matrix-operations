@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <!-- general settings -->
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="keywords" content="Matrix Calculator, Matrix, Calculator, Row Operations, Row Reduction">
+
+   <!-- title -->
+   <title>Matrix Operations Calculator</title>
+
+   <!-- suppress favicon 404 -->
+   <link rel="icon" href="data:;base64,=">
+
+   <!-- styles -->
+   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="../styles/styles.css">
+   <link rel="stylesheet" href="../styles/matrix-op.css">
+   <link rel="stylesheet" href="../styles/matrix-input.css">
+
+   <!-- scripts -->
+   <script src="../scripts/fraction.js"></script>
+   <script src="../scripts/matrix.js"></script>
+   <script src="../scripts/steplist.js"></script>
+</head>
+
+<body>
+   <nav>
+      <a href="../index.html" id="site-icon-link">
+         <img src="../assets/matrix-operations.jpg" alt="Matrix Operations" id="site-icon">
+      </a>
+      <a class="link" href="./row-op-input.html">Row Operations Calculator</a>
+      <a class="link" href="">Matrix Operations Calculator</a>
+   </nav>
+
+   <main>
+
+      <!-- input matrices -->
+      <section id="input">
+
+         <!-- matrix A -->
+         <div id="matrixA" class="matrix-input">
+
+            <div>
+               <span>Matrix A</span>
+               <button class="reset-btn">Reset</button>
+            </div>
+
+            <div class="dimensions">
+               <div class="dim row">
+                  <span>rows:</span>
+                  <button class="minus-btn">-</button>
+                  <input class="row-in" type="text" max="20" value="3">
+                  <button class="plus-btn">+</button>
+               </div>
+
+               <div class="dim col">
+                  <span>columns:</span>
+                  <button class="minus-btn">-</button>
+                  <input class="col-in" type="text" max="20" value="3">
+                  <button class="plus-btn">+</button>
+               </div>
+
+            </div>
+
+            <div class="input-grid"></div>
+         </div>
+
+         <!-- matrix B -->
+         <div id="MatrixB" class="matrix-input">
+
+            <div>
+               <span>Matrix B</span>
+               <button class="reset-btn">Reset</button>
+            </div>
+
+            <div class="dimensions">
+               <div class="dim row">
+                  <span>rows:</span>
+                  <button class="minus-btn">-</button>
+                  <input class="row-in" type="text" max="20" value="3">
+                  <button class="plus-btn">+</button>
+               </div>
+
+               <div class="dim col">
+                  <span>columns:</span>
+                  <button class="minus-btn">-</button>
+                  <input class="col-in" type="text" max="20" value="3">
+                  <button class="plus-btn">+</button>
+               </div>
+            </div>
+
+            <div class="input-grid"></div>
+         </div>
+
+      </section>
+
+      <!-- operations menu -->
+      <section id="operations">
+
+         <div id="add">
+            Add matrix
+            <select class="matrix-select">
+               <option value="0">A</option>
+               <option value="1">B</option>
+            </select>
+            and matrix
+            <select class="matrix-select">
+               <option value="0">A</option>
+               <option value="1">B</option>
+            </select>
+            <button>Go</button>
+         </div>
+
+         <div id="subtract">
+            Subtract matrix
+            <select class="matrix-select">
+               <option value="0">A</option>
+               <option value="1">B</option>
+            </select>
+            and matrix
+            <select class="matrix-select">
+               <option value="0">A</option>
+               <option value="1">B</option>
+            </select>
+            <button>Go</button>
+         </div>
+
+         <div id="multiply">
+            Multiply matrix
+            <select class="matrix-select">
+               <option value="0">A</option>
+               <option value="1">B</option>
+            </select>
+            and matrix
+            <select class="matrix-select">
+               <option value="0">A</option>
+               <option value="1">B</option>
+            </select>
+            <button>Go</button>
+         </div>
+
+         <div id="scale">
+            Scale matrix
+            <select class="matrix-select">
+               <option value="0">A</option>
+               <option value="1">B</option>
+            </select>
+            by
+            <input type="text" value="1">
+            <button>Go</button>
+         </div>
+      </section>
+
+      <section id="inverse-ops">
+         <div id="transpose">
+            Find the transpose of matrix
+            <select class="matrix-select">
+               <option value="0">A</option>
+               <option value="1">B</option>
+            </select>
+            <button>Go</button>
+         </div>
+
+         <div id="inverse">
+            Find the inverse of matrix
+            <select class="matrix-select">
+               <option value="0">A</option>
+               <option value="1">B</option>
+            </select>
+            <button>Go</button>
+         </div>
+      </section>
+
+      <!-- results display -->
+      <section id="display">
+         <div class="result"></div>
+      </section>
+   </main>
+
+   <footer>
+      <div>
+         Copyright &copy; 2020
+         <a target="_blank" href="https://github.com/MatthewDulworth/matrix-operations/">Matthew Dulworth</a>.
+         All rights Reserved.
+      </div>
+   </footer>
+</body>
+
+</html>
