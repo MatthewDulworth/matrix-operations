@@ -176,6 +176,9 @@ class MatrixOpsCalculator {
       }
    }
 
+   /**
+    * Handles scalar multiplication.
+    */
    handleScaling() {
       const left = document.querySelector("#scale .matrix-select").value;
       const scalar = parseInt(document.querySelector("#scale input[type='text']").value);
