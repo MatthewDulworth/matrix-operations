@@ -40,7 +40,6 @@ class MatrixOpsCalculator {
    // ---------------------------------------------------------------------------
    // Setup
    // ---------------------------------------------------------------------------
-
    /**
     * Generates the list of matrix names for each matrix select based on the current matrix inputs.
     */
@@ -88,10 +87,19 @@ class MatrixOpsCalculator {
       }
    }
 
-   displayResult(matrices, opSymbol, result) {
-      matrices[0] = this.createDisplayMatrix(matrices[0]);
-      matrices[1] = this.createDisplayMatrix(matrices[1]);
-      result = this.createDisplayMatrix(result);
+   // ---------------------------------------------------------------------------
+   // Display
+   // ---------------------------------------------------------------------------
+   /**
+    * Displays the result of a basic operation. 
+    * @param {string[][][]} matrices The input matrices. 
+    * @param {string} opSymbol The operation symbol.
+    * @param {string[][]} result The resulting matrix. 
+    */
+   displayBasicResult(matrices, opSymbol, result) {
+      const inputElementL = this.createDisplayMatrix(matrices[0]);
+      const inputElementR = this.createDisplayMatrix(matrices[1]);
+      const resultElement = this.createDisplayMatrix(result);
 
       const symbol = document.createElement("div");
       symbol.innerHTML = opSymbol;
@@ -101,17 +109,17 @@ class MatrixOpsCalculator {
 
       const resultsDisplay = document.createElement("div");
       resultsDisplay.classList.add("results-display");
-      resultsDisplay.appendChild(matrices[0]);
+      resultsDisplay.appendChild(inputElementL);
       resultsDisplay.appendChild(symbol);
-      resultsDisplay.appendChild(matrices[1]);
+      resultsDisplay.appendChild(inputElementR);
       resultsDisplay.appendChild(equals);
-      resultsDisplay.appendChild(result);
+      resultsDisplay.appendChild(resultElement);
       document.getElementById("display").prepend(resultsDisplay);
    }
 
    /**
-    * 
-    * @param {String[][]} matrix 
+    * @param {String[][]} matrix The matrix to display.
+    * @returns {HTMLElement} An html element to display the passed matrix array.
     */
    createDisplayMatrix(matrix) {
       const displayMatrix = document.createElement('div');
@@ -122,7 +130,6 @@ class MatrixOpsCalculator {
 
       for (let row = 0; row < rows; row++) {
          for (let col = 0; col < columns; col++) {
-
             let entry = document.createElement('div');
             entry.textContent = matrix[row][col];
             displayMatrix.appendChild(entry);
@@ -139,6 +146,7 @@ class MatrixOpsCalculator {
    // ---------------------------------------------------------------------------
    /**
     * Handles matrix addition.
+    * Alerts the user if rows and columns of matrices do not match.
     */
    handleAddition() {
       const left = document.querySelector("#add .matrix-select").value;
@@ -148,7 +156,7 @@ class MatrixOpsCalculator {
       if(matrices !== null) {
          try {
             const sum = matrices[0].matrixAddition(matrices[1], true);
-            this.displayResult(matrices.map(m => m.toString()), "+", sum.toString());
+            this.displayBasicResult(matrices.map(m => m.toString()), "+", sum.toString());
          } catch(error) {
             alert("Rows and columns of the matrices must match.");
          }
