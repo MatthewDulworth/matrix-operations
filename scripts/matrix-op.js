@@ -126,7 +126,7 @@ class MatrixOpsCalculator {
    handleAddition() {
       const left = document.querySelector("#add .matrix-select").value;
       const right = document.querySelector("#add .matrix-select:nth-of-type(2)").value;
-      const matrices = this.getMatrices(left, right);
+      const matrices = this.getMatrices([left, right]);
 
       if (matrices !== null) {
          try {
@@ -145,7 +145,7 @@ class MatrixOpsCalculator {
    handleSubtraction() {
       const left = document.querySelector("#subtract .matrix-select").value;
       const right = document.querySelector("#subtract .matrix-select:nth-of-type(2)").value;
-      const matrices = this.getMatrices(left, right);
+      const matrices = this.getMatrices([left,right]);
 
       if (matrices !== null) {
          try {
@@ -164,7 +164,7 @@ class MatrixOpsCalculator {
    handleMultiplication() { 
       const left = document.querySelector("#multiply .matrix-select").value;
       const right = document.querySelector("#multiply .matrix-select:nth-of-type(2)").value;
-      const matrices = this.getMatrices(left, right);
+      const matrices = this.getMatrices([left,right]);
 
       if (matrices !== null) {
          try {
@@ -177,6 +177,7 @@ class MatrixOpsCalculator {
    }
 
    handleScaling() {
+      const left = document.querySelector("#multiply .matrix-select").value;
 
    }
 
@@ -196,15 +197,14 @@ class MatrixOpsCalculator {
 
    /**
     * Alerts the user if any of the specified matrix inputs have invalid values.
-    * @param {number} left The index of the left matrix input.
-    * @param {number} right The index of the right matrix input.
     * @returns {Matrix[] | null} If possible returns new matrices from the specified matrix inputs, otherwise returns null. 
     */
-   getMatrices(left, right) {
+   getMatrices(indices) {
       try {
-         const leftMatrix = this.getMatrixFromInput(left);
-         const rightMatrix = this.getMatrixFromInput(right);
-         return [leftMatrix, rightMatrix];
+         const matrices = [];
+         indices = indices.map(i => parseInt(i));
+         indices.forEach((matrixIndex, i) => matrices[i] = this.getMatrixFromInput(matrixIndex));
+         return matrices;
       } catch (error) {
          alert("Please make sure your matrix input is limited to fractions or decimal numbers.");
          return null;
