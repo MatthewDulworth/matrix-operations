@@ -15,6 +15,10 @@ class MatrixOpsCalculator {
       this.matrixSelects = document.querySelectorAll(".matrix-select");
       this.matrices = [];
 
+      this.input = document.getElementById("input");
+      this.operations = document.getElementById("operations");
+      this.display = document.getElementById("display");
+
       this.addBtn = document.querySelector("#add button");
       this.subtractBtn = document.querySelector("#subtract button");
       this.multiplyBtn = document.querySelector("#multiply button");
@@ -88,7 +92,7 @@ class MatrixOpsCalculator {
       resultsDisplay.appendChild(inputElementR);
       resultsDisplay.appendChild(equals);
       resultsDisplay.appendChild(resultElement);
-      document.getElementById("display").prepend(resultsDisplay);
+      this.display.prepend(resultsDisplay);
    }
 
    /**
@@ -204,7 +208,7 @@ class MatrixOpsCalculator {
          resultDisplay.appendChild(scalarElement);
          resultDisplay.appendChild(equals);
          resultDisplay.appendChild(this.createDisplayMatrix(product.toString()));
-         document.querySelector("#display").prepend(resultDisplay);
+         this.display.prepend(resultDisplay);
       }
    }
 
