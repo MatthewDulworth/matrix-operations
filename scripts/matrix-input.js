@@ -60,8 +60,8 @@ class DimensionInput {
    }
 
    /**
-    * Attempts to parse the input value to an integer, if it cannot it sets the input to 0. 
-    * Constrains the input value to an integer between 0 and the html max.
+    * Attempts to parse the input value to an integer, if it cannot it sets the input to 1. 
+    * Constrains the input value to an integer between 1 and the html max.
     * Updates the input value html to the validated input.
     * @returns {number} An integer between 0 and max.
     */
@@ -69,9 +69,9 @@ class DimensionInput {
       let val = parseInt(this.input.value);
 
       if (isNaN(val)) {
-         val = 0;
+         val = 1;
       } else {
-         val = Math.max(val, 0);
+         val = Math.max(val, 1);
          val = Math.min(val, this.input.max);
       }
       this.input.value = val;
