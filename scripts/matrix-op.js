@@ -27,7 +27,7 @@ class MatrixOpsCalculator {
          }
       }
 
-      this.addBtn.addEventListener('click', () => handleAddition());
+      this.addBtn.addEventListener('click', () => this.handleAddition());
       this.subtractBtn.addEventListener('click', () => handleSubtraction());
       this.multiplyBtn.addEventListener('click', () => handleMultiplication());
       this.scaleBtn.addEventListener('click', () => handleScaling());
@@ -62,23 +62,95 @@ class MatrixOpsCalculator {
    }
 
    /**
-    * Attempts to create a matrix from the values of the specified matrixInput. 
-    * Alerts the user if they have invalid input.
+    * Creates a matrix from the values of the specified matrixInput. 
+    * @throws Error if the matrix input has invalid input.
     * @param {number} index The index of the MatrixInput.
+    * @returns
     */
-   storeMatrixFromInput(index) {
+   getMatrixFromInput(index) {
+      const array = this.matrixInputs[index].toArray();
+      return new Matrix(array.length, array[0].length, array);
+   }
+
+   /**
+    * @param {number} left 
+    * @param {number} right 
+    * @returns {Matrix | null}
+    */
+   getMatrices(left, right) {
       try {
-         const array = this.matrixInputs[index].toArray();
-         this.matrices[index] = new Matrix(array.length, array[0].length, array);
+         const leftMatrix = this.getMatrixFromInput(left);
+         const rightMatrix = this.getMatrixFromInput(right);
+         return [leftMatrix, rightMatrix];
       } catch (error) {
          alert("Please make sure your matrix input is limited to fractions or decimal numbers.");
+         return null;
       }
+   }
+
+   displayResult(matrices, opSymbol, result) {
+      matrices[0] = this.createDisplayMatrix(matrices[0]);
+      matrices[1] = this.createDisplayMatrix(matrices[1]);
+      result = this.createDisplayMatrix(result);
+
+      const symbol = document.createElement("div");
+      symbol.innerHTML = opSymbol;
+
+      const equals = document.createElement("div");
+      equals.innerHTML = "=";
+
+      const resultsDisplay = document.createElement("div");
+      resultsDisplay.classList.add("results-display");
+      resultsDisplay.appendChild(matrices[0]);
+      resultsDisplay.appendChild(symbol);
+      resultsDisplay.appendChild(matrices[1]);
+      resultsDisplay.appendChild(equals);
+      resultsDisplay.appendChild(result);
+      document.getElementById("display").prepend(resultsDisplay);
+   }
+
+   /**
+    * 
+    * @param {String[][]} matrix 
+    */
+   createDisplayMatrix(matrix) {
+      const displayMatrix = document.createElement('div');
+      displayMatrix.classList.add("display-matrix");
+
+      const rows = matrix.length;
+      const columns = matrix[0].length;
+
+      for (let row = 0; row < rows; row++) {
+         for (let col = 0; col < columns; col++) {
+
+            let entry = document.createElement('div');
+            entry.textContent = matrix[row][col];
+            displayMatrix.appendChild(entry);
+         }
+      }
+
+      displayMatrix.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
+      displayMatrix.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
+      return displayMatrix;
    }
 
    // ---------------------------------------------------------------------------
    // Operation Handlers
    // ---------------------------------------------------------------------------
-   handleAddition() { }
+   /**
+    * Handles matrix addition.
+    */
+   handleAddition() {
+      const left = document.querySelector("#add .matrix-select").value;
+      const right = document.querySelector("#add .matrix-select:nth-of-type(2)").value;
+      const matrices = this.getMatrices(left, right);
+      
+      if(matrices !== null) {
+         const sum = matrices[0].matrixAddition(matrices[1], true);
+         this.displayResult(matrices.map(m => m.toString()), "+", sum.toString());
+      }
+   }
+
    handleSubtraction() { }
    handleMultiplication() { }
    handleScaling() { }
