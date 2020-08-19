@@ -28,9 +28,9 @@ class MatrixOpsCalculator {
       }
 
       this.addBtn.addEventListener('click', () => this.handleAddition());
-      this.subtractBtn.addEventListener('click', () => handleSubtraction());
-      this.multiplyBtn.addEventListener('click', () => handleMultiplication());
-      this.scaleBtn.addEventListener('click', () => handleScaling());
+      this.subtractBtn.addEventListener('click', () => this.handleSubtraction());
+      this.multiplyBtn.addEventListener('click', () => this.handleMultiplication());
+      this.scaleBtn.addEventListener('click', () => this.handleScaling());
 
       // setup methods
       this.setMatrixSelectValues();
@@ -58,33 +58,6 @@ class MatrixOpsCalculator {
       const matrixInputs = [];
       document.querySelectorAll(".matrix-input").forEach(matrixInput => matrixInputs.push(new MatrixInput(matrixInput.id)));
       return matrixInputs;
-   }
-
-   /**
-    * Creates a matrix from the values of the specified matrixInput. 
-    * @throws Error if the matrix input has invalid input.
-    * @param {number} index The index of the MatrixInput.
-    * @returns
-    */
-   getMatrixFromInput(index) {
-      const array = this.matrixInputs[index].toArray();
-      return new Matrix(array.length, array[0].length, array);
-   }
-
-   /**
-    * @param {number} left 
-    * @param {number} right 
-    * @returns {Matrix | null}
-    */
-   getMatrices(left, right) {
-      try {
-         const leftMatrix = this.getMatrixFromInput(left);
-         const rightMatrix = this.getMatrixFromInput(right);
-         return [leftMatrix, rightMatrix];
-      } catch (error) {
-         alert("Please make sure your matrix input is limited to fractions or decimal numbers.");
-         return null;
-      }
    }
 
    // ---------------------------------------------------------------------------
@@ -152,20 +125,61 @@ class MatrixOpsCalculator {
       const left = document.querySelector("#add .matrix-select").value;
       const right = document.querySelector("#add .matrix-select:nth-of-type(2)").value;
       const matrices = this.getMatrices(left, right);
-      
-      if(matrices !== null) {
+
+      if (matrices !== null) {
          try {
             const sum = matrices[0].matrixAddition(matrices[1], true);
             this.displayBasicResult(matrices.map(m => m.toString()), "+", sum.toString());
-         } catch(error) {
+         } catch (error) {
             alert("Rows and columns of the matrices must match.");
          }
       }
    }
 
-   handleSubtraction() { }
+   handleSubtraction() {
+      const left = document.querySelector("#subtract .matrix-select").value;
+      const right = document.querySelector("#subtract .matrix-select:nth-of-type(2)").value;
+      const matrices = this.getMatrices(left, right);
+
+      if (matrices !== null) {
+         try {
+            const difference = matrices[0].matrixAddition(matrices[1], false);
+            this.displayBasicResult(matrices.map(m => m.toString()), "-", difference.toString());
+         } catch (error) {
+            alert("Rows and columns of the matrices must match.");
+         }
+      }
+   }
+
    handleMultiplication() { }
    handleScaling() { }
+
+   /**
+   * Creates a matrix from the values of the specified matrixInput. 
+   * @throws Error if the matrix input has invalid input.
+   * @param {number} index The index of the MatrixInput.
+   * @returns
+   */
+   getMatrixFromInput(index) {
+      const array = this.matrixInputs[index].toArray();
+      return new Matrix(array.length, array[0].length, array);
+   }
+
+   /**
+    * @param {number} left 
+    * @param {number} right 
+    * @returns {Matrix | null}
+    */
+   getMatrices(left, right) {
+      try {
+         const leftMatrix = this.getMatrixFromInput(left);
+         const rightMatrix = this.getMatrixFromInput(right);
+         return [leftMatrix, rightMatrix];
+      } catch (error) {
+         alert("Please make sure your matrix input is limited to fractions or decimal numbers.");
+         return null;
+      }
+   }
 }
 
 const matrixOps = new MatrixOpsCalculator();
