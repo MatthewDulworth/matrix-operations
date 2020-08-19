@@ -98,80 +98,52 @@
 
       </section>
 
-      <!-- operations menu -->
-      <section id="basic-ops">
+      <!-- input matrices -->
+      <section id="operations">
+         <!-- operations menu -->
+         <div id="basic-ops">
 
-         <div id="add">
-            Add matrix
-            <select class="matrix-select">
-               <option value="0">A</option>
-               <option value="1">B</option>
-            </select>
-            and matrix
-            <select class="matrix-select">
-               <option value="0">A</option>
-               <option value="1">B</option>
-            </select>
-            <button>Go</button>
+            <div id="add">
+               <select class="matrix-select"></select>
+               <span class="op-symbol">+</span>
+               <select class="matrix-select"></select>
+               <button>Go</button>
+            </div>
+
+            <div id="subtract">
+               <select class="matrix-select"></select>
+               <span class="op-symbol">-</span>
+               <select class="matrix-select"></select>
+               <button>Go</button>
+            </div>
+
+            <div id="multiply">
+               <select class="matrix-select"></select>
+               <span class="op-symbol">x</span>
+               <select class="matrix-select"></select>
+               <button>Go</button>
+            </div>
+
+            <div id="scale">
+               <select class="matrix-select"></select>
+               <span class="op-symbol">x</span>
+               <input type="text" value="1">
+               <button>Go</button>
+            </div>
          </div>
 
-         <div id="subtract">
-            Subtract matrix
-            <select class="matrix-select">
-               <option value="0">A</option>
-               <option value="1">B</option>
-            </select>
-            and matrix
-            <select class="matrix-select">
-               <option value="0">A</option>
-               <option value="1">B</option>
-            </select>
-            <button>Go</button>
-         </div>
+         <div id="inverse-ops">
+            <div id="transpose">
+               Transpose of matrix
+               <select class="matrix-select"></select>
+               <button>Go</button>
+            </div>
 
-         <div id="multiply">
-            Multiply matrix
-            <select class="matrix-select">
-               <option value="0">A</option>
-               <option value="1">B</option>
-            </select>
-            and matrix
-            <select class="matrix-select">
-               <option value="0">A</option>
-               <option value="1">B</option>
-            </select>
-            <button>Go</button>
-         </div>
-
-         <div id="scale">
-            Scale matrix
-            <select class="matrix-select">
-               <option value="0">A</option>
-               <option value="1">B</option>
-            </select>
-            by
-            <input type="text" value="1">
-            <button>Go</button>
-         </div>
-      </section>
-
-      <section id="inverse-ops">
-         <div id="transpose">
-            Find the transpose of matrix
-            <select class="matrix-select">
-               <option value="0">A</option>
-               <option value="1">B</option>
-            </select>
-            <button>Go</button>
-         </div>
-
-         <div id="inverse">
-            Find the inverse of matrix
-            <select class="matrix-select">
-               <option value="0">A</option>
-               <option value="1">B</option>
-            </select>
-            <button>Go</button>
+            <div id="inverse">
+               Inverse of matrix
+               <select class="matrix-select"></select>
+               <button>Go</button>
+            </div>
          </div>
       </section>
 

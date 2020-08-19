@@ -5,3 +5,27 @@
 .matrix-input {
    padding-right: 1.5rem;
 }
+
+#scale input[type='text'] {
+   text-align: right;
+   width: 42.5px;
+   padding-right: 2px;
+}
+
+.op-symbol {
+   display: inline-block;
+   width: 1rem;
+   text-align: center;
+}
+
+#scale .op-symbol, #multiply .op-symbol{
+   font-size: 0.8rem;
+}
+
+#operations {
+   display: flex;
+}
+
+#operations > div {
+   margin-right: 1.5rem;
+}
