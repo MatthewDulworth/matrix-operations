@@ -146,8 +146,12 @@ class MatrixOpsCalculator {
       const matrices = this.getMatrices(left, right);
       
       if(matrices !== null) {
-         const sum = matrices[0].matrixAddition(matrices[1], true);
-         this.displayResult(matrices.map(m => m.toString()), "+", sum.toString());
+         try {
+            const sum = matrices[0].matrixAddition(matrices[1], true);
+            this.displayResult(matrices.map(m => m.toString()), "+", sum.toString());
+         } catch(error) {
+            alert("Rows and columns of the matrices must match.");
+         }
       }
    }
 
