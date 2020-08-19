@@ -145,7 +145,7 @@ class MatrixOpsCalculator {
    handleSubtraction() {
       const left = document.querySelector("#subtract .matrix-select").value;
       const right = document.querySelector("#subtract .matrix-select:nth-of-type(2)").value;
-      const matrices = this.getMatrices([left,right]);
+      const matrices = this.getMatrices([left, right]);
 
       if (matrices !== null) {
          try {
@@ -161,10 +161,10 @@ class MatrixOpsCalculator {
     * Handles matrix multiplication.
     * Alerts the user if rows and columns of matrices do not match.
     */
-   handleMultiplication() { 
+   handleMultiplication() {
       const left = document.querySelector("#multiply .matrix-select").value;
       const right = document.querySelector("#multiply .matrix-select:nth-of-type(2)").value;
-      const matrices = this.getMatrices([left,right]);
+      const matrices = this.getMatrices([left, right]);
 
       if (matrices !== null) {
          try {
@@ -177,8 +177,32 @@ class MatrixOpsCalculator {
    }
 
    handleScaling() {
-      const left = document.querySelector("#multiply .matrix-select").value;
+      const left = document.querySelector("#scale .matrix-select").value;
+      const scalar = parseInt(document.querySelector("#scale input[type='text']").value);
+      const matrix = this.getMatrices([left])[0];
 
+      if (matrix !== null) {
+         const product = matrix.scalarMultiplication(scalar);
+
+         const resultDisplay = document.createElement("div");
+         resultDisplay.classList.add("results-display");
+
+         const scalarElement = document.createElement("div");
+         scalarElement.innerHTML = scalar;
+
+         const times = document.createElement("div");
+         times.innerHTML = "x";
+
+         const equals = document.createElement("div");
+         equals.innerHTML = "=";
+
+         resultDisplay.appendChild(this.createDisplayMatrix(matrix.toString()));
+         resultDisplay.appendChild(times);
+         resultDisplay.appendChild(scalarElement);
+         resultDisplay.appendChild(equals);
+         resultDisplay.appendChild(this.createDisplayMatrix(product.toString()));
+         document.querySelector("#display").prepend(resultDisplay);
+      }
    }
 
    // ---------------------------------------------------------------------------
