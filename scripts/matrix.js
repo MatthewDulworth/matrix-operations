@@ -333,37 +333,28 @@ class Matrix {
    /**
     * Multiplies the matrix by the passed matrix. 
     * @param {Matrix} otherMatrix The matrix to multiply by. 
-    * @param {boolean} rightMult Optional parameter. True if right multiplication, else left multiplication. Default is true.
     * @returns {Matrix} A matrix representing the product of the operation. 
     */
-   matrixMultiplication(otherMatrix, rightMult = true) {
-
-      let leftMatrix, rightMatrix;
-      let product = [];
-
-      if (rightMult === true) {
-         leftMatrix = this;
-         rightMatrix = otherMatrix;
-      } else {
-         leftMatrix = otherMatrix;
-         rightMatrix = this;
+   matrixMultiplication(otherMatrix) {
+      if (this.rows != otherMatrix.columns) {
+         throw Error(`The rows of the first matrix must match the columns of the second matrix. Found rows: ${this.rows}, columns: ${otherMatrix.columns}`);
       }
 
-      if (leftMatrix.columns != rightMatrix.rows) {
-         throw Error(`Cannot multiply multiply a matrix with ${leftMatrix.rows} by a matrix with ${rightMatrix.columns} columns`);
-      }
-
-      for (let leftRow = 0; leftRow < leftMatrix.rows; leftRow++) {
+      const product = [];
+      for (let leftRow = 0; leftRow < this.rows; leftRow++) {
          product[leftRow] = [];
-         for (let rightCol = 0; rightCol < rightMatrix.columns; rightCol++) {
+
+         for (let rightCol = 0; rightCol < otherMatrix.columns; rightCol++) {
             product[leftRow][rightCol] = new Fraction(0);
-            for (let term = 0; term < leftMatrix.columns; term++) {
-               let smallProduct = leftMatrix.at(leftRow, term).mul(rightMatrix.at(term, rightCol));
+
+            for (let term = 0; term < this.columns; term++) {
+               let smallProduct = this.at(leftRow, term).mul(otherMatrix.at(term, rightCol));
                product[leftRow][rightCol] = product[leftRow][rightCol].add(smallProduct);
             }
          }
       }
-      return new Matrix(leftMatrix.rows, rightMatrix.columns, product);
+
+      return new Matrix(this.rows, otherMatrix.columns, product);
    }
 
    /**
@@ -437,7 +428,6 @@ class Matrix {
       }
    }
 
-
    // ---------------------------------------------------------------------------
    // Matrix Inverse 
    // ---------------------------------------------------------------------------
@@ -452,7 +442,7 @@ class Matrix {
 
          if (stepList.last().isAugmentedIdentity()) {
             const inverseArray = stepList.last().cloneArray().map(row => row.splice(this.rows));
-            const inverse  = new Matrix(this.rows, this.columns, inverseArray);
+            const inverse = new Matrix(this.rows, this.columns, inverseArray);
             stepList.addStep(inverse, "The inverse.");
          } else {
             stepList.addStep(this, "This matrix is not invertible because it is not row equivalent to the identity matrix.");
@@ -518,42 +508,16 @@ class Matrix {
 }
 
 // const A = [
-//    [2, 4, 4],
-//    [0, 0, 8],
-//    [4, 4, 4],
+//    [1, 2, 3],
+//    [4, 5, 6]
 // ];
-// let matrixA = new Matrix(3, 3, A);
+// const matrixA = new Matrix(2, 3, A);
 
 // const B = [
-//    [3, -3, -2],
-//    [0, 0, 4],
-//    [4, 3, 2]
+//    [7, 8],
+//    [9, 10],
+//    [11, 12]
 // ];
-// let matrixB = new Matrix(3, 3, B);
-// let matrixC = new Matrix(3, 3, B);
+// const matrixB = new Matrix(3, 2, B);
 
-// matrixA.log();
-// let matrixC = matrixA.transpose();
-// matrixC.log();
-
-// let C = [
-//    [1,2,3,4,5,6,7,8,9,10],
-//    [11,12,13,14,15,16,17,18,19,20],
-//    [21,22,23,24,25,26,27,28,29,30]
-// ];
-
-// let matrixC = new Matrix(3, 10, C);
-// matrixC.DEBUG = true;
-// matrixC.rref();
-
-// let D = [
-//    [3, 2, 1, 0],
-//    [4, 5, 6, 3],
-//    [7, 8, 0, 4],
-//    [1, 2, 3, 4]
-// ];
-
-// let matrixD = new Matrix(4, 4, D);
-// let rref = matrixD.rref();
-// let inverse = matrixD.inverse();
-// inverse.log()
+// matrixB.matrixMultiplication(matrixA).log();

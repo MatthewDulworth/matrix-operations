@@ -157,8 +157,28 @@ class MatrixOpsCalculator {
       }
    }
 
-   handleMultiplication() { }
-   handleScaling() { }
+   /**
+    * Handles matrix multiplication.
+    * Alerts the user if rows and columns of matrices do not match.
+    */
+   handleMultiplication() { 
+      const left = document.querySelector("#multiply .matrix-select").value;
+      const right = document.querySelector("#multiply .matrix-select:nth-of-type(2)").value;
+      const matrices = this.getMatrices(left, right);
+
+      if (matrices !== null) {
+         try {
+            const product = matrices[0].matrixMultiplication(matrices[1]);
+            this.displayBasicResult(matrices.map(m => m.toString()), "x", product.toString());
+         } catch (error) {
+            alert("The rows of the first matrix must match the columns of the second matrix.");
+         }
+      }
+   }
+
+   handleScaling() {
+
+   }
 
    // ---------------------------------------------------------------------------
    // Create Matrix
