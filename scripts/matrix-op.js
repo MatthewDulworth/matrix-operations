@@ -60,6 +60,7 @@ class MatrixOpsCalculator {
       return matrixInputs;
    }
 
+
    // ---------------------------------------------------------------------------
    // Display
    // ---------------------------------------------------------------------------
@@ -114,6 +115,7 @@ class MatrixOpsCalculator {
       return displayMatrix;
    }
 
+
    // ---------------------------------------------------------------------------
    // Operation Handlers
    // ---------------------------------------------------------------------------
@@ -136,6 +138,10 @@ class MatrixOpsCalculator {
       }
    }
 
+   /**
+    * Handles matrix subtraction.
+    * Alerts the user if rows and columns of matrices do not match.
+    */
    handleSubtraction() {
       const left = document.querySelector("#subtract .matrix-select").value;
       const right = document.querySelector("#subtract .matrix-select:nth-of-type(2)").value;
@@ -154,6 +160,9 @@ class MatrixOpsCalculator {
    handleMultiplication() { }
    handleScaling() { }
 
+   // ---------------------------------------------------------------------------
+   // Create Matrix
+   // ---------------------------------------------------------------------------
    /**
    * Creates a matrix from the values of the specified matrixInput. 
    * @throws Error if the matrix input has invalid input.
@@ -166,9 +175,10 @@ class MatrixOpsCalculator {
    }
 
    /**
-    * @param {number} left 
-    * @param {number} right 
-    * @returns {Matrix | null}
+    * Alerts the user if any of the specified matrix inputs have invalid values.
+    * @param {number} left The index of the left matrix input.
+    * @param {number} right The index of the right matrix input.
+    * @returns {Matrix[] | null} If possible returns new matrices from the specified matrix inputs, otherwise returns null. 
     */
    getMatrices(left, right) {
       try {
