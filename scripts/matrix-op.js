@@ -133,7 +133,7 @@ class MatrixOpsCalculator {
     * 
     */
    handleTranspose() {
-      const matrix = this.getMatrices(document.querySelector("#transpose .matrix-select").value);
+      const matrix = this.getMatrices(this.getSelectValue("transpose"));
       if (matrix !== null) {
          const transpose = matrix.transpose();
          this.displayResults("Transpose", matrix, "=", transpose);
@@ -144,6 +144,7 @@ class MatrixOpsCalculator {
     * 
     */
    handleInverse() { 
+      const matrix = this.getMatrices()
    }
 
 
@@ -155,8 +156,8 @@ class MatrixOpsCalculator {
     * Alerts the user if rows and columns of matrices do not match.
     */
    handleAddition() {
-      const left = document.querySelector("#add .matrix-select").value;
-      const right = document.querySelector("#add .matrix-select:nth-of-type(2)").value;
+      const left = this.getSelectValue("add", 1);
+      const right = this.getSelectValue("add", 2);
       const matrices = this.getMatrices(left, right);
 
       if (matrices !== null) {
@@ -174,8 +175,8 @@ class MatrixOpsCalculator {
     * Alerts the user if rows and columns of matrices do not match.
     */
    handleSubtraction() {
-      const left = document.querySelector("#subtract .matrix-select").value;
-      const right = document.querySelector("#subtract .matrix-select:nth-of-type(2)").value;
+      const left = this.getSelectValue("subtract", 1);
+      const right = this.getSelectValue("subtract", 2);
       const matrices = this.getMatrices(left, right);
 
       if (matrices !== null) {
@@ -193,8 +194,8 @@ class MatrixOpsCalculator {
     * Alerts the user if rows and columns of matrices do not match.
     */
    handleMultiplication() {
-      const left = document.querySelector("#multiply .matrix-select").value;
-      const right = document.querySelector("#multiply .matrix-select:nth-of-type(2)").value;
+      const left = this.getSelectValue("multiply", 1);
+      const right = this.getSelectValue("multiply", 2);
       const matrices = this.getMatrices(left, right);
 
       if (matrices !== null) {
@@ -211,10 +212,9 @@ class MatrixOpsCalculator {
     * Handles scalar multiplication.
     */
    handleScaling() {
-      const left = document.querySelector("#scale .matrix-select").value;
+      const matrix = this.getMatrices(this.getSelectValue("scale"));
       const scalar = document.querySelector("#scale input[type='text']").value;
-      const matrix = this.getMatrices(left);
-
+      
       if (matrix !== null) {
          const product = matrix.scalarMultiplication(parseInt(scalar));
          this.displayResults(matrix, "x", scalar, "=", product);
@@ -222,8 +222,13 @@ class MatrixOpsCalculator {
    }
 
    // ---------------------------------------------------------------------------
-   // Create Matrix
+   // Get Input
    // ---------------------------------------------------------------------------
+
+   getSelectValue(id, index = 1) {
+      return parseInt(document.querySelector(`#${id} .matrix-select:nth-of-type(${index})`).value);
+   }
+
    /**
    * Creates a matrix from the values of the specified matrixInput. 
    * @throws Error if the matrix input has invalid input.
@@ -242,7 +247,6 @@ class MatrixOpsCalculator {
    getMatrices(...indices) {
       try {
          const matrices = [];
-         indices = indices.map(i => parseInt(i));
          indices.forEach((matrixIndex, i) => matrices[i] = this.getMatrixFromInput(matrixIndex));
 
          if(matrices.length === 1) {
