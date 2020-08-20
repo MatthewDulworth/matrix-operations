@@ -74,7 +74,6 @@ class MatrixOpsCalculator {
    // ---------------------------------------------------------------------------
    // Display
    // ---------------------------------------------------------------------------
-
    /**
     * Displays the passed arguments in the display element.
     * Formats matrices, displays everything in the order passed.
@@ -125,7 +124,6 @@ class MatrixOpsCalculator {
    }
 
    
-
    // ---------------------------------------------------------------------------
    // Inverse Operation Handlers
    // ---------------------------------------------------------------------------
@@ -221,10 +219,10 @@ class MatrixOpsCalculator {
       }
    }
 
+
    // ---------------------------------------------------------------------------
    // Get Input
    // ---------------------------------------------------------------------------
-
    /**
     * @param {string} id The id of the operation. 
     * @param {number} index The index of the matrix select
