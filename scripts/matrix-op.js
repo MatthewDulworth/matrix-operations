@@ -130,7 +130,7 @@ class MatrixOpsCalculator {
    // Inverse Operation Handlers
    // ---------------------------------------------------------------------------
    /**
-    * 
+    * Computes and displays the transpose of a matrix.
     */
    handleTranspose() {
       const matrix = this.getMatrices(this.getSelectValue("transpose"));
@@ -141,7 +141,7 @@ class MatrixOpsCalculator {
    }
 
    /**
-    * 
+    * Computes and displays the inverse of a matrix.
     */
    handleInverse() { 
       const matrix = this.getMatrices()
@@ -152,7 +152,7 @@ class MatrixOpsCalculator {
    // Basic Operation Handlers
    // ---------------------------------------------------------------------------
    /**
-    * Handles matrix addition.
+    * Computes and displays a matrix addition.
     * Alerts the user if rows and columns of matrices do not match.
     */
    handleAddition() {
@@ -171,7 +171,7 @@ class MatrixOpsCalculator {
    }
 
    /**
-    * Handles matrix subtraction.
+    * Computes and displays a matrix subtraction.
     * Alerts the user if rows and columns of matrices do not match.
     */
    handleSubtraction() {
@@ -190,7 +190,7 @@ class MatrixOpsCalculator {
    }
 
    /**
-    * Handles matrix multiplication.
+    * Computes and displays a matrix multiplication.
     * Alerts the user if rows and columns of matrices do not match.
     */
    handleMultiplication() {
@@ -209,7 +209,7 @@ class MatrixOpsCalculator {
    }
 
    /**
-    * Handles scalar multiplication.
+    * Computes and displays a matrix scalar multiplication.
     */
    handleScaling() {
       const matrix = this.getMatrices(this.getSelectValue("scale"));
@@ -225,6 +225,11 @@ class MatrixOpsCalculator {
    // Get Input
    // ---------------------------------------------------------------------------
 
+   /**
+    * @param {string} id The id of the operation. 
+    * @param {number} index The index of the matrix select
+    * @returns {number} Integer value of the specified matrix select. 
+    */
    getSelectValue(id, index = 1) {
       return parseInt(document.querySelector(`#${id} .matrix-select:nth-of-type(${index})`).value);
    }
