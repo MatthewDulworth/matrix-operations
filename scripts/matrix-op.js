@@ -133,7 +133,7 @@ class MatrixOpsCalculator {
     * 
     */
    handleTranspose() {
-      const matrix = this.getMatrices([document.querySelector("#transpose .matrix-select").value])[0];
+      const matrix = this.getMatrices(document.querySelector("#transpose .matrix-select").value);
       if (matrix !== null) {
          const transpose = matrix.transpose();
          this.displayResults("Transpose", matrix, "=", transpose);
@@ -143,7 +143,8 @@ class MatrixOpsCalculator {
    /**
     * 
     */
-   handleInverse() { }
+   handleInverse() { 
+   }
 
 
    // ---------------------------------------------------------------------------
@@ -156,7 +157,7 @@ class MatrixOpsCalculator {
    handleAddition() {
       const left = document.querySelector("#add .matrix-select").value;
       const right = document.querySelector("#add .matrix-select:nth-of-type(2)").value;
-      const matrices = this.getMatrices([left, right]);
+      const matrices = this.getMatrices(left, right);
 
       if (matrices !== null) {
          try {
@@ -175,7 +176,7 @@ class MatrixOpsCalculator {
    handleSubtraction() {
       const left = document.querySelector("#subtract .matrix-select").value;
       const right = document.querySelector("#subtract .matrix-select:nth-of-type(2)").value;
-      const matrices = this.getMatrices([left, right]);
+      const matrices = this.getMatrices(left, right);
 
       if (matrices !== null) {
          try {
@@ -194,7 +195,7 @@ class MatrixOpsCalculator {
    handleMultiplication() {
       const left = document.querySelector("#multiply .matrix-select").value;
       const right = document.querySelector("#multiply .matrix-select:nth-of-type(2)").value;
-      const matrices = this.getMatrices([left, right]);
+      const matrices = this.getMatrices(left, right);
 
       if (matrices !== null) {
          try {
@@ -212,7 +213,7 @@ class MatrixOpsCalculator {
    handleScaling() {
       const left = document.querySelector("#scale .matrix-select").value;
       const scalar = document.querySelector("#scale input[type='text']").value;
-      const matrix = this.getMatrices([left])[0];
+      const matrix = this.getMatrices(left);
 
       if (matrix !== null) {
          const product = matrix.scalarMultiplication(parseInt(scalar));
@@ -236,14 +237,19 @@ class MatrixOpsCalculator {
 
    /**
     * Alerts the user if any of the specified matrix inputs have invalid values.
-    * @returns {Matrix[] | null} If possible returns new matrices from the specified matrix inputs, otherwise returns null. 
+    * @returns {Matrix[]|Matrix|null} If possible returns new matrices from the specified matrix inputs, otherwise returns null. 
     */
-   getMatrices(indices) {
+   getMatrices(...indices) {
       try {
          const matrices = [];
          indices = indices.map(i => parseInt(i));
          indices.forEach((matrixIndex, i) => matrices[i] = this.getMatrixFromInput(matrixIndex));
-         return matrices;
+
+         if(matrices.length === 1) {
+            return matrices[0];
+         } else {
+            return matrices;
+         }
       } catch (error) {
          alert("Please make sure your matrix input is limited to fractions or decimal numbers.");
          return null;
