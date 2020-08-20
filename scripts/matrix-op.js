@@ -98,7 +98,7 @@ class MatrixOpsCalculator {
       });
       this.display.prepend(resultsDisplay);
    }
-  
+
    /**
     * @param {String[][]} matrix The matrix to display.
     * @returns {HTMLElement} An html element to display the passed matrix array.
@@ -123,7 +123,7 @@ class MatrixOpsCalculator {
       return displayMatrix;
    }
 
-   
+
    // ---------------------------------------------------------------------------
    // Inverse Operation Handlers
    // ---------------------------------------------------------------------------
@@ -141,11 +141,19 @@ class MatrixOpsCalculator {
    /**
     * Computes and displays the inverse of a matrix.
     */
-   handleInverse() { 
-      const matrix = this.getMatrices()
+   handleInverse() {
+      const matrix = this.getMatrices(this.getSelectValue("inverse"));
+      if (matrix !== null) {
+         const inverse = matrix.inverse().last();
+         if (inverse.equals(matrix)) {
+            this.displayResults("Inverse", matrix, "=", "This matrix is not invertible.");
+         } else {
+            this.displayResults("Inverse", matrix, "=", inverse);
+         }
+      }
    }
 
-
+   
    // ---------------------------------------------------------------------------
    // Basic Operation Handlers
    // ---------------------------------------------------------------------------
@@ -212,7 +220,7 @@ class MatrixOpsCalculator {
    handleScaling() {
       const matrix = this.getMatrices(this.getSelectValue("scale"));
       const scalar = document.querySelector("#scale input[type='text']").value;
-      
+
       if (matrix !== null) {
          const product = matrix.scalarMultiplication(parseInt(scalar));
          this.displayResults(matrix, "x", scalar, "=", product);
@@ -252,7 +260,7 @@ class MatrixOpsCalculator {
          const matrices = [];
          indices.forEach((matrixIndex, i) => matrices[i] = this.getMatrixFromInput(matrixIndex));
 
-         if(matrices.length === 1) {
+         if (matrices.length === 1) {
             return matrices[0];
          } else {
             return matrices;
