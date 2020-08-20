@@ -24,6 +24,9 @@ class MatrixOpsCalculator {
       this.multiplyBtn = document.querySelector("#multiply button");
       this.scaleBtn = document.querySelector("#scale button");
 
+      this.transposeBtn = document.querySelector("#transpose button");
+      this.inverseBtn = document.querySelector("#inverse button");
+
       // check for null elements
       for (let field in this) {
          if (this[field] === null) {
@@ -35,6 +38,9 @@ class MatrixOpsCalculator {
       this.subtractBtn.addEventListener('click', () => this.handleSubtraction());
       this.multiplyBtn.addEventListener('click', () => this.handleMultiplication());
       this.scaleBtn.addEventListener('click', () => this.handleScaling());
+
+      this.transposeBtn.addEventListener('click', () => this.handleTranspose());
+      this.inverseBtn.addEventListener('click', () => this.handleInverse());
 
       // setup methods
       this.setMatrixSelectValues();
@@ -68,33 +74,32 @@ class MatrixOpsCalculator {
    // ---------------------------------------------------------------------------
    // Display
    // ---------------------------------------------------------------------------
+
    /**
-    * Displays the result of a basic operation. 
-    * @param {string[][][]} matrices The input matrices. 
-    * @param {string} opSymbol The operation symbol.
-    * @param {string[][]} result The resulting matrix. 
+    * Displays the passed arguments in the display element.
+    * Formats matrices, displays everything in the order passed.
+    * @throws Error if args contains any elements that are neither matrices nor strings.
+    * @param  {...any} args Pass either matrices or strings 
     */
-   displayBasicResult(matrices, opSymbol, result) {
-      const inputElementL = this.createDisplayMatrix(matrices[0]);
-      const inputElementR = this.createDisplayMatrix(matrices[1]);
-      const resultElement = this.createDisplayMatrix(result);
-
-      const symbol = document.createElement("div");
-      symbol.innerHTML = opSymbol;
-
-      const equals = document.createElement("div");
-      equals.innerHTML = "=";
-
+   displayResults(...args) {
       const resultsDisplay = document.createElement("div");
       resultsDisplay.classList.add("results-display");
-      resultsDisplay.appendChild(inputElementL);
-      resultsDisplay.appendChild(symbol);
-      resultsDisplay.appendChild(inputElementR);
-      resultsDisplay.appendChild(equals);
-      resultsDisplay.appendChild(resultElement);
+
+      args.forEach(arg => {
+         let element;
+         if (arg instanceof Matrix) {
+            element = this.createDisplayMatrix(arg.toString());
+         } else if (typeof arg === "string") {
+            element = document.createElement("div");
+            element.innerHTML = arg;
+         } else {
+            throw Error("Results must either be strings or matrices");
+         }
+         resultsDisplay.appendChild(element);
+      });
       this.display.prepend(resultsDisplay);
    }
-
+  
    /**
     * @param {String[][]} matrix The matrix to display.
     * @returns {HTMLElement} An html element to display the passed matrix array.
@@ -119,9 +124,30 @@ class MatrixOpsCalculator {
       return displayMatrix;
    }
 
+   
 
    // ---------------------------------------------------------------------------
-   // Operation Handlers
+   // Inverse Operation Handlers
+   // ---------------------------------------------------------------------------
+   /**
+    * 
+    */
+   handleTranspose() {
+      const matrix = this.getMatrices([document.querySelector("#transpose .matrix-select").value])[0];
+      if (matrix !== null) {
+         const transpose = matrix.transpose();
+         this.displayResults("Transpose", matrix, "=", transpose);
+      }
+   }
+
+   /**
+    * 
+    */
+   handleInverse() { }
+
+
+   // ---------------------------------------------------------------------------
+   // Basic Operation Handlers
    // ---------------------------------------------------------------------------
    /**
     * Handles matrix addition.
@@ -135,7 +161,7 @@ class MatrixOpsCalculator {
       if (matrices !== null) {
          try {
             const sum = matrices[0].matrixAddition(matrices[1], true);
-            this.displayBasicResult(matrices.map(m => m.toString()), "+", sum.toString());
+            this.displayResults(matrices[0], "+", matrices[1], "=", sum);
          } catch (error) {
             alert("Rows and columns of the matrices must match.");
          }
@@ -154,7 +180,7 @@ class MatrixOpsCalculator {
       if (matrices !== null) {
          try {
             const difference = matrices[0].matrixAddition(matrices[1], false);
-            this.displayBasicResult(matrices.map(m => m.toString()), "-", difference.toString());
+            this.displayResults(matrices[0], "-", matrices[1], "=", difference);
          } catch (error) {
             alert("Rows and columns of the matrices must match.");
          }
@@ -173,7 +199,7 @@ class MatrixOpsCalculator {
       if (matrices !== null) {
          try {
             const product = matrices[0].matrixMultiplication(matrices[1]);
-            this.displayBasicResult(matrices.map(m => m.toString()), "x", product.toString());
+            this.displayResults(matrices[0], "x", matrices[1], "=", product);
          } catch (error) {
             alert("The rows of the first matrix must match the columns of the second matrix.");
          }
@@ -185,30 +211,12 @@ class MatrixOpsCalculator {
     */
    handleScaling() {
       const left = document.querySelector("#scale .matrix-select").value;
-      const scalar = parseInt(document.querySelector("#scale input[type='text']").value);
+      const scalar = document.querySelector("#scale input[type='text']").value;
       const matrix = this.getMatrices([left])[0];
 
       if (matrix !== null) {
-         const product = matrix.scalarMultiplication(scalar);
-
-         const resultDisplay = document.createElement("div");
-         resultDisplay.classList.add("results-display");
-
-         const scalarElement = document.createElement("div");
-         scalarElement.innerHTML = scalar;
-
-         const times = document.createElement("div");
-         times.innerHTML = "x";
-
-         const equals = document.createElement("div");
-         equals.innerHTML = "=";
-
-         resultDisplay.appendChild(this.createDisplayMatrix(matrix.toString()));
-         resultDisplay.appendChild(times);
-         resultDisplay.appendChild(scalarElement);
-         resultDisplay.appendChild(equals);
-         resultDisplay.appendChild(this.createDisplayMatrix(product.toString()));
-         this.display.prepend(resultDisplay);
+         const product = matrix.scalarMultiplication(parseInt(scalar));
+         this.displayResults(matrix, "x", scalar, "=", product);
       }
    }
 
