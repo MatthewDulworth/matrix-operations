@@ -505,13 +505,66 @@ class Matrix {
          throw Error("This must be a square matrix");
       }
    }
+
+   // ---------------------------------------------------------------------------
+   // Determinant 
+   // ---------------------------------------------------------------------------
+   /**
+    * @returns {number}
+    */
+   determinant() {
+      const matrix = this.array;
+      const sub = this.subMatrix(matrix, 2, 0);
+      this.disp(sub);
+   }
+
+   /**
+    * 
+    * @param {Fraction[][]} matrix 
+    */
+   disp(matrix) {
+      let str = matrix.map(row => row.map(frac => frac.toFraction()));
+      console.table(str);
+   }
+
+   /**
+    * @param {Fraction[][]} matrix
+    * @param {number} row 
+    * @param {number} col 
+    */
+   subMatrix(matrix, targetRow, targetCol) {
+      const sub = [];
+      const rows = matrix.length;
+      const columns = matrix[0].length;
+
+      let subRow = 0;
+
+      for (let row = 0; row < rows; row++) {
+         if (row !== targetRow) {
+
+            let subCol = 0;
+            sub[subRow] = [];
+
+            for (let col = 0; col < columns; col++) {
+               if (col !== targetCol) {
+                  sub[subRow][subCol] = matrix[row][col].clone();
+                  subCol++;
+               }
+            }
+            subRow++;
+         }
+      }
+      return sub;
+   }
 }
 
-// const A = [
-//    [1, 2, 3],
-//    [4, 5, 6]
-// ];
-// const matrixA = new Matrix(2, 3, A);
+const A = [
+   [1, 2, 3],
+   [4, 5, 6],
+   [7, 8, 9]
+];
+const matrixA = new Matrix(2, 3, A);
+matrixA.determinant();
 
 // const B = [
 //    [7, 8],
