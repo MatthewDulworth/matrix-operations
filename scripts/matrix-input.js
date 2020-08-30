@@ -125,7 +125,13 @@ class MatrixInput {
     * On click sets the value to every entry in the input matrix to a blank string.
     */
    addResetButtonListener() {
-      this.resetBtn.addEventListener('click', () => this.entries().forEach(entry => entry.value = ""));
+      this.resetBtn.addEventListener('click', () => {
+         this.entries().forEach(entry => entry.value = "");
+         this.row.input.value = 3;
+         triggerEvent(this.row.input, 'change');
+         this.col.input.value = 3;
+         triggerEvent(this.col.input, 'change');
+      });
    }
 
    /**
