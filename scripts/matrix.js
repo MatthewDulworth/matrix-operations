@@ -12,6 +12,11 @@ class Matrix {
     * @param {Array} inputMatrix 
     */
    constructor(rows, columns, inputMatrix) {
+
+      if(rows === 0 || columns === 0) {
+         throw Error("Matrix cannot have zero rows or columns");
+      }
+
       this.rows = rows;
       this.columns = columns;
       /** @type {Fraction[][]} */
@@ -510,21 +515,18 @@ class Matrix {
    // Determinant 
    // ---------------------------------------------------------------------------
    /**
-    * @returns {Fraction}
+    * @returns {Fraction} The determinant of this matrix.
     */
    determinant() {
       if (this.rows !== this.columns) {
          throw Error("Must be square.");
       }
-
-      const det = Matrix.findDeterminate(this.array);
-      console.log(det.toFraction());
-      return (det);
+      return Matrix.findDeterminate(this.array);
    }
 
    /**
-    * @param {Fraction[][]} matrix 
-    * @returns {Fraction}
+    * @param {Fraction[][]} matrix The matrix to find the determinant of.
+    * @returns {Fraction} The determinant of the passed matrix.
     */
    static findDeterminate(matrix) {
       if (matrix.length === 1) {
@@ -552,9 +554,10 @@ class Matrix {
    }
 
    /**
-    * @param {Fraction[][]} matrix
-    * @param {number} row 
-    * @param {number} col 
+    * @param {Fraction[][]} matrix The supermatrix array
+    * @param {number} row The row to exclude.
+    * @param {number} col The column to exclude.
+    * @returns {Fraction[][]} The passed matrix without the specified row and column.
     */
    static subMatrix(matrix, targetRow, targetCol) {
       const sub = [];
@@ -582,11 +585,11 @@ class Matrix {
    }
 }
 
-const A = [
-   [1, 0, 3],
-   [4, 5, 6],
-   [7, 0, 9]
-];
-const matrixA = new Matrix(3, 3, A);
-matrixA.log();
-matrixA.determinant();
+// const A = [
+//    [1, 0, 3],
+//    [4, 5, 6],
+//    [7, 0, 9]
+// ];
+// const matrixA = new Matrix(3, 3, A);
+// matrixA.log();
+// matrixA.determinant();
