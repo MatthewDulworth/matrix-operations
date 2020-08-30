@@ -26,6 +26,7 @@ class MatrixOpsCalculator {
 
       this.transposeBtn = document.querySelector("#transpose button");
       this.inverseBtn = document.querySelector("#inverse button");
+      this.determinantBtn = document.querySelector("#determinant button");
 
       // check for null elements
       for (let field in this) {
@@ -41,6 +42,7 @@ class MatrixOpsCalculator {
 
       this.transposeBtn.addEventListener('click', () => this.handleTranspose());
       this.inverseBtn.addEventListener('click', () => this.handleInverse());
+      this.determinantBtn.addEventListener('click', () => this.handleDeterminant());
 
       // setup methods
       this.setMatrixSelectValues();
@@ -150,6 +152,17 @@ class MatrixOpsCalculator {
          } else {
             this.displayResults("Inverse", matrix, "=", inverse);
          }
+      }
+   }
+
+   /**
+    * Computes and displays the determinant of a matrix.
+    */
+   handleDeterminant() {
+      const matrix = this.getMatrices(this.getSelectValue("determinant"));
+      if (matrix !== null) {
+         const det = matrix.determinant().toFraction();
+         this.displayResults("Determinant", matrix, "=", det);
       }
    }
 
