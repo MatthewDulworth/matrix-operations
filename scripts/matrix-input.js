@@ -123,9 +123,16 @@ class MatrixInput {
    /**
     * Adds a click event listener to the reset button.
     * On click sets the value to every entry in the input matrix to a blank string.
+    * Resets the number of rows and columns to 3.
     */
    addResetButtonListener() {
-      this.resetBtn.addEventListener('click', () => this.entries().forEach(entry => entry.value = ""));
+      this.resetBtn.addEventListener('click', () => {
+         this.entries().forEach(entry => entry.value = "");
+         this.row.input.value = 3;
+         triggerEvent(this.row.input, 'change');
+         this.col.input.value = 3;
+         triggerEvent(this.col.input, 'change');
+      });
    }
 
    /**
