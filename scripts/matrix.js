@@ -510,12 +510,36 @@ class Matrix {
    // Determinant 
    // ---------------------------------------------------------------------------
    /**
-    * @returns {number}
+    * @returns {Fraction}
     */
    determinant() {
-      const matrix = this.array;
-      const sub = this.subMatrix(matrix, 2, 0);
-      this.disp(sub);
+      if (this.rows !== this.columns) {
+         throw Error("Must be square.");
+      }
+
+      const det = Matrix.findDeterminate(this.array);
+      console.log(det.toFraction());
+      return (det);
+   }
+
+   /**
+    * @param {Fraction[][]} matrix 
+    * @returns {Fraction}
+    */
+   static findDeterminate(matrix) {
+      if (matrix.length === 1) {
+         return matrix[0][0];
+      } else {
+         let sign = 1;
+         let sum = new Fraction(0);
+         for (let col = 0; col < matrix.length; col++) {
+            const subDet = Matrix.findDeterminate(Matrix.subMatrix(matrix, 0, col));
+            const scalar = matrix[0][col].mul(sign);
+            sum = sum.add(subDet.mul(scalar));
+            sign = -sign;
+         };
+         return sum;
+      }
    }
 
    /**
@@ -532,7 +556,7 @@ class Matrix {
     * @param {number} row 
     * @param {number} col 
     */
-   subMatrix(matrix, targetRow, targetCol) {
+   static subMatrix(matrix, targetRow, targetCol) {
       const sub = [];
       const rows = matrix.length;
       const columns = matrix[0].length;
@@ -559,18 +583,10 @@ class Matrix {
 }
 
 const A = [
-   [1, 2, 3],
+   [1, 0, 3],
    [4, 5, 6],
-   [7, 8, 9]
+   [7, 0, 9]
 ];
-const matrixA = new Matrix(2, 3, A);
+const matrixA = new Matrix(3, 3, A);
+matrixA.log();
 matrixA.determinant();
-
-// const B = [
-//    [7, 8],
-//    [9, 10],
-//    [11, 12]
-// ];
-// const matrixB = new Matrix(3, 2, B);
-
-// matrixB.matrixMultiplication(matrixA).log();
