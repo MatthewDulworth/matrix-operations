@@ -36,6 +36,11 @@
 
 /********* display matrix *********/
 
+#display-options {
+   padding-top: 0.5rem;
+   padding-bottom: 0.5rem;
+}
+
 #display {
    padding: 0.75rem 1.5rem;
 }

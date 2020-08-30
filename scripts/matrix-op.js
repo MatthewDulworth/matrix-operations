@@ -28,6 +28,9 @@ class MatrixOpsCalculator {
       this.inverseBtn = document.querySelector("#inverse button");
       this.determinantBtn = document.querySelector("#determinant button");
 
+      this.clearAllBtn = document.getElementById("display-options").firstElementChild;
+      this.clearAllButTopBtn = document.getElementById("display-options").lastElementChild;
+
       // check for null elements
       for (let field in this) {
          if (this[field] === null) {
@@ -43,6 +46,9 @@ class MatrixOpsCalculator {
       this.transposeBtn.addEventListener('click', () => this.handleTranspose());
       this.inverseBtn.addEventListener('click', () => this.handleInverse());
       this.determinantBtn.addEventListener('click', () => this.handleDeterminant());
+
+      this.clearAllBtn.addEventListener('click', () => this.clearDisplay());
+      this.clearAllButTopBtn.addEventListener('click', () => this.clearDisplayBelow());
 
       // setup methods
       this.setMatrixSelectValues();
@@ -123,6 +129,16 @@ class MatrixOpsCalculator {
       displayMatrix.style.setProperty('grid-template-rows', `repeat(${rows}, auto)`);
       displayMatrix.style.setProperty('grid-template-columns', `repeat(${columns}, auto)`);
       return displayMatrix;
+   }
+
+   clearDisplay() {
+      this.display.innerHTML = "";
+   }
+
+   clearDisplayBelow() {
+      const first = this.display.firstElementChild;
+      this.clearDisplay();
+      this.display.appendChild(first);
    }
 
 
