@@ -131,10 +131,16 @@ class MatrixOpsCalculator {
       return displayMatrix;
    }
 
+   /**
+    * Clears the display.
+    */
    clearDisplay() {
       this.display.innerHTML = "";
    }
 
+   /**
+    * Clears the display except for the last result.
+    */
    clearDisplayBelow() {
       const first = this.display.firstElementChild;
       this.clearDisplay();
